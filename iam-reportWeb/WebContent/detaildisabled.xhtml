@@ -39,7 +39,8 @@
 						update="msgs,table" />
 				</h:panelGrid>
 
-				<p:dataTable id="table" var="user" value="#{disabledBacking.detailList}"
+				<p:dataTable id="table" var="user"
+					value="#{disabledBacking.detailList}"
 					style="margin-top:20px;margin-bottom:20px">
 					<p:columnGroup type="header">
 						<p:row>
@@ -53,14 +54,23 @@
 						</p:row>
 					</p:columnGroup>
 					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Tanggal Disabled" />
+						</f:facet>
 						<h:outputText value="#{user.lastUpdate}" />
 					</p:column>
 
 					<p:column>
+						<f:facet name="header">
+							<h:outputText value="User Id" />
+						</f:facet>
 						<h:outputText value="#{user.userId}" />
 					</p:column>
 					<p:column>
-							<h:outputText value="#{user.fullName}" />
+						<f:facet name="header">
+							<h:outputText value="Full Name" />
+						</f:facet>
+						<h:outputText value="#{user.fullName}" />
 					</p:column>
 
 				</p:dataTable>
@@ -70,8 +80,8 @@
 				<h:commandLink>
 					<p:commandButton
 						value="#{msgbundle['text.page.detaildisabled.generatepdf']}" />
-					<p:dataExporter type="pdf" target="table" fileName="detaildisabledreport"
-						pageOnly="true" />
+					<p:dataExporter type="pdf" target="table"
+						fileName="detaildisabledreport" pageOnly="true" />
 				</h:commandLink>
 
 			</p:panel>

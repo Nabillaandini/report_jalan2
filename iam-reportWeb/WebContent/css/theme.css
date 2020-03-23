@@ -1,0 +1,68 @@
+.ui-panel .ui-panel-titlebar {
+	background-color: #113a72;
+	color: white;
+	justify-content: center;
+	margin: auto;
+	padding: 20px 0;
+}
+
+.ui-panel .ui-panel-title {
+	margin-left: 30px;
+}
+
+.ui-menu.ui-widget .ui-menu-list .ui-widget-header {
+	height: 40px;
+	font-weight: 400;
+}
+
+.ui-button-text-only .ui-button-text {
+	background-color: #113a72;
+	margin: 0;
+	min-width: 80px;
+	height: 40px padding: 5px 12px;
+	outline: none;
+	text-decoration: none;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+	background-color: #ffffff;
+	color: #1d89ff;
+	font-family: inherit;
+	z-index: 0;
+	overflow: hidden;
+}
+
+.ui-button-text-only .ui-button-text:hover {
+	background-color: orange;
+	color: white;
+}
+
+.ui-datepicker-trigger.ui-button-icon-only .ui-button-text {
+	background-color: #113a72;
+	margin: 0;
+	padding: 5px 12px;
+	outline: none;
+	text-decoration: none;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+	text-transform: uppercase;
+	background-color: #ffffff;
+	color: #1d89ff;
+	font-family: inherit;
+	z-index: 0;
+	overflow: hidden;
+}
+
+.ui-datepicker-trigger.ui-button-icon-only .ui-button-text:hover {
+	background-color: orange;
+	color: white;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default,
+	.ui-widget-header .ui-state-default {
+	background-color: green;
+	background-image: none;
+}

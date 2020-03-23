@@ -12,6 +12,7 @@
     	<ui:insert name="metadata" />
   		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
         <link href="../css/style-template.css" rel="stylesheet" type="text/css" />
+                <link href="../css/theme.css" rel="stylesheet" type="text/css" />
   		<title>#{msgbundle['text.page.title']}</title>
 	  	<f:event type="preRenderView" listener="#{autoLogout.load}" />
   		
@@ -24,7 +25,8 @@
 	    </style> 
     </h:head>
     
-    <h:body>    
+    <h:body >
+
 	    <p:layout fullPage="true">		 
 		    <p:layoutUnit position="north" size="110" id="north" style="border:0px">
 		        <div id="header"><ui:include src="header.xhtml" /></div>

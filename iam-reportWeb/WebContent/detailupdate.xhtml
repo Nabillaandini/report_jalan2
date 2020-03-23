@@ -53,14 +53,23 @@
 						</p:row>
 					</p:columnGroup>
 					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Tanggal Update" />
+						</f:facet>
 						<h:outputText value="#{user.lastUpdate}" />
 					</p:column>
 
 					<p:column>
+						<f:facet name="header">
+							<h:outputText value="User Id" />
+						</f:facet>
 						<h:outputText value="#{user.userId}" />
 					</p:column>
 					<p:column>
-							<h:outputText value="#{user.fullName}" />
+						<f:facet name="header">
+							<h:outputText value="Full Name" />
+						</f:facet>
+						<h:outputText value="#{user.fullName}" />
 					</p:column>
 
 				</p:dataTable>

@@ -6,8 +6,9 @@
 .headLogo{
 	float:right; 
 	margin-bottom:10px;
-	width: 48px !important;
-	height: 48px !important;
+	width: 150px !important;
+	height: 100px !important;
+	margin-top: -15px;
 }
 
 html.progress, html.progress * {

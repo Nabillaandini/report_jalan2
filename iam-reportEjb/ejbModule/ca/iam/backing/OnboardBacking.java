@@ -85,7 +85,7 @@ public class OnboardBacking extends BasicSessionBacking {
 
 	public void sumSearch() {
 		if (this.beginDate == null || this.endDate == null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Please input the required fields"));
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Please input the required fields", "Error"));
 		} else {
 			try {
 				this.countList = userEao.countData(this.beginDate, this.endDate,"onboard");

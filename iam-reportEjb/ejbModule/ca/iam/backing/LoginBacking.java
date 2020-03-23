@@ -73,16 +73,7 @@ public class LoginBacking implements Serializable{
 		
 		username = "";
 		password = "";
-		ArrayList<UserUpdates> userList = new ArrayList<UserUpdates>();
-	    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-		Date begin_date = formatter.parse("2020-03-18");
-		Date end_date = formatter.parse("2020-03-19");
-		UserEao userEao = new UserEao();
-		userList = userEao.getUpdateById("1187408513", begin_date, end_date);
-		System.out.println(userList.size());
-		ArrayList<CountList> countList = new ArrayList<CountList>();
-//		countList = userEao.countUpdates(begin_date, end_date);
-//		System.out.println(countList.size());
+	
 		
 		FacesContext context = FacesContext.getCurrentInstance();
 		if (!context.isPostback()){
@@ -104,12 +95,7 @@ public class LoginBacking implements Serializable{
 		if (result.equals("1")){
 	        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
 	    	HttpSession session = request.getSession(); //sessionCreated() is executed
-	    	session.setAttribute("username", username);	    	
-	    	
-//	        System.out.println("session id : " + request.getSession().getId());
-	    	
-//			this.setCloseSession(true);
-//	        loginRules.setLogin(username, password);
+	    	session.setAttribute("username", username);	 
 			result = "user?faces-redirect=true";
 		}else if (result.equals("0")){   
 	        context.addMessage(null, new FacesMessage(Settings.getMessageString("text.page.login.error")));

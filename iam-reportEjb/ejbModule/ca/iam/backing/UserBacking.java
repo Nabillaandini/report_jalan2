@@ -131,30 +131,6 @@ public class UserBacking extends BasicSessionBacking {
 //		this.userList.add(new UserUpdates("Abdalla Dewi", "09123809128"));
 //		System.out.println("Executing searching user from db of " + beginDate);
 	}
-//	public void getSum(Date start_date, Date end_date) throws SQLException, ParseException{
-//		HashMap<Date,Integer> countSum = new HashMap<Date,Integer>();
-//		start_date  = this.beginDate;
-//		end_date = this.endDate;
-//		 LocalDate start = LocalDate.of(start_date.getYear(), start_date.getMonth(), start_date.getDay());
-//		 LocalDate end = LocalDate.of(end_date.getYear(), end_date.getMonth(), end_date.getDay());
-//		 int res = 0;
-//		 String type = "onboard";
-//		 if(type.equalsIgnoreCase("onboard")) {
-//			 type = "onboard";
-//		 }else if(type.equalsIgnoreCase("update")) {
-//			 type = "update";
-//		 }
-//		 for (LocalDate date = start; date.isBefore(end); date = date.plusDays(1))
-//		 {
-//			 java.util.Date tempDate= java.sql.Date.valueOf(date);
-//		    res = userEao.getSum(tempDate,"onboard");
-//		    countSum.put(tempDate,res);
-//		    countList.add(new CountList(tempDate,res));
-//		    
-//		    
-//		 }
-//		
-//	}
 
 	public String getUserId() {
 		return userId;

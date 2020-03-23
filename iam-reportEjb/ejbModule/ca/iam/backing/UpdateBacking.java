@@ -25,12 +25,13 @@ import ca.iam.rules.UserRules;
 @SessionScoped
 @Stateful
 @Named
-public class OnboardBacking extends BasicSessionBacking {
 
+public class UpdateBacking extends BasicSessionBacking {
+	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 789259241105977794L;
+	private static final long serialVersionUID = 1149841774695559308L;
 
 	@EJB
 	public UserRules userRules;
@@ -40,10 +41,10 @@ public class OnboardBacking extends BasicSessionBacking {
 
 	private Date beginDate;
 	private Date endDate;
-
+	
 	public List<UserUpdates> detailList = new ArrayList<UserUpdates>();
 	public List<CountList> countList = new ArrayList<CountList>();
-
+	
 	public Date getBeginDate() {
 		return beginDate;
 	}
@@ -88,7 +89,7 @@ public class OnboardBacking extends BasicSessionBacking {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Please input the required fields"));
 		} else {
 			try {
-				this.countList = userEao.countData(this.beginDate, this.endDate,"onboard");
+				this.countList = userEao.countData(this.beginDate, this.endDate,"update");
 
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching is finished"));
 
@@ -109,7 +110,7 @@ public class OnboardBacking extends BasicSessionBacking {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Please input the required fields"));
 		} else {
 			try {
-				this.detailList = userEao.getUserOnboard(this.beginDate, this.endDate);
+				this.detailList = userEao.getUserUpdate(this.beginDate, this.endDate);
 
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching is finished"));
 

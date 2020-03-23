@@ -7,79 +7,54 @@
 	template="templates/layout.xhtml">
 
 	<ui:define name="metadata">
-		<f:event type="preRenderView" listener="#{userBacking.load}" />
+		<f:event type="preRenderView" listener="#{disabledBacking.load}" />
 	</ui:define>
 
 	<ui:define name="content">
 		<h:form id="mainform" autocomplete="off">
 			<p:growl id="msgs" sticky="true" />
 
-			<p:panel header="#{userBacking.headName}">
+			<p:panel header="#{msgbundle['text.page.sumdisabled.title']}">
 
 				<h:panelGrid columns="3" cellpadding="10" border="0">
 				
-					<h:outputLabel value="#{msgbundle['text.page.user.begindate']}"
+				
+					<h:outputLabel for="beginDate" value="#{msgbundle['text.page.sumdisabled.begindate']}"
 						style="margin-right:20px;" />
-					<p:datePicker id="beginDate" value="#{userBacking.beginDate}"
+					<p:datePicker id="beginDate" value="#{disabledBacking.beginDate}"
+						showIcon="true"/>
+					<p:spacer />
+
+					<h:outputLabel value="#{msgbundle['text.page.sumdisabled.enddate']}"
+						style="margin-right:20px;" />
+					<p:datePicker  id="endDate" value="#{disabledBacking.endDate}"
 						showIcon="true" />
 					<p:spacer />
 
-					<h:outputLabel value="#{msgbundle['text.page.user.enddate']}"
-						style="margin-right:20px;" />
-					<p:datePicker id="endDate" value="#{userBacking.endDate}"
-						showIcon="true" />
-					<p:spacer />
 
-
-					<p:commandButton value="#{msgbundle['text.page.user.search']}"
-						action="#{userBacking.searchUser}" process="@all" update="msgs,table" />
+					<p:commandButton value="#{msgbundle['text.page.sumdisabled.search']}"
+						action="#{disabledBacking.sumSearch}" process="@all" update="msgs,table" />
 				</h:panelGrid>
 
-				<p:dataTable id="table" var="user" value="#{userBacking.userList}"
+				<p:dataTable id="table" var="user" value="#{disabledBacking.countList}"
 					style="margin-top:20px;margin-bottom:20px">
 					<p:columnGroup type="header">
 						<p:row>
-							<p:column headerText="#{msgbundle['text.page.user.total_update']}" />
-							<p:column headerText="#{msgbundle['text.page.user.total_onboard']}" />
-							<p:column headerText="#{msgbundle['text.page.user.update_failed']}" />
-							<p:column headerText="#{msgbundle['text.page.user.update_success']}" />
-							<p:column headerText="#{msgbundle['text.page.user.total_enable']}" />
-							<p:column headerText="#{msgbundle['text.page.user.total_disable']}" />
+							<p:column headerText="#{msgbundle['text.page.sumdisabled.colomn_1']}" />
+							<p:column headerText="#{msgbundle['text.page.sumdisabled.colomn_2']}" />
 						</p:row>
 					</p:columnGroup>
 
 					<p:column>
-						<h:outputText value="#{user.userId}" />
+						<h:outputText value="#{user.date}"/>
 					</p:column>
 					<p:column>
 						<div align="right">
-							<h:outputText value="#{user.fullName}" />
+							<h:outputText value="#{user.count}"/>
 						</div>
 					</p:column>
 
 				</p:dataTable>
-				<p:dataTable id="table2" var="user" value="#{userBacking.userList}"
-					style="margin-top:20px;margin-bottom:20px">
-					<p:columnGroup type="header">
-						<p:row>
-							<p:column headerText="#{msgbundle['text.page.user.upd_phone']}" />
-							<p:column headerText="#{msgbundle['text.page.user.upd_email']}" />
-							<p:column headerText="#{msgbundle['text.page.user.upd_address']}" />
-							<p:column headerText="#{msgbundle['text.page.user.upd_name']}" />
-						</p:row>
-					</p:columnGroup>
-
-					<p:column>
-						<h:outputText value="#{user.userId}" />
-					</p:column>
-					<p:column>
-						<div align="right">
-							<h:outputText value="#{user.fullName}" />
-						</div>
-					</p:column>
-
-				</p:dataTable>
-
 
 			</p:panel>
 		</h:form>

@@ -1,0 +1,62 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="templates/layout.xhtml">
+
+	<ui:define name="metadata">
+		<f:event type="preRenderView" listener="#{onboardBacking.load}" />
+	</ui:define>
+
+	<ui:define name="content">
+		<h:form id="mainform" autocomplete="off">
+			<p:growl id="msgs" sticky="true" />
+
+			<p:panel header="#{msgbundle['text.page.sumonboard.title']}">
+
+				<h:panelGrid columns="3" cellpadding="10" border="0">
+				
+				
+					<h:outputLabel for="beginDate" value="#{msgbundle['text.page.sumonboard.begindate']}"
+						style="margin-right:20px;" />
+					<p:datePicker id="beginDate" value="#{onboardBacking.beginDate}"
+						showIcon="true"/>
+					<p:spacer />
+
+					<h:outputLabel value="#{msgbundle['text.page.sumonboard.enddate']}"
+						style="margin-right:20px;" />
+					<p:datePicker  id="endDate" value="#{onboardBacking.endDate}"
+						showIcon="true" />
+					<p:spacer />
+
+
+					<p:commandButton value="#{msgbundle['text.page.sumonboard.search']}"
+						action="#{onboardBacking.sumSearch}" process="@all" update="msgs,table" />
+				</h:panelGrid>
+
+				<p:dataTable id="table" var="user" value="#{onboardBacking.countList}"
+					style="margin-top:20px;margin-bottom:20px">
+					<p:columnGroup type="header">
+						<p:row>
+							<p:column headerText="#{msgbundle['text.page.sumonboard.colomn_1']}" />
+							<p:column headerText="#{msgbundle['text.page.sumonboard.colomn_2']}" />
+						</p:row>
+					</p:columnGroup>
+
+					<p:column>
+						<h:outputText value="#{user.date}"/>
+					</p:column>
+					<p:column>
+						<div align="right">
+							<h:outputText value="#{user.count}"/>
+						</div>
+					</p:column>
+
+				</p:dataTable>
+
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

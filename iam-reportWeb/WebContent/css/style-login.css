@@ -1,0 +1,48 @@
+.panelGridCenter {
+    margin: 200px auto;
+    width: 390px;
+}
+
+.inputText{
+	width: 200px;
+}
+
+.cmdLogin{
+	float:right;
+}
+
+::-webkit-input-placeholder {
+   color: gray !important;
+   font-sytle: italic !important;
+   font-size: 12pt !important;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+   color: gray !important;  
+   font-style: italic !important;
+   font-size: 12pt !important;
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+   color: gray !important;  
+   font-style: italic !important;
+   font-size: 12pt !important;
+}
+
+:-ms-input-placeholder {  
+   color: gray !important;  
+   font-style: italic !important;
+   font-size: 12pt !important;
+}
+
+.footer {
+   color: gray;  
+   font-size: 9pt;
+}
+
+.content{
+	margin: 10px !important;
+}
+
+
+

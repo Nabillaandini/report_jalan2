@@ -1,0 +1,15 @@
+.panelgrid-noborder tr,
+.panelgrid-noborder td{
+	border: 0px !important;
+}
+
+.headLogo{
+	float:right; 
+	margin-bottom:10px;
+	width: 48px !important;
+	height: 48px !important;
+}
+
+html.progress, html.progress * {
+    cursor: progress !important;
+}

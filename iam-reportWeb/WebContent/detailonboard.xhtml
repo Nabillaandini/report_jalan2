@@ -1,0 +1,80 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="templates/layout.xhtml">
+
+	<ui:define name="metadata">
+		<f:event type="preRenderView" listener="#{onboardBacking.load}" />
+	</ui:define>
+
+	<ui:define name="content">
+		<h:form id="mainform" autocomplete="off">
+			<p:growl id="msgs" sticky="true" />
+
+			<p:panel header="#{msgbundle['text.page.detailonboard.title']}">
+
+				<h:panelGrid columns="3" cellpadding="10" border="0">
+
+					<h:outputLabel
+						value="#{msgbundle['text.page.detailonboard.begindate']}"
+						style="margin-right:20px;" />
+					<p:datePicker id="beginDate" value="#{onboardBacking.beginDate}"
+						showIcon="true" />
+					<p:spacer />
+
+					<h:outputLabel
+						value="#{msgbundle['text.page.detailonboard.enddate']}"
+						style="margin-right:20px;" />
+					<p:datePicker id="endDate" value="#{onboardBacking.endDate}"
+						showIcon="true" />
+					<p:spacer />
+
+
+					<p:commandButton
+						value="#{msgbundle['text.page.detailonboard.search']}"
+						action="#{onboardBacking.detailSearch}" process="@all"
+						update="msgs,table" />
+				</h:panelGrid>
+
+				<p:dataTable id="table" var="user" value="#{onboardBacking.detailList}"
+					style="margin-top:20px;margin-bottom:20px">
+					<p:columnGroup type="header">
+						<p:row>
+							<p:column
+								headerText="#{msgbundle['text.page.detailonboard.colomn_1']}" />
+							<p:column
+								headerText="#{msgbundle['text.page.detailonboard.colomn_2']}" />
+							<p:column
+								headerText="#{msgbundle['text.page.detailonboard.colomn_3']}" />
+
+						</p:row>
+					</p:columnGroup>
+					<p:column>
+						<h:outputText value="#{user.lastUpdate}" />
+					</p:column>
+
+					<p:column>
+						<h:outputText value="#{user.userId}" />
+					</p:column>
+					<p:column>
+							<h:outputText value="#{user.fullName}" />
+					</p:column>
+
+				</p:dataTable>
+
+				<p:spacer />
+
+				<h:commandLink>
+					<p:commandButton
+						value="#{msgbundle['text.page.detailonboard.generatepdf']}" />
+					<p:dataExporter type="pdf" target="table" fileName="DetailOnboardreport"
+						pageOnly="true" />
+				</h:commandLink>
+
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

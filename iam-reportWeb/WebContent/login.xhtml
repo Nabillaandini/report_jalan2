@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd"> 
+
+<html xmlns="http://www.w3.org/1999/xhtml"   
+	  xmlns:ui="http://java.sun.com/jsf/facelets" 
+	  xmlns:h="http://java.sun.com/jsf/html" 
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:p="http://primefaces.org/ui"  
+	  xmlns:pe="http://primefaces.org/ui/extensions"> 
+	<h:head>
+  		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+        <link href="css/style-login.css" rel="stylesheet" type="text/css" />
+  		<title>#{msgbundle['text.page.title']}</title> 
+	  	<f:event type="preRenderView" listener="#{loginBacking.load}" />
+  	</h:head> 
+  	<h:body >
+  		<h:form id="mainform" autocomplete="off">
+		    <p:growl id="msgs" sticky="true"/>
+		    
+    		<p:panel id="basic" header="#{msgbundle['text.page.login']}" styleClass="panelGridCenter">	
+		        <h:panelGrid columns="2" cellpadding="10" styleClass="content">
+		            <h:outputLabel value="#{msgbundle['text.page.login.username']}"/>
+		            <p:inputText value="#{loginBacking.username}" autocomplete="off" styleClass="inputText"
+		            		type="input" required="true" id="username" requiredMessage="#{msgbundle['text.page.login.username.required']}">
+						<p:watermark for="username" value="#{msgbundle['text.page.login.username.watermark']}" />
+		            </p:inputText>
+		            
+		            <h:outputLabel value="#{msgbundle['text.page.login.password']}"/>
+		            <p:inputText value="#{loginBacking.password}" autocomplete="off" styleClass="inputText"
+		            		type="password" required="true" id="password" requiredMessage="#{msgbundle['text.page.login.password.required']}">		            		
+		            	<p:watermark for="password" value="#{msgbundle['text.page.login.password.watermark']}" /> 
+		            </p:inputText>
+	            	
+	            	<br/>
+	            	<p:commandButton id="btnLogin" value="#{msgbundle['text.page.login']}" action="#{loginBacking.submitLogin}" styleClass="cmdLogin" update="msgs"/>
+	            </h:panelGrid>
+	            <h:outputLabel value="#{msgbundle['text.page.companyname']}" styleClass="footer"/> 
+		    </p:panel>
+ 
+    		<p:blockUI block="basic" trigger="btnLogin" />
+		</h:form>
+  		<h:outputScript target="head">
+	        $(function () {
+	            $('input').bind('paste', function () {
+	                return false;
+	            });
+	
+	            $('input').bind('cut', function () {
+	                return false;
+	            }); 
+	
+	            $('input').bind('copy', function () {
+	                return false;
+	            });
+	        });
+	    </h:outputScript>
+  	</h:body> 
+</html> 

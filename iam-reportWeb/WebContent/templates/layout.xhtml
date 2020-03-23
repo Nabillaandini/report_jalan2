@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   
+	  xmlns:ui="http://java.sun.com/jsf/facelets" 
+	  xmlns:h="http://java.sun.com/jsf/html" 
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:p="http://primefaces.org/ui"  
+	  xmlns:pe="http://primefaces.org/ui/extensions">
+
+    <h:head>
+    	<ui:insert name="metadata" />
+  		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+        <link href="../css/style-template.css" rel="stylesheet" type="text/css" />
+  		<title>#{msgbundle['text.page.title']}</title>
+	  	<f:event type="preRenderView" listener="#{autoLogout.load}" />
+  		
+ 		<style>
+	        .ui-layout-unit .ui-layout-unit-content {
+	            padding: 0.2em 0em;
+	            border: 0px none !important;
+	            overflow: hidden !important;
+	        }
+	    </style> 
+    </h:head>
+    
+    <h:body>    
+	    <p:layout fullPage="true">		 
+		    <p:layoutUnit position="north" size="110" id="north" style="border:0px">
+		        <div id="header"><ui:include src="header.xhtml" /></div>
+		    </p:layoutUnit>
+		 
+		    <p:layoutUnit position="west" size="250" style="border:0px">
+		        <div id="menu"><ui:include src="leftmenu.xhtml" /></div>
+		    </p:layoutUnit>
+		 
+		    <p:layoutUnit position="center" style="border:0px" >
+		        <div id="content" style="overflow-y: auto;height:100%;padding-bottom:10px"><ui:insert name="content" /></div>
+		    </p:layoutUnit>
+		 
+		</p:layout>
+	</h:body>
+</html>

@@ -96,7 +96,7 @@ public class LoginBacking implements Serializable{
 	        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
 	    	HttpSession session = request.getSession(); //sessionCreated() is executed
 	    	session.setAttribute("username", username);	 
-			result = "user?faces-redirect=true";
+			result = "summary?faces-redirect=true";
 		}else if (result.equals("0")){   
 	        context.addMessage(null, new FacesMessage(Settings.getMessageString("text.page.login.error")));
 	        result = null;

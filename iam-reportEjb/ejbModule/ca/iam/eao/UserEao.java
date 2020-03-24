@@ -14,6 +14,7 @@ import javax.ejb.Stateless;
 import javax.inject.Named;
 
 import ca.iam.entity.CountList;
+import ca.iam.entity.SummaryModel;
 import ca.iam.entity.UserUpdates;
 import ca.iam.util.Helper;
 import ca.iam.util.Settings;
@@ -481,6 +482,44 @@ public class UserEao {
 		}
 
 		return userList;
+	}
+	
+	public SummaryModel getSummaryReport(Date begin_date, Date end_date) throws SQLException, ParseException {
+
+		ResultSet rs = null;
+		Connection conn = Settings.getConnection();
+		SummaryModel sumModel = new SummaryModel();
+
+		try {
+
+			java.sql.Date begin = new java.sql.Date(begin_date.getTime());
+			java.sql.Date end = new java.sql.Date(end_date.getTime());
+
+			CallableStatement stmt = conn.prepareCall("{call getSummaryReport(?,?)}");
+			stmt.setDate(1, (java.sql.Date) begin);
+			stmt.setDate(2, (java.sql.Date) end);
+
+			stmt.execute();
+			rs = stmt.getResultSet();
+
+			try {
+				while (rs.next()) {
+				int countOnboard = rs.getInt("countOnboard");
+				int countUpdate = rs.getInt("countUpdate");
+				int countDisabled = rs.getInt("countDisabled");
+				int phone = rs.getInt("phone");
+				int email = rs.getInt("email");
+				int name = rs.getInt("name");
+				sumModel = new SummaryModel(countOnboard, countUpdate, countDisabled, phone, email, name);
+				}
+			} finally {
+				stmt.close();
+			}
+		} finally {
+			conn.close();
+		}
+
+		return sumModel;
 	}
 
 }

@@ -86,7 +86,7 @@ public class UpdateBacking extends BasicSessionBacking {
 
 	public void sumSearch() {
 		if (this.beginDate == null || this.endDate == null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Please input the required fields"));
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Please fill in the required fields", "Error"));
 		} else {
 			try {
 				this.countList = userEao.countData(this.beginDate, this.endDate,"update");
@@ -107,8 +107,8 @@ public class UpdateBacking extends BasicSessionBacking {
 
 	public void detailSearch() {
 		if (this.beginDate == null || this.endDate == null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Please input the required fields"));
-		} else {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Please fill in the required fields", "Error"));
+		}else {
 			try {
 				this.detailList = userEao.getUserUpdate(this.beginDate, this.endDate);
 

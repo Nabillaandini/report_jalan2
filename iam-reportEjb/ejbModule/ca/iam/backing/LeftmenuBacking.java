@@ -53,33 +53,38 @@ public class LeftmenuBacking implements Serializable{
         DefaultSubMenu subMenu;
         subMenu = new DefaultSubMenu(Settings.getMessageString("text.page.menu.report"));
         
+        item = new DefaultMenuItem(Settings.getMessageString("text.page.menu.summary"));
+        item.setIcon("ui-icon-clipboard");
+        item.setCommand("#{leftmenuBacking.linkMenuPanel('summary')}");
+        subMenu.addElement(item);
+        
         item = new DefaultMenuItem(Settings.getMessageString("text.page.menu.sumonboard"));
-        item.setIcon("ui-icon-person");
+        item.setIcon("ui-icon-note");
         item.setCommand("#{leftmenuBacking.linkMenuPanel('sumonboard')}");
         subMenu.addElement(item);
         
         item = new DefaultMenuItem(Settings.getMessageString("text.page.menu.detailonboard"));
-        item.setIcon("ui-icon-person");
+        item.setIcon("ui-icon-note");
         item.setCommand("#{leftmenuBacking.linkMenuPanel('detailonboard')}");
         subMenu.addElement(item);
         
         item = new DefaultMenuItem(Settings.getMessageString("text.page.menu.sumupdate"));
-        item.setIcon("ui-icon-person");
+        item.setIcon("ui-icon-note");
         item.setCommand("#{leftmenuBacking.linkMenuPanel('sumupdate')}");
         subMenu.addElement(item);
 
         item = new DefaultMenuItem(Settings.getMessageString("text.page.menu.detailupdate"));
-        item.setIcon("ui-icon-person");
+        item.setIcon("ui-icon-note");
         item.setCommand("#{leftmenuBacking.linkMenuPanel('detailupdate')}");
         subMenu.addElement(item);
         
         item = new DefaultMenuItem(Settings.getMessageString("text.page.menu.sumdisabled"));
-        item.setIcon("ui-icon-person");
+        item.setIcon("ui-icon-note");
         item.setCommand("#{leftmenuBacking.linkMenuPanel('sumdisabled')}");
         subMenu.addElement(item);
         
         item = new DefaultMenuItem(Settings.getMessageString("text.page.menu.detaildisabled"));
-        item.setIcon("ui-icon-person");
+        item.setIcon("ui-icon-note");
         item.setCommand("#{leftmenuBacking.linkMenuPanel('detaildisabled')}");
         subMenu.addElement(item);
         

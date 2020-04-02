@@ -37,21 +37,26 @@
 				</h:panelGrid>
 
 				<p:dataTable id="table" var="user"
-					value="#{summaryBacking.sumModel}"
-					style="margin-top:20px;margin-bottom:20px">
+					value="#{summaryBacking.detailSumModel}"
+					style="margin-top:20px;margin-bottom:20px" rows="10"
+                 paginator="true" rowsPerPageTemplate="5,10,15">
 					<p:columnGroup type="header">
 						<p:row>
+							<p:column
+								headerText="#{msgbundle['text.page.summary.date']}" />
 							<p:column
 								headerText="#{msgbundle['text.page.summary.total_update']}" />
 							<p:column
 								headerText="#{msgbundle['text.page.summary.total_onboard']}" />
 							<p:column
 								headerText="#{msgbundle['text.page.summary.total_disable']}" />
-							<p:column
-								headerText="#{msgbundle['text.page.summary.provision']}" />
-							<p:column headerText="#{msgbundle['text.page.summary.deprov']}" />
+						
 						</p:row>
 					</p:columnGroup>
+					<p:column>
+						<h:outputText style="text-align:center"
+							value="#{user.date}" />
+					</p:column>
 
 					<p:column>
 						<h:outputText style="text-align:center"
@@ -66,12 +71,7 @@
 						<h:outputText style="text-align:center"
 							value="#{user.countDisabled}" />
 					</p:column>
-					<p:column>
-						<h:outputText style="text-align:center" value="#{user.prov}" />
-					</p:column>
-					<p:column>
-						<h:outputText style="text-align:center" value="#{user.deprov}" />
-					</p:column>
+					
 				</p:dataTable>
 				<p:commandButton value="#{msgbundle['text.page.summary.tofile']}"
 					action="#{summaryBacking.toFile}" process="@all"

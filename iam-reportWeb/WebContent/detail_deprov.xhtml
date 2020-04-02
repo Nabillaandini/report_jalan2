@@ -71,12 +71,6 @@
 
 				<p:spacer />
 
-				<h:commandLink>
-					<p:commandButton
-						value="#{msgbundle['text.page.detaildeprov.generatepdf']}" />
-					<p:dataExporter type="pdf" target="table"
-						fileName="detaildeprovreport" pageOnly="true" />
-				</h:commandLink>
 				<p:commandButton
 					value="#{msgbundle['text.page.detaildeprov.tofile']}"
 					action="#{deprovisionBacking.toFile}" process="@all"

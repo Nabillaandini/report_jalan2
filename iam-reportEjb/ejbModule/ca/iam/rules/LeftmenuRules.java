@@ -67,9 +67,6 @@ public class LeftmenuRules implements Serializable{
 		case "detailprov" :
 			result = "detail_prov?faces-redirect=true";
 			break;
-		case "sumdeprov" :
-			result = "sumdeprov?faces-redirect=true";
-			break;
 		case "detaildeprov" :
 			result = "detail_deprov?faces-redirect=true";
 			break;

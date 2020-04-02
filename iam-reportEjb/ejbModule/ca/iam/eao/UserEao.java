@@ -16,6 +16,7 @@ import javax.inject.Named;
 import ca.iam.entity.CountList;
 import ca.iam.entity.Provision;
 import ca.iam.entity.SummaryModel;
+import ca.iam.entity.SummarySQL;
 import ca.iam.entity.UserUpdates;
 import ca.iam.util.Helper;
 import ca.iam.util.SQLConn;
@@ -475,11 +476,11 @@ public class UserEao {
 		return userList;
 	}
 	
-	public SummaryModel getSummaryReport(Date begin_date, Date end_date) throws SQLException, ParseException {
+	public ArrayList<SummaryModel> getSummaryReport(Date begin_date, Date end_date) throws SQLException, ParseException {
 
 		ResultSet rs = null;
 		Connection conn = Settings.getConnection();
-		SummaryModel sumModel = new SummaryModel();
+		ArrayList<SummaryModel> sumModel = new ArrayList<SummaryModel>();
 
 		try {
 
@@ -501,7 +502,9 @@ public class UserEao {
 				int phone = rs.getInt("phone");
 				int email = rs.getInt("email");
 				int name = rs.getInt("name");
-				sumModel = new SummaryModel(countOnboard, countUpdate, countDisabled, phone, email, name,0,0);
+				Date date = rs.getDate("last_update");
+				String date_str = Helper.dateToString(date);
+				sumModel.add(new SummaryModel(countOnboard, countUpdate, countDisabled, phone, email, name, date_str));
 				}
 			} finally {
 				stmt.close();
@@ -670,12 +673,12 @@ public class UserEao {
 		return userList;
 	}
 	
-	public int[] getSummaryProv(Date begin_date, Date end_date)
+	public ArrayList<SummarySQL> getSummaryProv(Date begin_date, Date end_date)
 			throws SQLException, ParseException {
 
 		ResultSet rs = null;
 		Connection conn = SQLConn.getConnectionSql();
-		int[] countList = new int[2];
+		ArrayList<SummarySQL> countList = new ArrayList<SummarySQL>();
 
 		try {
 
@@ -694,8 +697,10 @@ public class UserEao {
 					while (rs.next()) {
 						int prov = rs.getInt(1);
 						int deprov = rs.getInt(2);
-						countList[0] = prov;
-						countList[1] = deprov;
+						Date date = rs.getDate(3);
+						String date_str = Helper.dateToString(date);
+						countList.add(new SummarySQL(prov,deprov,date_str));
+						
 					}
 				} finally {
 					stmt.close();

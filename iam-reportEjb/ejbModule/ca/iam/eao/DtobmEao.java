@@ -357,11 +357,11 @@ public class DtobmEao {
 
 		return userList;
 	}
-	public SummaryModel getSummaryReport(Date begin_date, Date end_date) throws SQLException, ParseException {
+	public ArrayList<SummaryModel> getSummaryReport(Date begin_date, Date end_date) throws SQLException, ParseException {
 
 		ResultSet rs = null;
 		Connection conn = Settings.getConnection();
-		SummaryModel sumModel = new SummaryModel();
+		ArrayList<SummaryModel> sumModel = new ArrayList<SummaryModel>();
 
 		try {
 
@@ -383,7 +383,9 @@ public class DtobmEao {
 				int phone = rs.getInt("phone");
 				int email = rs.getInt("email");
 				int name = rs.getInt("name");
-				sumModel = new SummaryModel(countOnboard, countUpdate, countDisabled, phone, email, name,0,0);
+				Date date = rs.getDate("last_update");
+				String date_str = Helper.dateToString(date);
+				sumModel.add(new SummaryModel(countOnboard, countUpdate, countDisabled, phone, email, name, date_str));
 				}
 			} finally {
 				stmt.close();

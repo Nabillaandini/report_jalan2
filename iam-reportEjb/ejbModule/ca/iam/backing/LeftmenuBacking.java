@@ -148,11 +148,6 @@ public class LeftmenuBacking implements Serializable{
         item.setCommand("#{leftmenuBacking.linkMenuPanel('detailprov')}");
         subMenu.addElement(item);
         
-        item = new DefaultMenuItem(Settings.getMessageString("text.page.menu.sumdeprov"));
-        item.setIcon("ui-icon-person");
-        item.setCommand("#{leftmenuBacking.linkMenuPanel('sumdeprov')}");
-        subMenu.addElement(item);
-        
         item = new DefaultMenuItem(Settings.getMessageString("text.page.menu.detaildeprov"));
         item.setIcon("ui-icon-person");
         item.setCommand("#{leftmenuBacking.linkMenuPanel('detaildeprov')}");

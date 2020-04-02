@@ -7,7 +7,7 @@
 	template="templates/layout.xhtml">
 
 	<ui:define name="metadata">
-		<f:event type="preRenderView" listener="#{provisionBacking.load}" />
+		<f:event type="preRenderView" listener="#{summaryBacking.load}" />
 	</ui:define>
 
 	<ui:define name="content">
@@ -17,44 +17,62 @@
 			<p:panel header="#{msgbundle['text.page.sumprovision.title']}">
 
 				<h:panelGrid columns="3" cellpadding="10" border="0">
-				
-				
-					<h:outputLabel for="beginDate" value="#{msgbundle['text.page.sumprovision.begindate']}"
+
+
+					<h:outputLabel for="beginDate"
+						value="#{msgbundle['text.page.sumprovision.begindate']}"
 						style="margin-right:20px;" />
-					<p:datePicker id="beginDate" value="#{provisionBacking.beginDate}"
-						showIcon="true"/>
+					<p:datePicker id="beginDate" value="#{summaryBacking.beginDate}"
+						showIcon="true" />
 					<p:spacer />
 
-					<h:outputLabel value="#{msgbundle['text.page.sumprovision.enddate']}"
+					<h:outputLabel
+						value="#{msgbundle['text.page.sumprovision.enddate']}"
 						style="margin-right:20px;" />
-					<p:datePicker  id="endDate" value="#{provisionBacking.endDate}"
+					<p:datePicker id="endDate" value="#{summaryBacking.endDate}"
 						showIcon="true" />
 					<p:spacer />
 
 
-					<p:commandButton value="#{msgbundle['text.page.sumprovision.search']}"
-						action="#{provisionBacking.sumSearch}" process="@all" update="msgs,table" />
+					<p:commandButton
+						value="#{msgbundle['text.page.sumprovision.search']}"
+						action="#{summaryBacking.getSummarySQL}" process="@all"
+						update="msgs,table" />
 				</h:panelGrid>
 
-				<p:dataTable id="table" var="user" value="#{provisionBacking.countList}"
-					style="margin-top:20px;margin-bottom:20px">
+				<p:dataTable id="table" var="user"
+					value="#{summaryBacking.detailListSQL}"
+					style="margin-top:20px;margin-bottom:20px" rows="10"
+                 paginator="true" rowsPerPageTemplate="5,10,15">
 					<p:columnGroup type="header">
 						<p:row>
-							<p:column headerText="#{msgbundle['text.page.sumprovision.colomn_1']}" />
-							<p:column headerText="#{msgbundle['text.page.sumprovision.colomn_2']}" />
+							<p:column
+								headerText="#{msgbundle['text.page.sumprovision.colomn_1']}" />
+							<p:column
+								headerText="#{msgbundle['text.page.sumprovision.colomn_2']}" />
+							<p:column
+								headerText="#{msgbundle['text.page.sumprovision.colomn_3']}" />
 						</p:row>
 					</p:columnGroup>
 
 					<p:column>
-						<h:outputText value="#{user.date}"/>
+						<h:outputText value="#{user.date}" />
 					</p:column>
 					<p:column>
-						<div align="right">
-							<h:outputText value="#{user.count}"/>
-						</div>
+
+						<h:outputText value="#{user.prov}" />
+
+					</p:column>
+					<p:column>
+
+						<h:outputText value="#{user.deprov}" />
+
 					</p:column>
 
 				</p:dataTable>
+				<p:commandButton value="#{msgbundle['text.page.summary.tofile']}"
+					action="#{summaryBacking.provToFile}" process="@all"
+					update="msgs,table" />
 
 			</p:panel>
 		</h:form>

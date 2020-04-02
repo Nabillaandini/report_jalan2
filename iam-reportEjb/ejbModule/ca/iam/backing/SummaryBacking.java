@@ -29,6 +29,7 @@ import ca.iam.eao.DtobmEao;
 import ca.iam.eao.UserEao;
 import ca.iam.entity.CountList;
 import ca.iam.entity.SummaryModel;
+import ca.iam.entity.SummarySQL;
 import ca.iam.entity.UserUpdates;
 import ca.iam.rules.UserRules;
 
@@ -74,9 +75,28 @@ public class SummaryBacking extends BasicSessionBacking {
 	private Date endDate;
 	private String headName;
 	SummaryModel sumModel = new SummaryModel();
+	ArrayList <SummarySQL> detailListSQL = new ArrayList<SummarySQL>();
+	ArrayList <SummaryModel> detailSumModel = new ArrayList <SummaryModel>();
+
 
 	String application;
+	
 
+	public ArrayList<SummaryModel> getDetailSumModel() {
+		return detailSumModel;
+	}
+
+	public void setDetailSumModel(ArrayList<SummaryModel> detailSumModel) {
+		this.detailSumModel = detailSumModel;
+	}
+
+	public ArrayList<SummarySQL> getDetailListSQL() {
+		return detailListSQL;
+	}
+
+	public void setDetailListSQL(ArrayList<SummarySQL> detailListSQL) {
+		this.detailListSQL = detailListSQL;
+	}
 	public void toFile() {
 		String res = "\nTotal Update : " + this.sumModel.getCountUpdate() + "\nTotal Onboard : "
 				+ this.sumModel.getCountOnboard() + "\nTotal Disabled : " + this.sumModel.getCountDisabled();
@@ -107,13 +127,10 @@ public class SummaryBacking extends BasicSessionBacking {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-//			Chunk chunk = new Chunk("Summary report "+ date);
 			Font font = new Font();
 			font.setStyle(Font.BOLD);
 			font.setStyle(Font.ITALIC);
 			font.setSize(24);
-//			chunk.setFont(font);
-//			document.add(chunk);
 			document.addTitle("IAM Summary " + this.application + " Report:" + date + " - " + end);
 			Paragraph paragraph1 = new Paragraph();
 			paragraph1.add("IAM Summary " + this.application + " Report: " + date + " - " + end);
@@ -122,7 +139,11 @@ public class SummaryBacking extends BasicSessionBacking {
 			document.add(paragraph1);
 
 			Paragraph paragraph = new Paragraph();
-			paragraph.add(res);
+			for(int i=0;i<detailSumModel.size();i++) {
+				res = "Date : " + detailSumModel.get(i).getDate() + "\nTotal Onboard : " + detailSumModel.get(i).getCountOnboard() + 
+						"\nTotal Update : " + detailSumModel.get(i).getCountUpdate() + "\nTotal Accounts Disabled : " + detailSumModel.get(i).getCountDisabled() +"\n\n";
+				paragraph.add(res);
+			}
 			paragraph.setAlignment(Element.ALIGN_LEFT);
 			document.add(paragraph);
 
@@ -210,14 +231,11 @@ public class SummaryBacking extends BasicSessionBacking {
 		} else {
 			try {
 				if (this.application.equalsIgnoreCase("sap")) {
-					this.sumModel = userEao.getSummaryReport(this.beginDate, this.endDate);
-//				int [] countProv = userEao.getSummaryProv(this.beginDate, this.endDate);
-//				this.sumModel.setProv(countProv[0]);
-//				this.sumModel.setDeprov(countProv[1]);
+					this.detailSumModel= userEao.getSummaryReport(this.beginDate, this.endDate);
 				} else if (this.application.equalsIgnoreCase("dtobm")) {
-					this.sumModel = dtobmEao.getSummaryReport(this.beginDate, this.endDate);
+					this.detailSumModel = dtobmEao.getSummaryReport(this.beginDate, this.endDate);
 				} else if (this.application.equalsIgnoreCase("dtkbm")) {
-					this.sumModel = dtkbmEao.getSummaryReport(this.beginDate, this.endDate);
+					this.detailSumModel = dtkbmEao.getSummaryReport(this.beginDate, this.endDate);
 				}
 
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching is finished"));
@@ -232,6 +250,87 @@ public class SummaryBacking extends BasicSessionBacking {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void getSummarySQL() {
+		if (this.beginDate == null || this.endDate == null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Please fill in the required fields", "Error"));
+		}else {
+			try {
+				this.detailListSQL = userEao.getSummaryProv(this.beginDate, this.endDate);
+
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching is finished"));
+
+			} catch (SQLException e) {
+
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Database connection error"));
+
+				e.printStackTrace();
+			} catch (ParseException e) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Reading input failed"));
+				e.printStackTrace();
+			}
+		}
+	}
+	public void provToFile() {
+		String res = "";
+		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+		String date = DATE_FORMAT.format(this.beginDate);
+		String end = DATE_FORMAT.format(this.endDate);
+		String path="D:/summaryprov_" +date+ "_"+ end + ".pdf";
+		System.out.println(res);
+		try {
+			File file = new File(path);
+			FileOutputStream fileout = new FileOutputStream(file);
+			Document document = new Document();
+			PdfWriter.getInstance(document, fileout);
+			document.addAuthor("Me");
+
+			document.open();
+			
+		
+			Image image;
+			try {
+				image = Image.getInstance("D:/report_iam/iam-reportWeb/WebContent/img/mandiri-logo.png");
+				image.setAlignment(Image.MIDDLE);
+				image.scaleToFit(200, 100);
+
+				document.add(image);
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			Font font = new Font();
+			font.setStyle(Font.BOLD);
+			font.setStyle(Font.ITALIC);
+			font.setSize(24);
+			document.addTitle("IAM Prov & Deprov Report: " + date + " - " + end);
+			Paragraph paragraph1 = new Paragraph();
+			paragraph1.add("IAM Prov & Deprov Report: " + date + " - " + end);
+			paragraph1.setAlignment(Element.ALIGN_CENTER);
+			paragraph1.setFont(font);
+			document.add(paragraph1);
+
+			Paragraph paragraph = new Paragraph();
+			for(int i=0;i<detailListSQL.size();i++) {
+				res = "Date : " + detailListSQL.get(i).getDate() + "\nTotal Provision : " + detailListSQL.get(i).getProv() + "\nTotal Deprovision : " + detailListSQL.get(i).getDeprov() + "\n\n";
+				paragraph.add(res);
+			}
+			paragraph.setAlignment(Element.ALIGN_LEFT);
+			document.add(paragraph);
+
+			document.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		}
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("File has been downloaded " + path));
+
+		System.out.println("Content added");
+
+		System.out.println("Pdf created");
 	}
 
 }

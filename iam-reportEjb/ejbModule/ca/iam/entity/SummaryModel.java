@@ -7,15 +7,31 @@ public class SummaryModel {
 	private int phone;
 	private int email;
 	private int fullname;
+	private int prov;
+	private int deprov;
 	
-	public SummaryModel(int countOnboard,int countUpdate,int countDisabled,int phone,int email,int fullname) {
+	public SummaryModel(int countOnboard,int countUpdate,int countDisabled,int phone,int email,int fullname, int prov, int deprov) {
 		this.countOnboard=countOnboard;
 		this.countUpdate=countUpdate;
 		this.countDisabled=countDisabled;
 		this.phone=phone;
 		this.email=email;
 		this.fullname=fullname;
+		this.prov = prov;
+		this.deprov = deprov;
 		
+	}
+	public int getProv() {
+		return prov;
+	}
+	public void setProv(int prov) {
+		this.prov = prov;
+	}
+	public int getDeprov() {
+		return deprov;
+	}
+	public void setDeprov(int deprov) {
+		this.deprov = deprov;
 	}
 	public SummaryModel() {
 		

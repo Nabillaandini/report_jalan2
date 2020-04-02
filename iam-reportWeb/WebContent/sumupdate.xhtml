@@ -14,48 +14,68 @@
 		<h:form id="mainform" autocomplete="off">
 			<p:growl id="msgs" sticky="true" />
 
-			<p:panel header="#{msgbundle['text.page.sumupdate.title']}">
+			<p:panel header="#{updateBacking.headSum}">
 
 				<h:panelGrid columns="3" cellpadding="10" border="0">
-				
-				
-					<h:outputLabel for="beginDate" value="#{msgbundle['text.page.sumupdate.begindate']}"
+
+
+					<h:outputLabel for="beginDate"
+						value="#{msgbundle['text.page.sumupdate.begindate']}"
 						style="margin-right:20px;" />
 					<p:datePicker id="beginDate" value="#{updateBacking.beginDate}"
-						showIcon="true"/>
+						showIcon="true" />
 					<p:spacer />
 
 					<h:outputLabel value="#{msgbundle['text.page.sumupdate.enddate']}"
 						style="margin-right:20px;" />
-					<p:datePicker  id="endDate" value="#{updateBacking.endDate}"
+					<p:datePicker id="endDate" value="#{updateBacking.endDate}"
 						showIcon="true" />
 					<p:spacer />
 
 
-					<p:commandButton value="#{msgbundle['text.page.sumupdate.search']}"
-						action="#{updateBacking.sumSearch}" process="@all" update="msgs,table" />
+					<p:commandButton
+						value="#{msgbundle['text.page.sumupdate.search']}"
+						action="#{updateBacking.sumSearch}" process="@all"
+						update="msgs,table" />
 				</h:panelGrid>
+			
 
-				<p:dataTable id="table" var="user" value="#{updateBacking.countList}"
+				<p:dataTable id="table" var="user"
+					value="#{updateBacking.countList}"
 					style="margin-top:20px;margin-bottom:20px">
 					<p:columnGroup type="header">
 						<p:row>
-							<p:column headerText="#{msgbundle['text.page.sumupdate.colomn_1']}" />
-							<p:column headerText="#{msgbundle['text.page.sumupdate.colomn_2']}" />
+							<p:column
+								headerText="#{msgbundle['text.page.sumupdate.colomn_1']}" />
+							<p:column
+								headerText="#{msgbundle['text.page.sumupdate.colomn_2']}" />
 						</p:row>
 					</p:columnGroup>
 
 					<p:column>
-						<h:outputText value="#{user.date}"/>
+						<f:facet name="header">
+							<h:outputText value="Tanggal Flatfile" />
+						</f:facet>
+						<h:outputText value="#{user.date}" />
 					</p:column>
-					<p:column>
-						<div align="right">
-							<h:outputText value="#{user.count}"/>
-						</div>
+					<p:column align="center">
+						<f:facet name="header">
+							<h:outputText value="Total" />
+						</f:facet>
+						<h:outputText value="#{user.count}" />
+
 					</p:column>
 
 				</p:dataTable>
+				<p:spacer />
 
+				<h:commandLink>
+					<p:commandButton
+						value="#{msgbundle['text.page.sumupdate.generatepdf']}" />
+					<p:dataExporter type="pdf" target="table"
+						fileName="SummaryOnboardReport" pageOnly="true" />
+				</h:commandLink>
+				
 			</p:panel>
 		</h:form>
 	</ui:define>

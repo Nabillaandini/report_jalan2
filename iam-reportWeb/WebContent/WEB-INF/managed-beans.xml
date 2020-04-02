@@ -1,64 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<faces-config
-    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd"
-    version="2.2"> 
-    <managed-bean>
+<faces-config xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd"
+	version="2.2">
+	<managed-bean>
 		<managed-bean-name>loginBacking</managed-bean-name>
 		<managed-bean-class>ca.iam.backing.LoginBacking</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
-    <managed-bean>
+	<managed-bean>
 		<managed-bean-name>sellBacking</managed-bean-name>
 		<managed-bean-class>ca.iam.backing.SellBacking</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
-    <managed-bean>
+	<managed-bean>
 		<managed-bean-name>leftmenuBacking</managed-bean-name>
 		<managed-bean-class>ca.iam.backing.LeftmenuBacking</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
-	
-	
-    <managed-bean>
+
+
+	<managed-bean>
 		<managed-bean-name>sessionClose</managed-bean-name>
 		<managed-bean-class>ca.iam.util.SessionClose</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
-    <managed-bean>
+	<managed-bean>
 		<managed-bean-name>autoLogout</managed-bean-name>
 		<managed-bean-class>ca.iam.util.AutoLogout</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
-	
-    <managed-bean>
-    	<managed-bean-name>userBacking</managed-bean-name>
-    	<managed-bean-class>ca.iam.backing.UserBacking</managed-bean-class>
-    	<managed-bean-scope>session</managed-bean-scope>
-    </managed-bean>
-    
-     <managed-bean>
-    	<managed-bean-name>onboardBacking</managed-bean-name>
-    	<managed-bean-class>ca.iam.backing.OnboardBacking</managed-bean-class>
-    	<managed-bean-scope>session</managed-bean-scope>
-    </managed-bean>
-    
-     <managed-bean>
-    	<managed-bean-name>updateBacking</managed-bean-name>
-    	<managed-bean-class>ca.iam.backing.UpdateBacking</managed-bean-class>
-    	<managed-bean-scope>session</managed-bean-scope>
-    </managed-bean>
-    
-    <managed-bean>
-    	<managed-bean-name>disabledBacking</managed-bean-name>
-    	<managed-bean-class>ca.iam.backing.DisabledBacking</managed-bean-class>
-    	<managed-bean-scope>session</managed-bean-scope>
-    </managed-bean>
-    <managed-bean>
-    	<managed-bean-name>summaryBacking</managed-bean-name>
-    	<managed-bean-class>ca.iam.backing.SummaryBacking</managed-bean-class>
-    	<managed-bean-scope>session</managed-bean-scope>
-    </managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>userBacking</managed-bean-name>
+		<managed-bean-class>ca.iam.backing.UserBacking</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>onboardBacking</managed-bean-name>
+		<managed-bean-class>ca.iam.backing.OnboardBacking</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>updateBacking</managed-bean-name>
+		<managed-bean-class>ca.iam.backing.UpdateBacking</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+
+	<managed-bean>
+		<managed-bean-name>disabledBacking</managed-bean-name>
+		<managed-bean-class>ca.iam.backing.DisabledBacking</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>summaryBacking</managed-bean-name>
+		<managed-bean-class>ca.iam.backing.SummaryBacking</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>provisionBacking</managed-bean-name>
+		<managed-bean-class>ca.iam.backing.ProvisionBacking</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>deprovisionBacking</managed-bean-name>
+		<managed-bean-class>ca.iam.backing.DeprovisionBacking</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
 
 </faces-config>

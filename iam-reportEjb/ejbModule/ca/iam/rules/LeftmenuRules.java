@@ -61,6 +61,18 @@ public class LeftmenuRules implements Serializable{
 		case "summary" :
 			result = "summary?faces-redirect=true";
 			break;
+		case "sumprov" :
+			result = "sumprovision?faces-redirect=true";
+			break;
+		case "detailprov" :
+			result = "detail_prov?faces-redirect=true";
+			break;
+		case "sumdeprov" :
+			result = "sumdeprov?faces-redirect=true";
+			break;
+		case "detaildeprov" :
+			result = "detail_deprov?faces-redirect=true";
+			break;
 		default :
 			HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
 			String user = null;

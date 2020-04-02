@@ -14,7 +14,7 @@
 		<h:form id="mainform" autocomplete="off">
 			<p:growl id="msgs" sticky="true" />
 
-			<p:panel header="#{msgbundle['text.page.detailupdate.title']}">
+			<p:panel header="#{updateBacking.headDetail}">
 
 				<h:panelGrid columns="3" cellpadding="10" border="0">
 
@@ -40,7 +40,8 @@
 				</h:panelGrid>
 
 				<p:dataTable id="table" var="user" value="#{updateBacking.detailList}"
-					style="margin-top:20px;margin-bottom:20px">
+					style="margin-top:20px;margin-bottom:20px" rows="10"
+                 paginator="true" rowsPerPageTemplate="5,10,15">
 					<p:columnGroup type="header">
 						<p:row>
 							<p:column
@@ -76,12 +77,9 @@
 
 				<p:spacer />
 
-				<h:commandLink>
-					<p:commandButton
-						value="#{msgbundle['text.page.detailupdate.generatepdf']}" />
-					<p:dataExporter type="pdf" target="table" fileName="DetailUpdatereport"
-						pageOnly="true" />
-				</h:commandLink>
+				<p:commandButton value="#{msgbundle['text.page.detailonboard.tofile']}"
+						action="#{updateBacking.toFile}" process="@all"
+						update="msgs,table" />
 			</p:panel>
 		</h:form>
 	</ui:define>

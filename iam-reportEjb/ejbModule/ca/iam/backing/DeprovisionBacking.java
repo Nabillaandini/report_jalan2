@@ -33,10 +33,9 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import ca.iam.core.BasicSessionBacking;
-import ca.iam.eao.DtkbmEao;
-import ca.iam.eao.DtobmEao;
 import ca.iam.eao.UserEao;
 import ca.iam.entity.CountList;
+import ca.iam.entity.Provision;
 import ca.iam.entity.UserUpdates;
 import ca.iam.rules.UserRules;
 
@@ -45,12 +44,12 @@ import ca.iam.rules.UserRules;
 @Stateful
 @Named
 
-public class DisabledBacking extends BasicSessionBacking {
+public class DeprovisionBacking extends BasicSessionBacking {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5766599363707547739L;
+	private static final long serialVersionUID = 1149841774695559308L;
 
 	@EJB
 	public UserRules userRules;
@@ -58,49 +57,11 @@ public class DisabledBacking extends BasicSessionBacking {
 	@EJB
 	public UserEao userEao;
 
-	@EJB
-	public DtobmEao dtobmEao;
-
-	@EJB
-	public DtkbmEao dtkbmEao;
-
-	@EJB
-	private LeftmenuBacking leftmenuBacking;
-
 	private Date beginDate;
 	private Date endDate;
-	private String headSum;
-	private String headDetail;
 
-	public List<UserUpdates> detailList = new ArrayList<UserUpdates>();
+	public List<Provision> detailList = new ArrayList<Provision>();
 	public List<CountList> countList = new ArrayList<CountList>();
-
-	private String application;
-
-	public String getHeadSum() {
-		return headSum;
-	}
-
-	public void setHeadSum(String headSum) {
-		this.headSum = headSum;
-	}
-
-	public String getHeadDetail() {
-		return headDetail;
-	}
-
-	public void setHeadDetail(String headDetail) {
-		this.headDetail = headDetail;
-	}
-
-	public String getApplication() {
-		return application;
-	}
-
-	public void setApplication(String application) {
-		this.application = application;
-//		this.application = OnboardBacking.getApplication();
-	}
 
 	public Date getBeginDate() {
 		return beginDate;
@@ -118,11 +79,11 @@ public class DisabledBacking extends BasicSessionBacking {
 		this.endDate = endDate;
 	}
 
-	public List<UserUpdates> getDetailList() {
+	public List<Provision> getDetailList() {
 		return detailList;
 	}
 
-	public void setDetailList(List<UserUpdates> detailList) {
+	public void setDetailList(List<Provision> detailList) {
 		this.detailList = detailList;
 	}
 
@@ -137,29 +98,17 @@ public class DisabledBacking extends BasicSessionBacking {
 	public void load(ComponentSystemEvent event) {
 		FacesContext context = FacesContext.getCurrentInstance();
 		if (!context.isPostback()) {
-			if(leftmenuBacking.getAppsValue()==null) {
-				leftmenuBacking.setAppsValue("SAP");
-			}
-			this.application = leftmenuBacking.getAppsValue();
-			setHeadSum("Summary Account Disabled " + this.application);
-			setHeadDetail("Detail Account Disabled " + this.application);
 
 		}
 	}
 
 	public void sumSearch() {
-		this.application = leftmenuBacking.getAppsValue();
 		if (this.beginDate == null || this.endDate == null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Please input the required fields"));
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Please fill in the required fields", "Error"));
 		} else {
 			try {
-				if (this.application.equalsIgnoreCase("sap")) {
-					this.countList = userEao.countData(this.beginDate, this.endDate, "disable");
-				} else if (this.application.equalsIgnoreCase("dtobm")) {
-					this.countList = dtobmEao.countData(this.beginDate, this.endDate, "disable");
-				} else if (this.application.equalsIgnoreCase("dtkbm")) {
-					this.countList = dtkbmEao.countData(this.beginDate, this.endDate, "disable");
-				}
+				this.countList = userEao.countDeprovision(this.beginDate, this.endDate);
 
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching is finished"));
 
@@ -176,18 +125,12 @@ public class DisabledBacking extends BasicSessionBacking {
 	}
 
 	public void detailSearch() {
-		this.application = leftmenuBacking.getAppsValue();
 		if (this.beginDate == null || this.endDate == null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Please input the required fields"));
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Please fill in the required fields", "Error"));
 		} else {
 			try {
-				if (this.application.equalsIgnoreCase("sap")) {
-					this.detailList = userEao.getUserDisabled(this.beginDate, this.endDate);
-				} else if (this.application.equalsIgnoreCase("dtobm")) {
-					this.detailList = dtobmEao.getUserDisabled(this.beginDate, this.endDate);
-				} else if (this.application.equalsIgnoreCase("dtkbm")) {
-					this.detailList = dtkbmEao.getUserDisabled(this.beginDate, this.endDate);
-				}
+				this.detailList = userEao.getDeprovData(this.beginDate, this.endDate);
 
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching is finished"));
 
@@ -202,11 +145,11 @@ public class DisabledBacking extends BasicSessionBacking {
 			}
 		}
 	}
-	
+
 	public void toFile() {
 
 		try {
-			File file = new File("D:/disabled_report.pdf");
+			File file = new File("D:/deprovision_report.pdf");
 			FileOutputStream fileout = new FileOutputStream(file);
 			Document document = new Document();
 			PdfWriter.getInstance(document, fileout);
@@ -228,32 +171,31 @@ public class DisabledBacking extends BasicSessionBacking {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+
 			Font font = new Font();
 			font.setStyle(Font.BOLD);
 			font.setStyle(Font.ITALIC);
 			font.setSize(24);
-			document.addTitle("IAM Accounts Disabled Report : " + date);
+			document.addTitle("IAM User Deprovisioning Report : " + date);
 			Paragraph paragraph1 = new Paragraph();
-			paragraph1.add("IAM Accounts Disabled Report : " + date + "\n");
+			paragraph1.add("IAM User Deprovisioning Report " + date + "\n");
 			paragraph1.add("\n");
 			paragraph1.setAlignment(Element.ALIGN_CENTER);
 			paragraph1.setFont(font);
 			document.add(paragraph1);
 			Paragraph paragraph = new Paragraph();
 			paragraph.setAlignment(Element.ALIGN_LEFT);
-			float[] columnWidths = { 2.5f, 2.5f, 3.5f };
+			float[] columnWidths = { 2.5f, 2.5f };
 			// create PDF table with the given widths
 			PdfPTable table = new PdfPTable(columnWidths);
 			// set table width a percentage of the page width
 			table.setWidthPercentage(90f);
-			insertCell(table, "Tanggal Accounts Disabled", Element.ALIGN_CENTER, 1);
-			insertCell(table, "UID", Element.ALIGN_CENTER, 1);
-			insertCell(table, "Full Name", Element.ALIGN_CENTER, 1);
+			insertCell(table, "User Deprovisioning Approval Date", Element.ALIGN_CENTER, 1);
+			insertCell(table, "User ID", Element.ALIGN_CENTER, 1);
 			table.setHeaderRows(1);
 			for (int i = 0; i < detailList.size(); i++) {
-				insertCell(table, DATE_FORMAT.format(detailList.get(i).getLastUpdate()), Element.ALIGN_CENTER, 1);
-				insertCell(table, detailList.get(i).getUserId(), Element.ALIGN_CENTER, 1);
-				insertCell(table, detailList.get(i).getFullName(), Element.ALIGN_CENTER, 1);
+				insertCell(table, detailList.get(i).getDate(), Element.ALIGN_CENTER, 1);
+				insertCell(table, detailList.get(i).getType(), Element.ALIGN_CENTER, 1);
 			}
 			paragraph.add(table);
 
@@ -267,9 +209,6 @@ public class DisabledBacking extends BasicSessionBacking {
 		}
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("File has been downloaded"));
 
-		System.out.println("Content added");
-
-		System.out.println("Pdf created");
 	}
 
 	private void insertCell(PdfPTable table, String text, int align, int colspan) {

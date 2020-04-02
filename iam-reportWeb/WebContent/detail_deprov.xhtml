@@ -7,81 +7,80 @@
 	template="templates/layout.xhtml">
 
 	<ui:define name="metadata">
-		<f:event type="preRenderView" listener="#{onboardBacking.load}" />
+		<f:event type="preRenderView" listener="#{deprovisionBacking.load}" />
 	</ui:define>
 
 	<ui:define name="content">
 		<h:form id="mainform" autocomplete="off">
 			<p:growl id="msgs" sticky="true" />
 
-			<p:panel header="#{onboardBacking.headDetail}">
+			<p:panel header="#{msgbundle['text.page.detaildeprov.title']}">
 
 				<h:panelGrid columns="3" cellpadding="10" border="0">
 
 					<h:outputLabel
-						value="#{msgbundle['text.page.detailonboard.begindate']}"
+						value="#{msgbundle['text.page.detaildeprov.begindate']}"
 						style="margin-right:20px;" />
-					<p:datePicker id="beginDate" value="#{onboardBacking.beginDate}"
-						showIcon="true" />
+					<p:datePicker id="beginDate"
+						value="#{deprovisionBacking.beginDate}" showIcon="true" />
 					<p:spacer />
 
 					<h:outputLabel
-						value="#{msgbundle['text.page.detailonboard.enddate']}"
+						value="#{msgbundle['text.page.detaildeprov.enddate']}"
 						style="margin-right:20px;" />
-					<p:datePicker id="endDate" value="#{onboardBacking.endDate}"
+					<p:datePicker id="endDate" value="#{deprovisionBacking.endDate}"
 						showIcon="true" />
 					<p:spacer />
 
 
 					<p:commandButton
-						value="#{msgbundle['text.page.detailonboard.search']}"
-						action="#{onboardBacking.detailSearch}" process="@all"
+						value="#{msgbundle['text.page.detaildeprov.search']}"
+						action="#{deprovisionBacking.detailSearch}" process="@all"
 						update="msgs,table" />
 				</h:panelGrid>
 
 				<p:dataTable id="table" var="user"
-					value="#{onboardBacking.detailList}"
+					value="#{deprovisionBacking.detailList}"
 					style="margin-top:20px;margin-bottom:20px" rows="10"
                  paginator="true" rowsPerPageTemplate="5,10,15">
 					<p:columnGroup type="header">
 						<p:row>
 							<p:column
-								headerText="#{msgbundle['text.page.detailonboard.colomn_1']}" />
+								headerText="#{msgbundle['text.page.detaildeprov.colomn_1']}" />
 							<p:column
-								headerText="#{msgbundle['text.page.detailonboard.colomn_2']}" />
-							<p:column
-								headerText="#{msgbundle['text.page.detailonboard.colomn_3']}" />
+								headerText="#{msgbundle['text.page.detaildeprov.colomn_2']}" />
 
 						</p:row>
 					</p:columnGroup>
 					<p:column>
 						<f:facet name="header">
-							<h:outputText value="Tanggal SAP Flatfile" />
+							<h:outputText value="Tanggal" />
 						</f:facet>
-						<h:outputText value="#{user.lastUpdate}" />
+						<h:outputText value="#{user.date}" />
 					</p:column>
 
 					<p:column>
 						<f:facet name="header">
 							<h:outputText value="User Id" />
 						</f:facet>
-						<h:outputText value="#{user.userId}" />
-					</p:column>
-					<p:column>
-						<f:facet name="header">
-							<h:outputText value="Full Name" />
-						</f:facet>
-						<h:outputText value="#{user.fullName}" />
+						<h:outputText value="#{user.type}" />
 					</p:column>
 
+					
 				</p:dataTable>
 
 				<p:spacer />
 
-			
-				<p:commandButton value="#{msgbundle['text.page.detailonboard.tofile']}"
-						action="#{onboardBacking.toFile}" process="@all"
-						update="msgs,table" />
+				<h:commandLink>
+					<p:commandButton
+						value="#{msgbundle['text.page.detaildeprov.generatepdf']}" />
+					<p:dataExporter type="pdf" target="table"
+						fileName="detaildeprovreport" pageOnly="true" />
+				</h:commandLink>
+				<p:commandButton
+					value="#{msgbundle['text.page.detaildeprov.tofile']}"
+					action="#{deprovisionBacking.toFile}" process="@all"
+					update="msgs,table" />
 
 			</p:panel>
 		</h:form>

@@ -9,7 +9,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
-public class Settings {
+public class SQLConn {
 	static DataSource datasource = null;
 	static Locale[] supportedLocales = {
 		Locale.ENGLISH
@@ -22,26 +22,7 @@ public class Settings {
 
 	static Boolean isLocaleChanged = true;
 	
-	public static Connection getConnection(){
-		Connection conn = null;
-		int count = 0;
-		while ((conn == null)&&(count < 10)){
-			try{
-				System.out.println("test connection "+count);
-				if (datasource==null){
-					Context context = new InitialContext();
-					datasource = (DataSource) context.lookup("jdbc/Mysql");
-				}
-				conn = datasource.getConnection();
-			}
-			catch (Exception e){
-				System.out.println("Exception getConnection(jdbc) : count = "+count);
-				e.printStackTrace();
-			}
-			count ++;
-		}
-		return conn;
-	}
+	
 
 	public static String getMessageString(String key) {
 		try {
@@ -61,5 +42,24 @@ public class Settings {
 		}
 		return messageBundle;
 	}
-	
+	public static Connection getConnectionSql(){
+		Connection conn = null;
+		int count = 0;
+		while ((conn == null)&&(count < 10)){
+			try{
+				System.out.println("test connection "+count);
+				if (datasource==null){
+					Context context = new InitialContext();
+					datasource = (DataSource) context.lookup("jdbc/Sql");
+				}
+				conn = datasource.getConnection();
+			}
+			catch (Exception e){
+				System.out.println("Exception getConnection(jdbc) : count = "+count);
+				e.printStackTrace();
+			}
+			count ++;
+		}
+		return conn;
+	}
 }

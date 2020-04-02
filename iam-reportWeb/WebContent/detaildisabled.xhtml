@@ -14,7 +14,7 @@
 		<h:form id="mainform" autocomplete="off">
 			<p:growl id="msgs" sticky="true" />
 
-			<p:panel header="#{msgbundle['text.page.detaildisabled.title']}">
+			<p:panel header="#{disabledBacking.headDetail}">
 
 				<h:panelGrid columns="3" cellpadding="10" border="0">
 
@@ -41,7 +41,8 @@
 
 				<p:dataTable id="table" var="user"
 					value="#{disabledBacking.detailList}"
-					style="margin-top:20px;margin-bottom:20px">
+					style="margin-top:20px;margin-bottom:20px" rows="10"
+                 paginator="true" rowsPerPageTemplate="5,10,15">
 					<p:columnGroup type="header">
 						<p:row>
 							<p:column
@@ -77,12 +78,9 @@
 
 				<p:spacer />
 
-				<h:commandLink>
-					<p:commandButton
-						value="#{msgbundle['text.page.detaildisabled.generatepdf']}" />
-					<p:dataExporter type="pdf" target="table"
-						fileName="detaildisabledreport" pageOnly="true" />
-				</h:commandLink>
+				<p:commandButton value="#{msgbundle['text.page.detaildisabled.tofile']}"
+						action="#{disabledBacking.toFile}" process="@all"
+						update="msgs,table" />
 
 			</p:panel>
 		</h:form>

@@ -3,13 +3,9 @@ package ca.iam.backing;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Stream;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateful;

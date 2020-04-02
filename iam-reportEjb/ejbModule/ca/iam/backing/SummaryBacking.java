@@ -80,18 +80,21 @@ public class SummaryBacking extends BasicSessionBacking {
 	public void toFile() {
 		String res = "\nTotal Update : " + this.sumModel.getCountUpdate() + "\nTotal Onboard : "
 				+ this.sumModel.getCountOnboard() + "\nTotal Disabled : " + this.sumModel.getCountDisabled();
+		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+		String date = DATE_FORMAT.format(this.beginDate);
+		String end = DATE_FORMAT.format(this.endDate);
+		String path="D:/summary_" +date+ "_"+ end + ".pdf";
 		System.out.println(res);
 		try {
-			File file = new File("D:/summary.pdf");
+			File file = new File(path);
 			FileOutputStream fileout = new FileOutputStream(file);
 			Document document = new Document();
 			PdfWriter.getInstance(document, fileout);
 			document.addAuthor("Me");
 
 			document.open();
-			SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-			String date = DATE_FORMAT.format(this.beginDate);
-
+			
+		
 			Image image;
 			try {
 				image = Image.getInstance("D:/report_iam/iam-reportWeb/WebContent/img/mandiri-logo.png");
@@ -111,9 +114,9 @@ public class SummaryBacking extends BasicSessionBacking {
 			font.setSize(24);
 //			chunk.setFont(font);
 //			document.add(chunk);
-			document.addTitle("IAM Summary Report : " + date);
+			document.addTitle("IAM Summary " + this.application + " Report:" + date + " - " + end);
 			Paragraph paragraph1 = new Paragraph();
-			paragraph1.add("IAM Summary Report : " + date);
+			paragraph1.add("IAM Summary " + this.application + " Report: " + date + " - " + end);
 			paragraph1.setAlignment(Element.ALIGN_CENTER);
 			paragraph1.setFont(font);
 			document.add(paragraph1);
@@ -129,7 +132,7 @@ public class SummaryBacking extends BasicSessionBacking {
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		}
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("File has been downloaded"));
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("File has been downloaded " + path));
 
 		System.out.println("Content added");
 

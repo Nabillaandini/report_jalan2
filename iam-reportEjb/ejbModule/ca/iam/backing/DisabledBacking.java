@@ -204,18 +204,18 @@ public class DisabledBacking extends BasicSessionBacking {
 	}
 	
 	public void toFile() {
-
+		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+		String date = DATE_FORMAT.format(this.beginDate);
+		String end = DATE_FORMAT.format(this.endDate);
+		String path="D:/disabled_" +date+ "_"+ end + ".pdf";
 		try {
-			File file = new File("D:/disabled_report.pdf");
+			File file = new File(path);
 			FileOutputStream fileout = new FileOutputStream(file);
 			Document document = new Document();
 			PdfWriter.getInstance(document, fileout);
 			document.addAuthor("Me");
 
 			document.open();
-			SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-			String date = DATE_FORMAT.format(this.beginDate);
-
 			Image image;
 			try {
 				image = Image.getInstance("D:/report_iam/iam-reportWeb/WebContent/img/mandiri-logo.png");
@@ -232,9 +232,9 @@ public class DisabledBacking extends BasicSessionBacking {
 			font.setStyle(Font.BOLD);
 			font.setStyle(Font.ITALIC);
 			font.setSize(24);
-			document.addTitle("IAM Accounts Disabled Report : " + date);
+			document.addTitle("IAM Disabled " + this.application + " Report: " + date);
 			Paragraph paragraph1 = new Paragraph();
-			paragraph1.add("IAM Accounts Disabled Report : " + date + "\n");
+			paragraph1.add("IAM Disabled " + this.application + " Report: " + date + " - " + end);
 			paragraph1.add("\n");
 			paragraph1.setAlignment(Element.ALIGN_CENTER);
 			paragraph1.setFont(font);
@@ -265,7 +265,7 @@ public class DisabledBacking extends BasicSessionBacking {
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		}
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("File has been downloaded"));
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("File has been downloaded " + path));
 
 		System.out.println("Content added");
 

@@ -144,17 +144,18 @@ public class ProvisionBacking extends BasicSessionBacking {
 		}
 	}
 	public void toFile() {
-
+		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+		String date = DATE_FORMAT.format(this.beginDate);
+		String end = DATE_FORMAT.format(this.endDate);
+		String path="D:/provision_" +date+ "_"+ end + ".pdf";
 		try {
-			File file = new File("D:/provision_report.pdf");
+			File file = new File(path);
 			FileOutputStream fileout = new FileOutputStream(file);
 			Document document = new Document();
 			PdfWriter.getInstance(document, fileout);
 			document.addAuthor("Me");
 
 			document.open();
-			SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-			String date = DATE_FORMAT.format(this.beginDate);
 
 			Image image;
 			try {
@@ -175,7 +176,7 @@ public class ProvisionBacking extends BasicSessionBacking {
 			font.setSize(24);
 			document.addTitle("IAM User Provisioning Report : " + date);
 			Paragraph paragraph1 = new Paragraph();
-			paragraph1.add("IAM User Provisioning Report " + date + "\n");
+			paragraph1.add("IAM User Provisioning Report " + date + "- " + end);
 			paragraph1.add("\n");
 			paragraph1.setAlignment(Element.ALIGN_CENTER);
 			paragraph1.setFont(font);
@@ -204,7 +205,7 @@ public class ProvisionBacking extends BasicSessionBacking {
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		}
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("File has been downloaded"));
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("File has been downloaded " + path));
 
 	}
 	

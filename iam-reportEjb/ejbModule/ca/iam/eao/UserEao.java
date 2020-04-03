@@ -20,6 +20,7 @@ import ca.iam.entity.SummarySQL;
 import ca.iam.entity.UserUpdates;
 import ca.iam.util.Helper;
 import ca.iam.util.SQLConn;
+import ca.iam.util.ReportConn;
 import ca.iam.util.Settings;
 
 @Stateless
@@ -37,7 +38,7 @@ public class UserEao {
 		try {
 			result = "0";
 
-			conn = Settings.getConnection();
+			conn = ReportConn.getConnection();
 			query = "{call 	GetAllUser()}";
 			cs = conn.prepareCall(query);
 //			cs.setString(1,user);
@@ -63,7 +64,7 @@ public class UserEao {
 			throws SQLException, ParseException {
 
 		ResultSet rs = null;
-		Connection conn = Settings.getConnection();
+		Connection conn = ReportConn.getConnection();
 		UserUpdates user_updates = new UserUpdates();
 		ArrayList<UserUpdates> userList = new ArrayList<UserUpdates>();
 
@@ -148,7 +149,7 @@ public class UserEao {
 	public ArrayList<UserUpdates> getUserOnboard(Date begin_date, Date end_date) throws SQLException, ParseException {
 
 		ResultSet rs = null;
-		Connection conn = Settings.getConnection();
+		Connection conn = ReportConn.getConnection();
 		UserUpdates user_updates = new UserUpdates();
 		ArrayList<UserUpdates> userList = new ArrayList<UserUpdates>();
 
@@ -234,7 +235,7 @@ public class UserEao {
 			throws SQLException, ParseException {
 
 		ResultSet rs = null;
-		Connection conn = Settings.getConnection();
+		Connection conn = ReportConn.getConnection();
 		ArrayList<CountList> resultCount = new ArrayList<CountList>();
 		System.out.println(type);
 
@@ -311,7 +312,7 @@ public class UserEao {
 	public ArrayList<UserUpdates> getUserUpdate(Date begin_date, Date end_date) throws SQLException, ParseException {
 
 		ResultSet rs = null;
-		Connection conn = Settings.getConnection();
+		Connection conn = ReportConn.getConnection();
 		UserUpdates user_updates = new UserUpdates();
 		ArrayList<UserUpdates> userList = new ArrayList<UserUpdates>();
 
@@ -395,7 +396,7 @@ public class UserEao {
 	public ArrayList<UserUpdates> getUserDisabled(Date begin_date, Date end_date) throws SQLException, ParseException {
 
 		ResultSet rs = null;
-		Connection conn = Settings.getConnection();
+		Connection conn = ReportConn.getConnection();
 		UserUpdates user_updates = new UserUpdates();
 		ArrayList<UserUpdates> userList = new ArrayList<UserUpdates>();
 
@@ -479,7 +480,7 @@ public class UserEao {
 	public ArrayList<SummaryModel> getSummaryReport(Date begin_date, Date end_date) throws SQLException, ParseException {
 
 		ResultSet rs = null;
-		Connection conn = Settings.getConnection();
+		Connection conn = ReportConn.getConnection();
 		ArrayList<SummaryModel> sumModel = new ArrayList<SummaryModel>();
 
 		try {

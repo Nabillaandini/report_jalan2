@@ -88,7 +88,7 @@ public class LoginBacking implements Serializable{
 		FacesContext context = FacesContext.getCurrentInstance();
 		this.setCloseSession(false);
 		String result = "";
-//		File f = null;
+
 
 		result = loginRules.getUser(username, password);
 		result = "1";

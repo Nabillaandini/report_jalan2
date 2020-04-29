@@ -69,5 +69,16 @@
 		<managed-bean-class>ca.iam.backing.DeprovisionBacking</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>changeBacking</managed-bean-name>
+		<managed-bean-class>ca.iam.backing.ChangeBacking</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+		<managed-bean>
+		<managed-bean-name>requestBacking</managed-bean-name>
+		<managed-bean-class>ca.iam.backing.RequestBacking</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+	
 
 </faces-config>

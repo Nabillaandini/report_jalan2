@@ -21,6 +21,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
 import javax.inject.Named;
 
+import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -33,11 +34,11 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import ca.iam.core.BasicSessionBacking;
-import ca.iam.eao.DtkbmEao;
-import ca.iam.eao.DtobmEao;
 import ca.iam.eao.UserEao;
 import ca.iam.entity.CountList;
 import ca.iam.entity.Provision;
+import ca.iam.entity.ResetModel;
+import ca.iam.entity.UserRequest;
 import ca.iam.entity.UserUpdates;
 import ca.iam.rules.UserRules;
 
@@ -46,7 +47,7 @@ import ca.iam.rules.UserRules;
 @Stateful
 @Named
 
-public class ProvisionBacking extends BasicSessionBacking {
+public class ChangeBacking extends BasicSessionBacking {
 	
 	/**
 	 * 
@@ -58,51 +59,20 @@ public class ProvisionBacking extends BasicSessionBacking {
 
 	@EJB
 	public UserEao userEao;
-	
-	@EJB
-	public DtobmEao dtobmEao;
-
-	@EJB
-	public DtkbmEao dtkbmEao;
-
-	@EJB
-	private LeftmenuBacking leftmenuBacking;
-	
 
 	private Date beginDate;
 	private Date endDate;
-	public String application;
 	
 	public List<Provision> detailList = new ArrayList<Provision>();
-	public List<CountList> countList = new ArrayList<CountList>();
+	public List<ResetModel> countList = new ArrayList<ResetModel>();
+	public List<Provision> detailListApps = new ArrayList<Provision>();
 	
-	private String headSum;
-	private String headDetail;
-	
-	
-	
-	public String getHeadSum() {
-		return headSum;
+	public List<Provision> getDetailListApps() {
+		return detailListApps;
 	}
 
-	public void setHeadSum(String headSum) {
-		this.headSum = headSum;
-	}
-
-	public String getHeadDetail() {
-		return headDetail;
-	}
-
-	public void setHeadDetail(String headDetail) {
-		this.headDetail = headDetail;
-	}
-
-	public String getApplication() {
-		return application;
-	}
-
-	public void setApplication(String application) {
-		this.application = application;
+	public void setDetailListApps(List<Provision> detailListApps) {
+		this.detailListApps = detailListApps;
 	}
 
 	public Date getBeginDate() {
@@ -128,45 +98,30 @@ public class ProvisionBacking extends BasicSessionBacking {
 	public void setDetailList(List<Provision> detailList) {
 		this.detailList = detailList;
 	}
+	
 
-	public List<CountList> getCountList() {
+	public List<ResetModel> getCountList() {
 		return countList;
 	}
 
-	public void setCountList(List<CountList> countList) {
+	public void setCountList(List<ResetModel> countList) {
 		this.countList = countList;
 	}
 
 	public void load(ComponentSystemEvent event) {
 		FacesContext context = FacesContext.getCurrentInstance();
 		if (!context.isPostback()) {
-				if(leftmenuBacking.getAppsValue()==null) {
-					leftmenuBacking.setAppsValue("SAP");
-				}
-				this.application = leftmenuBacking.getAppsValue();
-				setHeadSum("Summary Provision " + this.application);
-				setHeadDetail("Detail Provision " + this.application);
 
-			
 		}
 	}
 
 	public void sumSearch() {
-
-		this.application = leftmenuBacking.getAppsValue();
 		if (this.beginDate == null || this.endDate == null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Please fill in the required fields", "Error"));
 		} else {
 			try {
-				
-				if (this.application.equalsIgnoreCase("sap")) {
-					this.countList = userEao.countProvision(this.beginDate, this.endDate);
-				} else if (this.application.equalsIgnoreCase("dtobm")) {
-					this.countList = dtobmEao.countProvDTOBM(this.beginDate, this.endDate);
-				} else if (this.application.equalsIgnoreCase("dtkbm")) {
-					this.countList = dtkbmEao.countProvDTKBM(this.beginDate, this.endDate);
-				}
-				
+				this.countList = userEao.countPassChanges(beginDate, endDate);
+
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching is finished"));
 
 			} catch (SQLException e) {
@@ -182,20 +137,12 @@ public class ProvisionBacking extends BasicSessionBacking {
 	}
 
 	public void detailSearch() {
-
-		this.application = leftmenuBacking.getAppsValue();
 		if (this.beginDate == null || this.endDate == null) {
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Please fill in the required fields", "Error"));
 		}else {
 			try {
-				if (this.application.equalsIgnoreCase("sap")) {
-				this.detailList = userEao.getProvisionData(this.beginDate, this.endDate);
-				} else if (this.application.equalsIgnoreCase("dtobm")) {
-					this.detailList = dtobmEao.getProvisionData(this.beginDate, this.endDate);
-				} else if (this.application.equalsIgnoreCase("dtkbm")) {
-					this.detailList = dtkbmEao.getProvisionData(this.beginDate, this.endDate);
-				}
-				
+				this.detailList = userEao.getPassChanges(this.beginDate, this.endDate);
+
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching is finished"));
 
 			} catch (SQLException e) {
@@ -209,18 +156,45 @@ public class ProvisionBacking extends BasicSessionBacking {
 			}
 		}
 	}
-	public void toFile() {
+	
+	public void detailSearchApps() {
+		if (this.beginDate == null || this.endDate == null) {
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Please fill in the required fields", "Error"));
+		}else {
+			try {
+				this.detailListApps = userEao.getResetChanges(this.beginDate, this.endDate);
+
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching is finished"));
+
+			} catch (SQLException e) {
+
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Database connection error"));
+
+				e.printStackTrace();
+			} catch (ParseException e) {
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Reading input failed"));
+				e.printStackTrace();
+			}
+		}
+	}
+	public void userDomainPW() {
+		toFile("C:/report_result/resetPW_domain_","Password Reset User Domain ","Approval Date", this.detailList);
+	}
+	public void userAppsPW() {
+		toFile("C:/report_result/resetPW_apps_","Password Reset User Aplikasi ","Approval Date", this.detailListApps);
+		
+	}
+	public void toFile(String filename,String title, String col1,List<Provision> userList) {
 		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
 		String date = DATE_FORMAT.format(this.beginDate);
 		String end = DATE_FORMAT.format(this.endDate);
-		String path="C:/report_result/provision_" +date+ "_"+ end + ".pdf";
+		String path=filename+date+ "_"+ end + ".pdf";
+	
 		try {
 			File file = new File(path);
 			FileOutputStream fileout = new FileOutputStream(file);
 			Document document = new Document();
 			PdfWriter.getInstance(document, fileout);
-			document.addAuthor("Me");
-
 			document.open();
 
 			Image image;
@@ -240,13 +214,14 @@ public class ProvisionBacking extends BasicSessionBacking {
 			font.setStyle(Font.BOLD);
 			font.setStyle(Font.ITALIC);
 			font.setSize(24);
-			document.addTitle("IAM User Provisioning Report : " + date);
 			Paragraph paragraph1 = new Paragraph();
-			paragraph1.add("IAM User Provisioning Report : "+ this.application);
-			paragraph1.add("\n");
-			paragraph1.add("Tanggal :" + date + " - " + end +"\n");
+			paragraph1.add(title+"\n");
+			paragraph1.add("Tanggal :" + date + "- " + end +"\n");
+			paragraph1.add("Total : " + userList.size());
+			
 			paragraph1.setAlignment(Element.ALIGN_CENTER);
 			paragraph1.setFont(font);
+			paragraph1.add(Chunk.NEWLINE);
 			document.add(paragraph1);
 			Paragraph paragraph = new Paragraph();
 			paragraph.setAlignment(Element.ALIGN_LEFT);
@@ -255,12 +230,12 @@ public class ProvisionBacking extends BasicSessionBacking {
 			PdfPTable table = new PdfPTable(columnWidths);
 			// set table width a percentage of the page width
 			table.setWidthPercentage(90f);
-			insertCell(table, "User Provisioning Approval Date", Element.ALIGN_CENTER, 1);
+			insertCell(table, col1, Element.ALIGN_CENTER, 1);
 			insertCell(table, "User ID", Element.ALIGN_CENTER, 1);
 			table.setHeaderRows(1);
-			for (int i = 0; i < detailList.size(); i++) {
-				insertCell(table, detailList.get(i).getDate(), Element.ALIGN_CENTER, 1);
-				insertCell(table, detailList.get(i).getType(), Element.ALIGN_CENTER, 1);
+			for (int i = 0; i < userList.size(); i++) {
+				insertCell(table, userList.get(i).getDate(), Element.ALIGN_CENTER, 1);
+				insertCell(table, userList.get(i).getType(), Element.ALIGN_CENTER, 1);
 			}
 			paragraph.add(table);
 
@@ -284,13 +259,79 @@ public class ProvisionBacking extends BasicSessionBacking {
 		cell.setHorizontalAlignment(align);
 		// set the cell column span in case you want to merge two or more cells
 		cell.setColspan(colspan);
-		// in case there is no text and you wan to create an empty row
+		// in case there is no text and you want to create an empty row
 		if (text.trim().equalsIgnoreCase("")) {
 			cell.setMinimumHeight(10f);
 		}
 		// add the call to the table
 		table.addCell(cell);
 
+	}
+	public void sumToFile() {
+		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+		String date = DATE_FORMAT.format(this.beginDate);
+		String end = DATE_FORMAT.format(this.endDate);
+		String path="C:/report_result/resetPW_sum_"+date+ "_"+ end + ".pdf";
+	
+		try {
+			File file = new File(path);
+			FileOutputStream fileout = new FileOutputStream(file);
+			Document document = new Document();
+			PdfWriter.getInstance(document, fileout);
+			document.open();
+
+			Image image;
+			try {
+				image = Image.getInstance("C:/report_result/img/mandiri-logo.png");
+				image.setAlignment(Image.MIDDLE);
+				image.scaleToFit(200, 100);
+
+				document.add(image);
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			Font font = new Font();
+			font.setStyle(Font.BOLD);
+			font.setStyle(Font.ITALIC);
+			font.setSize(24);
+			Paragraph paragraph1 = new Paragraph();
+			paragraph1.add("Password Reset Summary "+ date + "- " + end +"\n");
+			
+			paragraph1.setAlignment(Element.ALIGN_CENTER);
+			paragraph1.setFont(font);
+			paragraph1.add(Chunk.NEWLINE);
+			document.add(paragraph1);
+			Paragraph paragraph = new Paragraph();
+			paragraph.setAlignment(Element.ALIGN_LEFT);
+			float[] columnWidths = { 2.5f, 2.5f, 2.5f};
+			// create PDF table with the given widths
+			PdfPTable table = new PdfPTable(columnWidths);
+			// set table width a percentage of the page width
+			table.setWidthPercentage(90f);
+			insertCell(table, "Date", Element.ALIGN_CENTER, 1);
+			insertCell(table, "Total User Domain", Element.ALIGN_CENTER, 1);
+			insertCell(table, "Total User Apps", Element.ALIGN_CENTER, 1);
+			table.setHeaderRows(1);
+			for (int i = 0; i < countList.size(); i++) {
+				insertCell(table, countList.get(i).getDate(), Element.ALIGN_CENTER, 1);
+				insertCell(table, String.format("%d",countList.get(i).getDomain()), Element.ALIGN_CENTER, 1);
+				insertCell(table, String.format("%d",countList.get(i).getApps()), Element.ALIGN_CENTER, 1);
+				
+			}
+			paragraph.add(table);
+
+			document.add(paragraph);
+
+			document.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		}
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("File has been downloaded " + path));
 	}
 
 }

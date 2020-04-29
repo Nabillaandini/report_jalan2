@@ -110,23 +110,7 @@ public class UserBacking extends BasicSessionBacking {
 		
 	}
 	
-	public void getDetailReport() throws ParseException{
-		
-		try {
-			this.userList = userEao.getUpdateById(userId, beginDate, endDate);
-			 FacesContext.getCurrentInstance().addMessage(null,
-		                new FacesMessage("Searching is finished"));
 
-		} catch (SQLException e) {
-			 FacesContext.getCurrentInstance().addMessage(null,
-		                new FacesMessage("Database Connection Error"));
-			e.printStackTrace();
-		}
-		
-//		this.userList.add(new UserUpdates("AMELIA ANDREMICA", "1188393433"));
-//		this.userList.add(new UserUpdates("Abdalla Dewi", "09123809128"));
-//		System.out.println("Executing searching user from db of " + beginDate);
-	}
 
 	public String getUserId() {
 		return userId;

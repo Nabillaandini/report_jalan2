@@ -20,7 +20,7 @@ public class LoginRules {
 	public String getUser(String user, String pass) throws SQLException{
 		String result = "0";
 //		result = loginEao.getUser(user, pass);
-		userEao.testDb();
+//		userEao.testDb();
 		if (user.equalsIgnoreCase("admin") & (pass.equalsIgnoreCase("admin")))
 			result = "1";
 		return result;

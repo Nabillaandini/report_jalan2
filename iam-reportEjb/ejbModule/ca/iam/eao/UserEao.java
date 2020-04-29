@@ -13,10 +13,15 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.inject.Named;
 
+import com.itextpdf.text.log.SysoCounter;
+
 import ca.iam.entity.CountList;
 import ca.iam.entity.Provision;
+import ca.iam.entity.ResetModel;
 import ca.iam.entity.SummaryModel;
 import ca.iam.entity.SummarySQL;
+import ca.iam.entity.UserModel;
+import ca.iam.entity.UserRequest;
 import ca.iam.entity.UserUpdates;
 import ca.iam.util.Helper;
 import ca.iam.util.SQLConn;
@@ -34,124 +39,11 @@ public class UserEao {
 	String query = null;
 
 
-	public String testDb() throws SQLException {
-		try {
-			result = "0";
-
-			conn = ReportConn.getConnection();
-			query = "{call 	GetAllUser()}";
-			cs = conn.prepareCall(query);
-//			cs.setString(1,user);
-//			cs.setString(2,pass);
-			cs.execute();
-			rs = (ResultSet) cs.getResultSet();
-
-			try {
-				while (rs.next()) {
-					result = rs.getString("activation_date");
-					System.out.println(result);
-				}
-			} finally {
-				cs.close();
-			}
-		} finally {
-			conn.close();
-		}
-		return result;
-	}
-
-	public ArrayList<UserUpdates> getUpdateById(String userId, Date begin_date, Date end_date)
-			throws SQLException, ParseException {
+	public ArrayList<UserModel> getUserOnboard(Date begin_date, Date end_date) throws SQLException, ParseException {
 
 		ResultSet rs = null;
-		Connection conn = ReportConn.getConnection();
-		UserUpdates user_updates = new UserUpdates();
-		ArrayList<UserUpdates> userList = new ArrayList<UserUpdates>();
-
-		try {
-
-			java.sql.Date begin = new java.sql.Date(begin_date.getTime());
-			java.sql.Date end = new java.sql.Date(end_date.getTime());
-
-			CallableStatement stmt = conn.prepareCall("{call getUpdateById(?,?,?)}");
-			stmt.setString(1, userId);
-			stmt.setDate(2, (java.sql.Date) begin);
-			stmt.setDate(3, (java.sql.Date) end);
-
-			stmt.execute();
-			rs = stmt.getResultSet();
-
-			try {
-				while (rs.next()) {
-					String full_name = rs.getString("full_name");
-					String user_id = rs.getString("user_id");
-					String login_id = rs.getString("login_id");
-					String first_name = rs.getString("first_name");
-					String middle_name = rs.getString("middle_name");
-					String last_name = rs.getString("last_name");
-					Date activation_date = null;
-					if (rs.getDate("activation_date") != null)
-						activation_date = rs.getDate("activation_date");
-					String string_05 = rs.getString("string_05");
-					Date expiration_date = null;
-					if (rs.getDate("expiration_date") != null)
-						expiration_date = rs.getDate("expiration_date");
-					String employee_status = rs.getString("employee_status");
-					String manager = rs.getString("manager");
-					String manager_employee_number = rs.getString("manager_employee_number");
-					String integer_04 = rs.getString("integer_04");
-					String alternate_email = rs.getString("alternate_email");
-					String mobile_phone = rs.getString("mobile_phone");
-					String string_00 = rs.getString("string_00");
-					String strng_01 = rs.getString("string_01");
-					String department = rs.getString("department");
-					String string_02 = rs.getString("string_02");
-					String case_exact_string04 = rs.getString("case_exact_string04");
-					String cost_center = rs.getString("cost_center");
-					String case_exact_string03 = rs.getString("case_exact_string03");
-					String string_03 = rs.getString("string_03");
-					String case_exact_string02 = rs.getString("case_exact_string02");
-					String string_04 = rs.getString("string_04");
-					String case_exact_string01 = rs.getString("case_exact_string01");
-					String string_08 = rs.getString("string_08");
-					String case_exact_string00 = rs.getString("case_exact_string00");
-					String string_09 = rs.getString("string_09");
-					String string_06 = rs.getString("string_06");
-					String string_07 = rs.getString("string_07");
-					String employee_type = rs.getString("employee_type");
-					Boolean enable = rs.getBoolean("enable");
-					Date last_update = null;
-					if (rs.getDate("last_update") != null)
-						last_update = rs.getDate("last_update");
-					int is_onboard = rs.getInt("is_onboard");
-					int is_update = rs.getInt("is_update");
-					String updated_attr = rs.getString("updated_attr");
-					int upd_success = rs.getInt("upd_success");
-					user_updates = new UserUpdates(full_name, user_id, login_id, first_name, middle_name, last_name,
-							activation_date, string_05, expiration_date, employee_status, manager,
-							manager_employee_number, integer_04, alternate_email, mobile_phone, string_00, strng_01,
-							department, string_02, case_exact_string04, cost_center, case_exact_string03, string_03,
-							case_exact_string02, string_04, case_exact_string01, string_08, case_exact_string00,
-							string_09, string_06, string_07, employee_type, enable, last_update, is_onboard, is_update,
-							updated_attr, upd_success);
-					userList.add(user_updates);
-				}
-			} finally {
-				stmt.close();
-			}
-		} finally {
-			conn.close();
-		}
-
-		return userList;
-	}
-
-	public ArrayList<UserUpdates> getUserOnboard(Date begin_date, Date end_date) throws SQLException, ParseException {
-
-		ResultSet rs = null;
-		Connection conn = ReportConn.getConnection();
-		UserUpdates user_updates = new UserUpdates();
-		ArrayList<UserUpdates> userList = new ArrayList<UserUpdates>();
+		Connection conn = SQLConn.getConnectionSql();
+		ArrayList<UserModel> userList = new ArrayList<UserModel>();
 
 		try {
 
@@ -168,58 +60,17 @@ public class UserEao {
 
 			try {
 				while (rs.next()) {
-					String full_name = rs.getString("full_name");
-					String user_id = rs.getString("user_id");
-					String login_id = rs.getString("login_id");
-					String first_name = rs.getString("first_name");
-					String middle_name = rs.getString("middle_name");
-					String last_name = rs.getString("last_name");
-					Date activation_date = null;
-					if (rs.getDate("activation_date") != null)
-						activation_date = rs.getDate("activation_date");
-					String string_05 = rs.getString("string_05");
-					Date expiration_date = null;
-					if (rs.getDate("expiration_date") != null)
-						expiration_date = rs.getDate("expiration_date");
-					String employee_status = rs.getString("employee_status");
-					String manager = rs.getString("manager");
-					String manager_employee_number = rs.getString("manager_employee_number");
-					String integer_04 = rs.getString("integer_04");
-					String alternate_email = rs.getString("alternate_email");
-					String mobile_phone = rs.getString("mobile_phone");
-					String string_00 = rs.getString("string_00");
-					String strng_01 = rs.getString("string_01");
-					String department = rs.getString("department");
-					String string_02 = rs.getString("string_02");
-					String case_exact_string04 = rs.getString("case_exact_string04");
-					String cost_center = rs.getString("cost_center");
-					String case_exact_string03 = rs.getString("case_exact_string03");
-					String string_03 = rs.getString("string_03");
-					String case_exact_string02 = rs.getString("case_exact_string02");
-					String string_04 = rs.getString("string_04");
-					String case_exact_string01 = rs.getString("case_exact_string01");
-					String string_08 = rs.getString("string_08");
-					String case_exact_string00 = rs.getString("case_exact_string00");
-					String string_09 = rs.getString("string_09");
-					String string_06 = rs.getString("string_06");
-					String string_07 = rs.getString("string_07");
-					String employee_type = rs.getString("employee_type");
-					Boolean enable = rs.getBoolean("enable");
-					Date last_update = null;
-					if (rs.getDate("last_update") != null)
-						last_update = rs.getDate("last_update");
-					int is_onboard = rs.getInt("is_onboard");
-					int is_update = rs.getInt("is_update");
-					String updated_attr = rs.getString("updated_attr");
-					int upd_success = rs.getInt("upd_success");
-					user_updates = new UserUpdates(full_name, user_id, login_id, first_name, middle_name, last_name,
-							activation_date, string_05, expiration_date, employee_status, manager,
-							manager_employee_number, integer_04, alternate_email, mobile_phone, string_00, strng_01,
-							department, string_02, case_exact_string04, cost_center, case_exact_string03, string_03,
-							case_exact_string02, string_04, case_exact_string01, string_08, case_exact_string00,
-							string_09, string_06, string_07, employee_type, enable, last_update, is_onboard, is_update,
-							updated_attr, upd_success);
-					userList.add(user_updates);
+					Date date = rs.getDate(1);
+					if(date==null) {
+						continue;
+					}
+					String date_str = Helper.dateToString(date);
+					String type = rs.getString(2).substring(23);
+					if(!(type.contains("failed")||type.contains(":"))) {
+						UserModel user = new UserModel(date_str,type);
+						userList.add(user);
+					}
+				
 				}
 			} finally {
 				stmt.close();
@@ -235,7 +86,8 @@ public class UserEao {
 			throws SQLException, ParseException {
 
 		ResultSet rs = null;
-		Connection conn = ReportConn.getConnection();
+
+		Connection conn = SQLConn.getConnectionSql();
 		ArrayList<CountList> resultCount = new ArrayList<CountList>();
 		System.out.println(type);
 
@@ -255,9 +107,14 @@ public class UserEao {
 					while (rs.next()) {
 						int count = rs.getInt(1);
 						Date date = rs.getDate(2);
+						if(date==null) {
+							continue;
+						}
 						String date_str = Helper.dateToString(date);
+						if(count !=0) {
 						CountList temp = new CountList(date_str, count);
 						resultCount.add(temp);
+						}
 					}
 				} finally {
 					stmt.close();
@@ -274,9 +131,14 @@ public class UserEao {
 					while (rs.next()) {
 						int count = rs.getInt(1);
 						Date date = rs.getDate(2);
+						if(date==null) {
+							continue;
+						}
 						String date_str = Helper.dateToString(date);
+						if(count !=0) {
 						CountList temp = new CountList(date_str, count);
 						resultCount.add(temp);
+						}
 					}
 				} finally {
 					stmt.close();
@@ -294,8 +156,10 @@ public class UserEao {
 						int count = rs.getInt(1);
 						Date date = rs.getDate(2);
 						String date_str = Helper.dateToString(date);
+						if(count !=0) {
 						CountList temp = new CountList(date_str, count);
 						resultCount.add(temp);
+						}
 					}
 				} finally {
 					stmt.close();
@@ -309,12 +173,11 @@ public class UserEao {
 		return resultCount;
 	}
 
-	public ArrayList<UserUpdates> getUserUpdate(Date begin_date, Date end_date) throws SQLException, ParseException {
+	public ArrayList<UserModel> getUserUpdate(Date begin_date, Date end_date) throws SQLException, ParseException {
 
 		ResultSet rs = null;
-		Connection conn = ReportConn.getConnection();
-		UserUpdates user_updates = new UserUpdates();
-		ArrayList<UserUpdates> userList = new ArrayList<UserUpdates>();
+		Connection conn = SQLConn.getConnectionSql();
+		ArrayList<UserModel> userList = new ArrayList<UserModel>();
 
 		try {
 
@@ -330,58 +193,14 @@ public class UserEao {
 
 			try {
 				while (rs.next()) {
-					String full_name = rs.getString("full_name");
-					String user_id = rs.getString("user_id");
-					String login_id = rs.getString("login_id");
-					String first_name = rs.getString("first_name");
-					String middle_name = rs.getString("middle_name");
-					String last_name = rs.getString("last_name");
-					Date activation_date = null;
-					if (rs.getDate("activation_date") != null)
-						activation_date = rs.getDate("activation_date");
-					String string_05 = rs.getString("string_05");
-					Date expiration_date = null;
-					if (rs.getDate("expiration_date") != null)
-						expiration_date = rs.getDate("expiration_date");
-					String employee_status = rs.getString("employee_status");
-					String manager = rs.getString("manager");
-					String manager_employee_number = rs.getString("manager_employee_number");
-					String integer_04 = rs.getString("integer_04");
-					String alternate_email = rs.getString("alternate_email");
-					String mobile_phone = rs.getString("mobile_phone");
-					String string_00 = rs.getString("string_00");
-					String strng_01 = rs.getString("string_01");
-					String department = rs.getString("department");
-					String string_02 = rs.getString("string_02");
-					String case_exact_string04 = rs.getString("case_exact_string04");
-					String cost_center = rs.getString("cost_center");
-					String case_exact_string03 = rs.getString("case_exact_string03");
-					String string_03 = rs.getString("string_03");
-					String case_exact_string02 = rs.getString("case_exact_string02");
-					String string_04 = rs.getString("string_04");
-					String case_exact_string01 = rs.getString("case_exact_string01");
-					String string_08 = rs.getString("string_08");
-					String case_exact_string00 = rs.getString("case_exact_string00");
-					String string_09 = rs.getString("string_09");
-					String string_06 = rs.getString("string_06");
-					String string_07 = rs.getString("string_07");
-					String employee_type = rs.getString("employee_type");
-					Boolean enable = rs.getBoolean("enable");
-					Date last_update = null;
-					if (rs.getDate("last_update") != null)
-						last_update = rs.getDate("last_update");
-					int is_onboard = rs.getInt("is_onboard");
-					int is_update = rs.getInt("is_update");
-					String updated_attr = rs.getString("updated_attr");
-					int upd_success = rs.getInt("upd_success");
-					user_updates = new UserUpdates(full_name, user_id, login_id, first_name, middle_name, last_name,
-							activation_date, string_05, expiration_date, employee_status, manager,
-							manager_employee_number, integer_04, alternate_email, mobile_phone, string_00, strng_01,
-							department, string_02, case_exact_string04, cost_center, case_exact_string03, string_03,
-							case_exact_string02, string_04, case_exact_string01, string_08, case_exact_string00,
-							string_09, string_06, string_07, employee_type, enable, last_update, is_onboard, is_update,
-							updated_attr, upd_success);
-					userList.add(user_updates);
+					Date date = rs.getDate(1);
+					String date_str = Helper.dateToString(date);
+					String type = rs.getString(2).substring(23);
+					if(!(type.contains("failed")||type.contains(":"))) {
+						UserModel user = new UserModel(date_str,type);
+						userList.add(user);
+					}
+				
 				}
 			} finally {
 				stmt.close();
@@ -480,8 +299,9 @@ public class UserEao {
 	public ArrayList<SummaryModel> getSummaryReport(Date begin_date, Date end_date) throws SQLException, ParseException {
 
 		ResultSet rs = null;
-		Connection conn = ReportConn.getConnection();
+		Connection conn = SQLConn.getConnectionSql();
 		ArrayList<SummaryModel> sumModel = new ArrayList<SummaryModel>();
+		String date_str = "";
 
 		try {
 
@@ -497,15 +317,18 @@ public class UserEao {
 
 			try {
 				while (rs.next()) {
-				int countOnboard = rs.getInt("countOnboard");
-				int countUpdate = rs.getInt("countUpdate");
-				int countDisabled = rs.getInt("countDisabled");
-				int phone = rs.getInt("phone");
-				int email = rs.getInt("email");
-				int name = rs.getInt("name");
-				Date date = rs.getDate("last_update");
-				String date_str = Helper.dateToString(date);
-				sumModel.add(new SummaryModel(countOnboard, countUpdate, countDisabled, phone, email, name, date_str));
+					
+				int countOnboard = rs.getInt(1);
+				int countUpdate = rs.getInt(2);
+				int countDisabled = rs.getInt(3);
+				Date date = rs.getDate(4);
+				if(date != null) {
+					date_str = Helper.dateToString(date);
+				}
+				if(countOnboard>0 || countUpdate>0 || countDisabled>0) {
+				
+				sumModel.add(new SummaryModel(countOnboard, countUpdate, countDisabled, date_str));
+				}
 				}
 			} finally {
 				stmt.close();
@@ -538,8 +361,11 @@ public class UserEao {
 
 				try {
 					while (rs.next()) {
-						int count = rs.getInt(1);
-						Date date = rs.getDate(2);
+						int count = rs.getInt(2);
+						Date date = rs.getDate(1);
+						if(date==null) {
+							continue;
+						}
 						String date_str = Helper.dateToString(date);
 						CountList temp = new CountList(date_str, count);
 						resultCount.add(temp);
@@ -578,10 +404,15 @@ public class UserEao {
 				try {
 					while (rs.next()) {
 						Date date = rs.getDate(1);
+						if(date==null) {
+							continue;
+						}
 						String date_str = Helper.dateToString(date);
-						String type = rs.getString(2).substring(31);
-						prov = new Provision(date_str,type);
-						userList.add(prov);
+						String type = rs.getString(2).substring(39);
+						if(!(type.contains("failed")||type.contains(":"))) {
+							prov = new Provision(date_str,type);
+							userList.add(prov);
+						}
 					}
 				} finally {
 					stmt.close();
@@ -618,6 +449,9 @@ public class UserEao {
 					while (rs.next()) {
 						int count = rs.getInt(1);
 						Date date = rs.getDate(2);
+						if(date==null) {
+							continue;
+						}
 						String date_str = Helper.dateToString(date);
 						CountList temp = new CountList(date_str, count);
 						resultCount.add(temp);
@@ -657,10 +491,15 @@ public class UserEao {
 				try {
 					while (rs.next()) {
 						Date date = rs.getDate(1);
+						if(date==null) {
+							continue;
+						}
 						String date_str = Helper.dateToString(date);
-						String type = rs.getString(2).substring(24);
-						prov = new Provision(date_str,type);
-						userList.add(prov);
+						String type = rs.getString(2).substring(35);
+						if(!(type.contains("failed")||type.contains(":"))) {
+							prov = new Provision(date_str,type);
+							userList.add(prov);
+						}
 					}
 				} finally {
 					stmt.close();
@@ -699,8 +538,14 @@ public class UserEao {
 						int prov = rs.getInt(1);
 						int deprov = rs.getInt(2);
 						Date date = rs.getDate(3);
+						if(date==null) {
+							continue;
+						}
 						String date_str = Helper.dateToString(date);
+						if(prov != 0 || deprov!=0) {
 						countList.add(new SummarySQL(prov,deprov,date_str));
+						}
+						
 						
 					}
 				} finally {
@@ -711,7 +556,236 @@ public class UserEao {
 		} finally {
 			conn.close();
 		}
-
 		return countList;
 	}
+	
+	public ArrayList<ResetModel> countPassChanges(Date begin_date, Date end_date)
+			throws SQLException, ParseException {
+
+		ResultSet rs = null;
+		Connection conn = SQLConn.getConnectionSql();
+		ArrayList<ResetModel> resultCount = new ArrayList<ResetModel>();
+		ResetModel temp = null;
+
+		try {
+
+			java.sql.Date begin = new java.sql.Date(begin_date.getTime());
+			java.sql.Date end = new java.sql.Date(end_date.getTime());
+
+				CallableStatement stmt = conn.prepareCall("{call countPassChanges(?,?)}");
+				stmt.setDate(1, (java.sql.Date) begin);
+				stmt.setDate(2, (java.sql.Date) end);
+
+				stmt.execute();
+				rs = stmt.getResultSet();
+
+				try {
+					while (rs.next()) {
+						if(rs.getDate(1)==null) {
+							continue;
+						}
+						Date date = rs.getDate(1);
+						String date_str = Helper.dateToString(date);
+						int domain = rs.getInt(2);
+						int apps = rs.getInt(3);
+						if(domain >0 || apps >0) {
+						temp = new ResetModel(date_str, domain,apps);
+						resultCount.add(temp);
+						}
+					}
+				} finally {
+					stmt.close();
+				}
+		
+
+		} finally {
+			conn.close();
+		}
+
+		return resultCount;
+	}
+	public ArrayList<Provision> getPassChanges(Date begin_date, Date end_date)
+			throws SQLException, ParseException {
+
+		ResultSet rs = null;
+		Connection conn = SQLConn.getConnectionSql();
+		ArrayList<Provision> userList = new ArrayList<Provision>();
+		Provision prov = new Provision();
+
+		try {
+
+			java.sql.Date begin = new java.sql.Date(begin_date.getTime());
+			java.sql.Date end = new java.sql.Date(end_date.getTime());
+			
+				CallableStatement stmt = conn.prepareCall("{call getPassChanges(?,?)}");
+				stmt.setDate(1, (java.sql.Date) begin);
+				stmt.setDate(2, (java.sql.Date) end);
+
+				stmt.execute();
+				rs = stmt.getResultSet();
+
+				try {
+					while (rs.next()) {
+						Date date = rs.getDate(1);
+						if(date==null) {
+							continue;
+						}
+						String date_str = Helper.dateToString(date);
+						String type = rs.getString(2).substring(43);
+						if(!(type.contains("failed")||type.contains(":"))) {
+							prov = new Provision(date_str,type);
+							userList.add(prov);
+						}
+					}
+				} finally {
+					stmt.close();
+				}
+		
+
+		} finally {
+			conn.close();
+		}
+
+		return userList;
+	}
+	public ArrayList<Provision> getResetChanges(Date begin_date, Date end_date)
+			throws SQLException, ParseException {
+
+		ResultSet rs = null;
+		Connection conn = SQLConn.getConnectionSql();
+		ArrayList<Provision> userList = new ArrayList<Provision>();
+		Provision prov = new Provision();
+
+		try {
+
+			java.sql.Date begin = new java.sql.Date(begin_date.getTime());
+			java.sql.Date end = new java.sql.Date(end_date.getTime());
+			
+				CallableStatement stmt = conn.prepareCall("{call getResetChanges(?,?)}");
+				stmt.setDate(1, (java.sql.Date) begin);
+				stmt.setDate(2, (java.sql.Date) end);
+
+				stmt.execute();
+				rs = stmt.getResultSet();
+
+				try {
+					while (rs.next()) {
+						Date date = rs.getDate(1);
+						if(date==null) {
+							continue;
+						}
+						String date_str = Helper.dateToString(date);
+						String type = rs.getString(2).substring(50);
+						if(!(type.contains("failed")||type.contains(":"))) {
+							prov = new Provision(date_str,type);
+							userList.add(prov);
+						}
+					}
+				} finally {
+					stmt.close();
+				}
+		
+
+		} finally {
+			conn.close();
+		}
+
+		return userList;
+	}
+	
+	public ArrayList<UserRequest> countUserRequest(Date begin_date, Date end_date, String type)
+			throws SQLException, ParseException {
+
+		ResultSet rs = null;
+		Connection conn = SQLConn.getConnectionSql();
+		ArrayList<UserRequest> resultCount = new ArrayList<UserRequest>();
+
+		try {
+
+			java.sql.Date begin = new java.sql.Date(begin_date.getTime());
+			java.sql.Date end = new java.sql.Date(end_date.getTime());
+
+				CallableStatement stmt = conn.prepareCall("{call countUserRequest(?,?,?)}");
+				stmt.setDate(1, (java.sql.Date) begin);
+				stmt.setDate(2, (java.sql.Date) end);
+				stmt.setString(3, "%"+type+"%");
+				
+
+				stmt.execute();
+				rs = stmt.getResultSet();
+
+				try {
+					while (rs.next()) {
+						int count = rs.getInt(3);
+						String name = rs.getString(2);
+						Date date = rs.getDate(1);
+						if(date==null) {
+							continue;
+						}
+						String date_str = Helper.dateToString(date);
+						UserRequest temp = new UserRequest(date_str, name,String.format("%d",count));
+						resultCount.add(temp);
+					}
+				} finally {
+					stmt.close();
+				}
+		
+
+		} finally {
+			conn.close();
+		}
+
+		return resultCount;
+	}
+	
+	public ArrayList<UserRequest> getUserRequest(Date begin_date, Date end_date, String type)
+			throws SQLException, ParseException {
+
+		ResultSet rs = null;
+		Connection conn = SQLConn.getConnectionSql();
+		ArrayList<UserRequest> userList = new ArrayList<UserRequest>();
+		UserRequest user = null;
+		System.out.println("before try catch");
+		try {
+
+			java.sql.Date begin = new java.sql.Date(begin_date.getTime());
+			java.sql.Date end = new java.sql.Date(end_date.getTime());
+			System.out.println("before exec");
+				CallableStatement stmt = conn.prepareCall("{call getUserRequest(?,?)}");
+				stmt.setDate(1, (java.sql.Date) begin);
+				stmt.setDate(2, (java.sql.Date) end);
+
+				stmt.execute();
+				rs = stmt.getResultSet();
+
+				try {
+					while (rs.next()) {
+						Date date = rs.getDate(1);
+						if(date==null) {
+							continue;
+						}
+						String date_str = Helper.dateToString(date);
+						String appsName = rs.getString(2);
+						String name = rs.getString(3);
+						String [] arr = name.split(",");
+						name = arr[1].substring(6);
+						if(!(name.contains("failed")||name.contains(":"))) {
+							if(appsName.contains(type)) {
+							user = new UserRequest(date_str, appsName, name);
+							userList.add(user);
+							}
+						}
+						
+					}
+				} finally {
+					stmt.close();
+				}
+		
+
+		} finally {
+			conn.close();
+		}
+		return userList;
+	}
+	
 }

@@ -155,11 +155,7 @@ public class DisabledBacking extends BasicSessionBacking {
 			try {
 				if (this.application.equalsIgnoreCase("sap")) {
 					this.countList = userEao.countData(this.beginDate, this.endDate, "disable");
-				} else if (this.application.equalsIgnoreCase("dtobm")) {
-					this.countList = dtobmEao.countData(this.beginDate, this.endDate, "disable");
-				} else if (this.application.equalsIgnoreCase("dtkbm")) {
-					this.countList = dtkbmEao.countData(this.beginDate, this.endDate, "disable");
-				}
+				} 
 
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching is finished"));
 
@@ -207,7 +203,7 @@ public class DisabledBacking extends BasicSessionBacking {
 		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
 		String date = DATE_FORMAT.format(this.beginDate);
 		String end = DATE_FORMAT.format(this.endDate);
-		String path="D:/disabled_" +date+ "_"+ end + ".pdf";
+		String path="C:/report_result/disabled_" +date+ "_"+ end + ".pdf";
 		try {
 			File file = new File(path);
 			FileOutputStream fileout = new FileOutputStream(file);
@@ -218,7 +214,7 @@ public class DisabledBacking extends BasicSessionBacking {
 			document.open();
 			Image image;
 			try {
-				image = Image.getInstance("D:/report_iam/iam-reportWeb/WebContent/img/mandiri-logo.png");
+				image = Image.getInstance("C:/report_result/img/mandiri-logo.png");
 				image.setAlignment(Image.MIDDLE);
 				image.scaleToFit(200, 100);
 

@@ -9,14 +9,78 @@
 <h:head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<f:event type="preRenderView" listener="#{leftmenuBacking.load}" />
+	<style>
+    p { text-decoration: none; }
+  </style>
 </h:head>
 <h:body>
 	<h:form style="padding-left:10px">
 		<p:selectOneMenu id="application" value="#{leftmenuBacking.appsValue}">
 			<f:selectItems value="#{leftmenuBacking.appsList}" />
 		</p:selectOneMenu>
-		<p:commandButton value="Submit" action="#{leftmenuBacking.submitApp}"/>
-		<p:menu model="#{leftmenuBacking.model}" />
+		<p:commandButton value="Submit" action="#{leftmenuBacking.submitApp}" />
+
+	
+    <p:slideMenu style="width:220px">
+       <p:submenu label="Onboard" icon="ui-icon-note" collapsed="false">
+				<p:menuitem value="Summary" url="/report/f/sumonboard.xhtml"
+					icon="ui-icon-clipboard" />
+				<p:menuitem value="Detail" url="/report/f/detailonboard.xhtml"
+					icon="ui-icon-document-b" />
+			</p:submenu>
+			<p:submenu label="Updates" icon="ui-icon-note" collapsed="false">
+				<p:menuitem value="Summary" url="/report/f/sumupdate.xhtml"
+					icon="ui-icon-clipboard" />
+				<p:menuitem value="Detail" url="/report/f/detailupdate.xhtml"
+					icon="ui-icon-document-b" />
+			</p:submenu>
+			<p:submenu label="Disabled" icon="ui-icon-note" collapsed="false">
+				<p:menuitem value="Summary" url="/report/f/sumdisabled.xhtml"
+					icon="ui-icon-clipboard" />
+				<p:menuitem value="Detail" url="/report/f/detaildisabled.xhtml"
+					icon="ui-icon-document-b" />
+			</p:submenu>
+			<p:submenu label="Provision Deprov" icon="ui-icon-person"
+				collapsed="false">
+				<p:menuitem value="Summary Provision" url="/report/f/sumprovision.xhtml"
+					icon="ui-icon-bookmark" />
+				<p:menuitem value="Detail Provisioning"
+					url="/report/f/detail_prov.xhtml" icon="ui-icon-locked" />
+				<p:menuitem value="Summary Deprovision" url="/report/f/sumdeprov.xhtml"
+					icon="ui-icon-bookmark" />
+				<p:menuitem value="Detail Deprov"
+					url="/report/f/detail_deprov.xhtml" icon="ui-icon-unlocked" />
+			</p:submenu>
+			<p:submenu label="Password Reset" icon="ui-icon-wrench" collapsed="false">
+				<p:menuitem value="Summary" url="/report/f/sumchanges.xhtml"
+					icon="ui-icon-bookmark" />
+				<p:menuitem value="Domain User" url="/report/f/resetpw.xhtml"
+					icon="ui-icon-document-b" />
+				<p:menuitem value="Application User"
+					url="/report/f/resetpw_apps.xhtml" icon="ui-icon-document-b" />
+			</p:submenu>
+			<p:submenu label="User Request" icon="ui-icon-wrench" collapsed="false">
+				<p:menuitem value="Summary" url="/report/f/sumreq.xhtml"
+					icon="ui-icon-bookmark" />
+				<p:menuitem value="Detail" url="/report/f/detailreq.xhtml"
+					icon="ui-icon-document-b" />
+
+			</p:submenu>
+			
+    </p:slideMenu>
+    <p:menu toggleable="true">
+        <p:submenu label="Report Summary">
+            <p:menuitem value="Summary" url="/report/f/summary.xhtml" update="messages" icon="ui-icon-clipboard" />
+        </p:submenu>
+        <p:menuitem value="Logout" url="/report/f/login.xhtml" update="messages" icon="ui-icon-power" />
+        
+    </p:menu>
+<!--     		<p:menu model="#{leftmenuBacking.model}" /> -->
+<!--     <button onclick="location.href = '/report/f/login.xhtml?faces-redirect=false';" id="myButton" class="float-left submit-button" >Home</button> -->
+<!--     <p:commandButton value="Logout" url="/report/f/login.xhtml" style="margin-right:20px;" icon="ui-icon-power"/>   -->
+
 	</h:form>
+
+
 </h:body>
 </html>

@@ -7,66 +7,71 @@
 	template="templates/layout.xhtml">
 
 	<ui:define name="metadata">
-		<f:event type="preRenderView" listener="#{deprovisionBacking.load}" />
+		<f:event type="preRenderView" listener="#{changeBacking.load}" />
 	</ui:define>
 
 	<ui:define name="content">
 		<h:form id="mainform" autocomplete="off">
 			<p:growl id="msgs" sticky="true" />
 
-			<p:panel header="#{deprovisionBacking.headSum}">
+			<p:panel header="#{msgbundle['text.page.resetapps.title']}">
 
 				<h:panelGrid columns="3" cellpadding="10" border="0">
 
-
-					<h:outputLabel for="beginDate"
-						value="#{msgbundle['text.page.sumdeprov.begindate']}"
+					<h:outputLabel
+						value="#{msgbundle['text.page.resetapps.begindate']}"
 						style="margin-right:20px;" />
-					<p:datePicker id="beginDate" value="#{deprovisionBacking.beginDate}"
+					<p:datePicker id="beginDate" value="#{changeBacking.beginDate}"
 						showIcon="true" />
 					<p:spacer />
 
 					<h:outputLabel
-						value="#{msgbundle['text.page.sumdeprov.enddate']}"
+						value="#{msgbundle['text.page.resetapps.enddate']}"
 						style="margin-right:20px;" />
-					<p:datePicker id="endDate" value="#{deprovisionBacking.endDate}"
+					<p:datePicker id="endDate" value="#{changeBacking.endDate}"
 						showIcon="true" />
 					<p:spacer />
 
 
 					<p:commandButton
-						value="#{msgbundle['text.page.sumdeprov.search']}"
-						action="#{deprovisionBacking.sumSearch}" process="@all"
+						value="#{msgbundle['text.page.resetapps.search']}"
+						action="#{changeBacking.detailSearchApps}" process="@all"
 						update="msgs,table" />
 				</h:panelGrid>
 
-				<p:dataTable id="table" var="user"
-					value="#{deprovisionBacking.countList}"
+				<p:dataTable id="table" var="user" value="#{changeBacking.detailListApps}"
 					style="margin-top:20px;margin-bottom:20px" rows="10"
                  paginator="true" rowsPerPageTemplate="5,10,15">
 					<p:columnGroup type="header">
 						<p:row>
 							<p:column
-								headerText="#{msgbundle['text.page.sumdeprov.colomn_1']}" />
+								headerText="#{msgbundle['text.page.resetapps.colomn_1']}" />
 							<p:column
-								headerText="#{msgbundle['text.page.sumdeprov.colomn_2']}" />
+								headerText="#{msgbundle['text.page.resetapps.colomn_2']}" />
+
 						</p:row>
 					</p:columnGroup>
-
 					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Tanggal" />
+						</f:facet>
 						<h:outputText value="#{user.date}" />
 					</p:column>
+
 					<p:column>
-
-						<h:outputText value="#{user.count}" />
-
+						<f:facet name="header">
+							<h:outputText value="User Id" />
+						</f:facet>
+						<h:outputText value="#{user.type}" />
 					</p:column>
 
 				</p:dataTable>
-				<p:commandButton value="#{msgbundle['text.page.summary.tofile']}"
-					action="#{deprovisionBacking.provToFile}" process="@all"
-					update="msgs,table" />
 
+				<p:spacer />
+
+				<p:commandButton value="#{msgbundle['text.page.detailonboard.tofile']}"
+						action="#{changeBacking.userAppsPW}" process="@all"
+						update="msgs,table" />
 			</p:panel>
 		</h:form>
 	</ui:define>

@@ -42,7 +42,8 @@
 
 				<p:dataTable id="table" var="user"
 					value="#{updateBacking.countList}"
-					style="margin-top:20px;margin-bottom:20px">
+					style="margin-top:20px;margin-bottom:20px" rows="5"
+                 paginator="true" rowsPerPageTemplate="5,10,15">
 					<p:columnGroup type="header">
 						<p:row>
 							<p:column
@@ -54,7 +55,7 @@
 
 					<p:column>
 						<f:facet name="header">
-							<h:outputText value="Tanggal Flatfile" />
+							<h:outputText value="Date" />
 						</f:facet>
 						<h:outputText value="#{user.date}" />
 					</p:column>
@@ -68,13 +69,6 @@
 
 				</p:dataTable>
 				<p:spacer />
-
-				<h:commandLink>
-					<p:commandButton
-						value="#{msgbundle['text.page.sumupdate.generatepdf']}" />
-					<p:dataExporter type="pdf" target="table"
-						fileName="SummaryOnboardReport" pageOnly="true" />
-				</h:commandLink>
 				
 			</p:panel>
 		</h:form>

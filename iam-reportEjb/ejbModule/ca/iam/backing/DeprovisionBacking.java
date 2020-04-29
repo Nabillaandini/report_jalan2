@@ -57,11 +57,46 @@ public class DeprovisionBacking extends BasicSessionBacking {
 	@EJB
 	public UserEao userEao;
 
+	@EJB
+	private LeftmenuBacking leftmenuBacking;
+	
+
+
 	private Date beginDate;
 	private Date endDate;
+	private String application;
 
 	public List<Provision> detailList = new ArrayList<Provision>();
 	public List<CountList> countList = new ArrayList<CountList>();
+	
+	private String headSum;
+	private String headDetail;
+	
+	
+
+	public String getApplication() {
+		return application;
+	}
+
+	public void setApplication(String application) {
+		this.application = application;
+	}
+
+	public String getHeadSum() {
+		return headSum;
+	}
+
+	public void setHeadSum(String headSum) {
+		this.headSum = headSum;
+	}
+
+	public String getHeadDetail() {
+		return headDetail;
+	}
+
+	public void setHeadDetail(String headDetail) {
+		this.headDetail = headDetail;
+	}
 
 	public Date getBeginDate() {
 		return beginDate;
@@ -98,11 +133,20 @@ public class DeprovisionBacking extends BasicSessionBacking {
 	public void load(ComponentSystemEvent event) {
 		FacesContext context = FacesContext.getCurrentInstance();
 		if (!context.isPostback()) {
+				if(leftmenuBacking.getAppsValue()==null) {
+					leftmenuBacking.setAppsValue("SAP");
+				}
+				this.application = leftmenuBacking.getAppsValue();
+				setHeadSum("Summary Deprovision " + this.application);
+				setHeadDetail("Detail Deprovision " + this.application);
 
+			
 		}
 	}
 
 	public void sumSearch() {
+
+		this.application = leftmenuBacking.getAppsValue();
 		if (this.beginDate == null || this.endDate == null) {
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Please fill in the required fields", "Error"));
@@ -125,6 +169,8 @@ public class DeprovisionBacking extends BasicSessionBacking {
 	}
 
 	public void detailSearch() {
+
+		this.application = leftmenuBacking.getAppsValue();
 		if (this.beginDate == null || this.endDate == null) {
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Please fill in the required fields", "Error"));
@@ -150,7 +196,7 @@ public class DeprovisionBacking extends BasicSessionBacking {
 		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
 		String date = DATE_FORMAT.format(this.beginDate);
 		String end = DATE_FORMAT.format(this.endDate);
-		String path="D:/deprov_" +date+ "_"+ end + ".pdf";
+		String path="C:/report_result/deprov_" +date+ "_"+ end + ".pdf";
 		try {
 			File file = new File(path);
 			FileOutputStream fileout = new FileOutputStream(file);
@@ -162,7 +208,7 @@ public class DeprovisionBacking extends BasicSessionBacking {
 
 			Image image;
 			try {
-				image = Image.getInstance("D:/report_iam/iam-reportWeb/WebContent/img/mandiri-logo.png");
+				image = Image.getInstance("C:/report_result/img/mandiri-logo.png");
 				image.setAlignment(Image.MIDDLE);
 				image.scaleToFit(200, 100);
 
@@ -179,7 +225,10 @@ public class DeprovisionBacking extends BasicSessionBacking {
 			font.setSize(24);
 			document.addTitle("IAM User Deprovisioning Report : " + date);
 			Paragraph paragraph1 = new Paragraph();
-			paragraph1.add("IAM User Deprovisioning Report " + date + " - " + end);
+			paragraph1.add("IAM User Deprovisioning Report : ");
+			paragraph1.add("\n");
+			paragraph1.add("Tanggal :" + date + " - " + end +"\n");
+			paragraph1.add("Total User Deprov : " +detailList.size());
 			paragraph1.add("\n");
 			paragraph1.setAlignment(Element.ALIGN_CENTER);
 			paragraph1.setFont(font);

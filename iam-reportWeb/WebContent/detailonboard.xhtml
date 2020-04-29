@@ -49,29 +49,21 @@
 								headerText="#{msgbundle['text.page.detailonboard.colomn_1']}" />
 							<p:column
 								headerText="#{msgbundle['text.page.detailonboard.colomn_2']}" />
-							<p:column
-								headerText="#{msgbundle['text.page.detailonboard.colomn_3']}" />
 
 						</p:row>
 					</p:columnGroup>
 					<p:column>
 						<f:facet name="header">
-							<h:outputText value="Tanggal SAP Flatfile" />
+							<h:outputText value="Date" />
 						</f:facet>
-						<h:outputText value="#{user.lastUpdate}" />
+						<h:outputText value="#{user.date}" />
 					</p:column>
 
 					<p:column>
 						<f:facet name="header">
 							<h:outputText value="User Id" />
 						</f:facet>
-						<h:outputText value="#{user.userId}" />
-					</p:column>
-					<p:column>
-						<f:facet name="header">
-							<h:outputText value="Full Name" />
-						</f:facet>
-						<h:outputText value="#{user.fullName}" />
+						<h:outputText value="#{user.name}" />
 					</p:column>
 
 				</p:dataTable>

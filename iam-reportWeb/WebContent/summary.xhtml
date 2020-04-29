@@ -45,9 +45,10 @@
 							<p:column
 								headerText="#{msgbundle['text.page.summary.date']}" />
 							<p:column
-								headerText="#{msgbundle['text.page.summary.total_update']}" />
-							<p:column
 								headerText="#{msgbundle['text.page.summary.total_onboard']}" />
+							<p:column
+								headerText="#{msgbundle['text.page.summary.total_update']}" />
+							
 							<p:column
 								headerText="#{msgbundle['text.page.summary.total_disable']}" />
 						
@@ -57,16 +58,16 @@
 						<h:outputText style="text-align:center"
 							value="#{user.date}" />
 					</p:column>
-
-					<p:column>
-						<h:outputText style="text-align:center"
-							value="#{user.countUpdate}" />
-					</p:column>
 					<p:column>
 						<h:outputText style="text-align:center"
 							value="#{user.countOnboard}" />
 
 					</p:column>
+					<p:column>
+						<h:outputText style="text-align:center"
+							value="#{user.countUpdate}" />
+					</p:column>
+					
 					<p:column>
 						<h:outputText style="text-align:center"
 							value="#{user.countDisabled}" />

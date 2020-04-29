@@ -1,0 +1,88 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="templates/layout.xhtml">
+
+	<ui:define name="metadata">
+		<f:event type="preRenderView" listener="#{changeBacking.load}" />
+	</ui:define>
+
+	<ui:define name="content">
+		<h:form id="mainform" autocomplete="off">
+			<p:growl id="msgs" sticky="true" />
+
+			<p:panel header="#{msgbundle['text.page.sumchanges.title']}">
+
+				<h:panelGrid columns="3" cellpadding="10" border="0">
+
+
+					<h:outputLabel for="beginDate"
+						value="#{msgbundle['text.page.sumchanges.begindate']}"
+						style="margin-right:20px;" />
+					<p:datePicker id="beginDate" value="#{changeBacking.beginDate}"
+						showIcon="true" />
+					<p:spacer />
+
+					<h:outputLabel value="#{msgbundle['text.page.sumchanges.enddate']}"
+						style="margin-right:20px;" />
+					<p:datePicker id="endDate" value="#{changeBacking.endDate}"
+						showIcon="true" />
+					<p:spacer />
+
+
+					<p:commandButton
+						value="#{msgbundle['text.page.sumchanges.search']}"
+						action="#{changeBacking.sumSearch}" process="@all"
+						update="msgs,table" />
+				</h:panelGrid>
+			
+
+				<p:dataTable id="table" var="user"
+					value="#{changeBacking.countList}"
+					style="margin-top:20px;margin-bottom:20px">
+					<p:columnGroup type="header">
+						<p:row>
+							<p:column
+								headerText="#{msgbundle['text.page.sumchanges.colomn_1']}" />
+							<p:column
+								headerText="#{msgbundle['text.page.sumchanges.colomn_2']}" />
+								<p:column
+								headerText="#{msgbundle['text.page.sumchanges.colomn_3']}" />
+						</p:row>
+					</p:columnGroup>
+
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Tanggal" />
+						</f:facet>
+						<h:outputText value="#{user.date}" />
+					</p:column>
+					<p:column align="center">
+						<f:facet name="header">
+							<h:outputText value="Total User Domain" />
+						</f:facet>
+						<h:outputText value="#{user.domain}" />
+
+					</p:column>
+					<p:column align="center">
+						<f:facet name="header">
+							<h:outputText value="Total User Aplikasi" />
+						</f:facet>
+						<h:outputText value="#{user.apps}" />
+
+					</p:column>
+
+				</p:dataTable>
+				<p:commandButton value="#{msgbundle['text.page.summary.tofile']}"
+					action="#{changeBacking.sumToFile}" process="@all"
+					update="msgs,table" />
+				<p:spacer />
+
+				
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

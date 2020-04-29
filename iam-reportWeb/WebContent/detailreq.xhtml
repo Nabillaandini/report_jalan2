@@ -7,64 +7,75 @@
 	template="templates/layout.xhtml">
 
 	<ui:define name="metadata">
-		<f:event type="preRenderView" listener="#{deprovisionBacking.load}" />
+		<f:event type="preRenderView" listener="#{requestBacking.load}" />
 	</ui:define>
 
 	<ui:define name="content">
 		<h:form id="mainform" autocomplete="off">
 			<p:growl id="msgs" sticky="true" />
 
-			<p:panel header="#{deprovisionBacking.headSum}">
+			<p:panel header="#{msgbundle['text.page.detailreq.title']}">
 
 				<h:panelGrid columns="3" cellpadding="10" border="0">
 
 
 					<h:outputLabel for="beginDate"
-						value="#{msgbundle['text.page.sumdeprov.begindate']}"
+						value="#{msgbundle['text.page.detailreq.begindate']}"
 						style="margin-right:20px;" />
-					<p:datePicker id="beginDate" value="#{deprovisionBacking.beginDate}"
+					<p:datePicker id="beginDate" value="#{requestBacking.beginDate}"
 						showIcon="true" />
 					<p:spacer />
 
 					<h:outputLabel
-						value="#{msgbundle['text.page.sumdeprov.enddate']}"
+						value="#{msgbundle['text.page.detailreq.enddate']}"
 						style="margin-right:20px;" />
-					<p:datePicker id="endDate" value="#{deprovisionBacking.endDate}"
+					<p:datePicker id="endDate" value="#{requestBacking.endDate}"
 						showIcon="true" />
 					<p:spacer />
-
-
+					<h:outputLabel value="Apps Name" style="margin-right:20px;" />
+					<p:selectOneMenu id="application"
+						value="#{requestBacking.appsName}">
+						<f:selectItems value="#{requestBacking.appsList}" />
+					</p:selectOneMenu>
+					<p:spacer />
 					<p:commandButton
-						value="#{msgbundle['text.page.sumdeprov.search']}"
-						action="#{deprovisionBacking.sumSearch}" process="@all"
+						value="#{msgbundle['text.page.detailreq.search']}"
+						action="#{requestBacking.detailSearch}" process="@all"
 						update="msgs,table" />
 				</h:panelGrid>
 
 				<p:dataTable id="table" var="user"
-					value="#{deprovisionBacking.countList}"
+					value="#{requestBacking.detailList}"
 					style="margin-top:20px;margin-bottom:20px" rows="10"
                  paginator="true" rowsPerPageTemplate="5,10,15">
 					<p:columnGroup type="header">
 						<p:row>
 							<p:column
-								headerText="#{msgbundle['text.page.sumdeprov.colomn_1']}" />
+								headerText="#{msgbundle['text.page.detailreq.colomn_1']}" />
 							<p:column
-								headerText="#{msgbundle['text.page.sumdeprov.colomn_2']}" />
+								headerText="#{msgbundle['text.page.detailreq.colomn_3']}" />
 						</p:row>
 					</p:columnGroup>
 
 					<p:column>
+					<f:facet name="header">
+							<h:outputText value="Date" />
+						</f:facet>
 						<h:outputText value="#{user.date}" />
 					</p:column>
+				
 					<p:column>
+					<f:facet name="header">
+							<h:outputText value="Username" />
+						</f:facet>
 
-						<h:outputText value="#{user.count}" />
+						<h:outputText value="#{user.temp}" />
 
 					</p:column>
 
 				</p:dataTable>
 				<p:commandButton value="#{msgbundle['text.page.summary.tofile']}"
-					action="#{deprovisionBacking.provToFile}" process="@all"
+					action="#{requestBacking.detailToFile}" process="@all"
 					update="msgs,table" />
 
 			</p:panel>

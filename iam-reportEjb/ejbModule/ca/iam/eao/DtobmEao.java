@@ -28,20 +28,18 @@ import ca.iam.util.ReportConn;
 
 public class DtobmEao {
 
-	public ArrayList<CountList> countData(Date begin_date, Date end_date, String type)
+	public ArrayList<CountList> countProvDTOBM(Date begin_date, Date end_date)
 			throws SQLException, ParseException {
 
 		ResultSet rs = null;
-		Connection conn = ReportConn.getConnection();
+		Connection conn = SQLConn.getConnectionSql();
 		ArrayList<CountList> resultCount = new ArrayList<CountList>();
-		System.out.println(type);
-
 		try {
 
 			java.sql.Date begin = new java.sql.Date(begin_date.getTime());
 			java.sql.Date end = new java.sql.Date(end_date.getTime());
-			if (type.equalsIgnoreCase("onboard")) {
-				CallableStatement stmt = conn.prepareCall("{call countOnboardDTOBM(?,?)}");
+			
+				CallableStatement stmt = conn.prepareCall("{call countProvDTOBM(?,?)}");
 				stmt.setDate(1, (java.sql.Date) begin);
 				stmt.setDate(2, (java.sql.Date) end);
 
@@ -50,8 +48,8 @@ public class DtobmEao {
 
 				try {
 					while (rs.next()) {
-						int count = rs.getInt(1);
-						Date date = rs.getDate(2);
+						int count = rs.getInt(2);
+						Date date = rs.getDate(1);
 						String date_str = Helper.dateToString(date);
 						CountList temp = new CountList(date_str, count);
 						resultCount.add(temp);
@@ -59,45 +57,7 @@ public class DtobmEao {
 				} finally {
 					stmt.close();
 				}
-			} else if (type.equalsIgnoreCase("update")) {
-				CallableStatement stmt = conn.prepareCall("{call countUpdateDTOBM(?,?)}");
-				stmt.setDate(1, (java.sql.Date) begin);
-				stmt.setDate(2, (java.sql.Date) end);
-
-				stmt.execute();
-				rs = stmt.getResultSet();
-
-				try {
-					while (rs.next()) {
-						int count = rs.getInt(1);
-						Date date = rs.getDate(2);
-						String date_str = Helper.dateToString(date);
-						CountList temp = new CountList(date_str, count);
-						resultCount.add(temp);
-					}
-				} finally {
-					stmt.close();
-				}
-			} else if (type.equalsIgnoreCase("disable")) {
-				CallableStatement stmt = conn.prepareCall("{call countDisableDTOBM(?,?)}");
-				stmt.setDate(1, (java.sql.Date) begin);
-				stmt.setDate(2, (java.sql.Date) end);
-
-				stmt.execute();
-				rs = stmt.getResultSet();
-
-				try {
-					while (rs.next()) {
-						int count = rs.getInt(1);
-						Date date = rs.getDate(2);
-						String date_str = Helper.dateToString(date);
-						CountList temp = new CountList(date_str, count);
-						resultCount.add(temp);
-					}
-				} finally {
-					stmt.close();
-				}
-			}
+			
 
 		} finally {
 			conn.close();
@@ -105,7 +65,50 @@ public class DtobmEao {
 
 		return resultCount;
 	}
+	
+	public ArrayList<Provision> getProvisionData(Date begin_date, Date end_date)
+			throws SQLException, ParseException {
 
+		ResultSet rs = null;
+		Connection conn = SQLConn.getConnectionSql();
+		ArrayList<Provision> userList = new ArrayList<Provision>();
+		Provision prov = new Provision();
+
+		try {
+
+			java.sql.Date begin = new java.sql.Date(begin_date.getTime());
+			java.sql.Date end = new java.sql.Date(end_date.getTime());
+			
+				CallableStatement stmt = conn.prepareCall("{call getProvDTOBM(?,?)}");
+				stmt.setDate(1, (java.sql.Date) begin);
+				stmt.setDate(2, (java.sql.Date) end);
+
+				stmt.execute();
+				rs = stmt.getResultSet();
+
+				try {
+					while (rs.next()) {
+						Date date = rs.getDate(1);
+						String date_str = Helper.dateToString(date);
+						String type = rs.getString(2).substring(39);
+						if(type.contains("failed")||type.contains(":")) {
+							String [] arr = type.split(":");
+							type = arr[0];
+						}
+						prov = new Provision(date_str,type);
+						userList.add(prov);
+					}
+				} finally {
+					stmt.close();
+				}
+		
+
+		} finally {
+			conn.close();
+		}
+
+		return userList;
+	}
 	public ArrayList<UserUpdates> getUserOnboard(Date begin_date, Date end_date) throws SQLException, ParseException {
 
 		ResultSet rs = null;
@@ -358,45 +361,45 @@ public class DtobmEao {
 
 		return userList;
 	}
-	public ArrayList<SummaryModel> getSummaryReport(Date begin_date, Date end_date) throws SQLException, ParseException {
-
-		ResultSet rs = null;
-		Connection conn = ReportConn.getConnection();
-		ArrayList<SummaryModel> sumModel = new ArrayList<SummaryModel>();
-
-		try {
-
-			java.sql.Date begin = new java.sql.Date(begin_date.getTime());
-			java.sql.Date end = new java.sql.Date(end_date.getTime());
-
-			CallableStatement stmt = conn.prepareCall("{call summaryDTOBM(?,?)}");
-			stmt.setDate(1, (java.sql.Date) begin);
-			stmt.setDate(2, (java.sql.Date) end);
-
-			stmt.execute();
-			rs = stmt.getResultSet();
-
-			try {
-				while (rs.next()) {
-				int countOnboard = rs.getInt("countOnboard");
-				int countUpdate = rs.getInt("countUpdate");
-				int countDisabled = rs.getInt("countDisabled");
-				int phone = rs.getInt("phone");
-				int email = rs.getInt("email");
-				int name = rs.getInt("name");
-				Date date = rs.getDate("last_update");
-				String date_str = Helper.dateToString(date);
-				sumModel.add(new SummaryModel(countOnboard, countUpdate, countDisabled, phone, email, name, date_str));
-				}
-			} finally {
-				stmt.close();
-			}
-		} finally {
-			conn.close();
-		}
-
-		return sumModel;
-	}
+//	public ArrayList<SummaryModel> getSummaryReport(Date begin_date, Date end_date) throws SQLException, ParseException {
+//
+//		ResultSet rs = null;
+//		Connection conn = ReportConn.getConnection();
+//		ArrayList<SummaryModel> sumModel = new ArrayList<SummaryModel>();
+//
+//		try {
+//
+//			java.sql.Date begin = new java.sql.Date(begin_date.getTime());
+//			java.sql.Date end = new java.sql.Date(end_date.getTime());
+//
+//			CallableStatement stmt = conn.prepareCall("{call summaryDTOBM(?,?)}");
+//			stmt.setDate(1, (java.sql.Date) begin);
+//			stmt.setDate(2, (java.sql.Date) end);
+//
+//			stmt.execute();
+//			rs = stmt.getResultSet();
+//
+//			try {
+//				while (rs.next()) {
+//				int countOnboard = rs.getInt("countOnboard");
+//				int countUpdate = rs.getInt("countUpdate");
+//				int countDisabled = rs.getInt("countDisabled");
+//				int phone = rs.getInt("phone");
+//				int email = rs.getInt("email");
+//				int name = rs.getInt("name");
+//				Date date = rs.getDate("last_update");
+//				String date_str = Helper.dateToString(date);
+//				sumModel.add(new SummaryModel(countOnboard, countUpdate, countDisabled, phone, email, name, date_str));
+//				}
+//			} finally {
+//				stmt.close();
+//			}
+//		} finally {
+//			conn.close();
+//		}
+//
+//		return sumModel;
+//	}
 	
 
 }

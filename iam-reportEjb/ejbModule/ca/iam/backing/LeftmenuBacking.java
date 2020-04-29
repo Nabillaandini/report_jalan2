@@ -20,10 +20,13 @@ import javax.inject.Named;
 import org.primefaces.model.menu.DefaultMenuItem;
 import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.DefaultSubMenu;
+import org.primefaces.model.menu.MenuElement;
+import org.primefaces.model.menu.MenuItem;
 import org.primefaces.model.menu.MenuModel;
 
 import com.sun.faces.taglib.html_basic.SelectOneMenuTag;
 
+import org.primefaces.component.panelmenu.PanelMenu;
 import org.primefaces.component.selectonemenu.SelectOneMenu;
 import org.primefaces.component.selectonemenu.SelectOneMenuRenderer;
 
@@ -49,6 +52,7 @@ public class LeftmenuBacking implements Serializable{
 	private LeftmenuRules leftmenuRules;
 		
     private MenuModel model;
+    private MenuModel panelModel;
     private String headName;
     private String appsValue;
     private List<SelectItem> appsList;
@@ -95,74 +99,96 @@ public class LeftmenuBacking implements Serializable{
         DefaultSubMenu subMenu;
         SelectOneMenu subMenuType = new SelectOneMenu();
         SelectOneMenuRenderer sub;
+               
 		appsList = new ArrayList<SelectItem>();
 		appsList.add(new SelectItem("SAP","sap"));
 		appsList.add(new SelectItem("DTOBM","dtobm"));
 		appsList.add(new SelectItem("DTKBM","dtkbm"));
   
         
-        subMenu = new DefaultSubMenu(Settings.getMessageString("text.page.menu.report"));
+        subMenu = new DefaultSubMenu("");
           
-        item = new DefaultMenuItem(Settings.getMessageString("text.page.menu.summary"));
-        item.setIcon("ui-icon-clipboard");
-        item.setCommand("#{leftmenuBacking.linkMenuPanel('summary')}");
-        subMenu.addElement(item);
-        
-        item = new DefaultMenuItem(Settings.getMessageString("text.page.menu.sumonboard"));
-        item.setIcon("ui-icon-note");
-        item.setCommand("#{leftmenuBacking.linkMenuPanel('sumonboard')}");
-        subMenu.addElement(item);
-        
-        item = new DefaultMenuItem(Settings.getMessageString("text.page.menu.detailonboard"));
-        item.setIcon("ui-icon-note");
-        item.setCommand("#{leftmenuBacking.linkMenuPanel('detailonboard')}");
-        subMenu.addElement(item);
-        
-        item = new DefaultMenuItem(Settings.getMessageString("text.page.menu.sumupdate"));
-        item.setIcon("ui-icon-note");
-        item.setCommand("#{leftmenuBacking.linkMenuPanel('sumupdate')}");
-        subMenu.addElement(item);
-
-        item = new DefaultMenuItem(Settings.getMessageString("text.page.menu.detailupdate"));
-        item.setIcon("ui-icon-note");
-        item.setCommand("#{leftmenuBacking.linkMenuPanel('detailupdate')}");
-        subMenu.addElement(item);
-        
-        item = new DefaultMenuItem(Settings.getMessageString("text.page.menu.sumdisabled"));
-        item.setIcon("ui-icon-note");
-        item.setCommand("#{leftmenuBacking.linkMenuPanel('sumdisabled')}");
-        subMenu.addElement(item);
-        
-        item = new DefaultMenuItem(Settings.getMessageString("text.page.menu.detaildisabled"));
-        item.setIcon("ui-icon-note");
-        item.setCommand("#{leftmenuBacking.linkMenuPanel('detaildisabled')}");
-        subMenu.addElement(item);
-        
-        item = new DefaultMenuItem(Settings.getMessageString("text.page.menu.sumprov"));
-        item.setIcon("ui-icon-person");
-        item.setCommand("#{leftmenuBacking.linkMenuPanel('sumprov')}");
-        subMenu.addElement(item);
-        
-        item = new DefaultMenuItem(Settings.getMessageString("text.page.menu.detailprov"));
-        item.setIcon("ui-icon-person");
-        item.setCommand("#{leftmenuBacking.linkMenuPanel('detailprov')}");
-        subMenu.addElement(item);
-        
-        item = new DefaultMenuItem(Settings.getMessageString("text.page.menu.detaildeprov"));
-        item.setIcon("ui-icon-person");
-        item.setCommand("#{leftmenuBacking.linkMenuPanel('detaildeprov')}");
-        subMenu.addElement(item);
+		/*
+		 * item = new
+		 * DefaultMenuItem(Settings.getMessageString("text.page.menu.summary"));
+		 * item.setIcon("ui-icon-clipboard");
+		 * item.setCommand("#{leftmenuBacking.linkMenuPanel('summary')}");
+		 * subMenu.addElement(item);
+		 * 
+		 * item = new
+		 * DefaultMenuItem(Settings.getMessageString("text.page.menu.sumonboard"));
+		 * item.setIcon("ui-icon-note");
+		 * item.setCommand("#{leftmenuBacking.linkMenuPanel('sumonboard')}");
+		 * subMenu.addElement(item);
+		 * 
+		 * item = new
+		 * DefaultMenuItem(Settings.getMessageString("text.page.menu.detailonboard"));
+		 * item.setIcon("ui-icon-note");
+		 * item.setCommand("#{leftmenuBacking.linkMenuPanel('detailonboard')}");
+		 * subMenu.addElement(item);
+		 * 
+		 * item = new
+		 * DefaultMenuItem(Settings.getMessageString("text.page.menu.sumupdate"));
+		 * item.setIcon("ui-icon-note");
+		 * item.setCommand("#{leftmenuBacking.linkMenuPanel('sumupdate')}");
+		 * subMenu.addElement(item);
+		 * 
+		 * item = new
+		 * DefaultMenuItem(Settings.getMessageString("text.page.menu.detailupdate"));
+		 * item.setIcon("ui-icon-note");
+		 * item.setCommand("#{leftmenuBacking.linkMenuPanel('detailupdate')}");
+		 * subMenu.addElement(item);
+		 * 
+		 * item = new
+		 * DefaultMenuItem(Settings.getMessageString("text.page.menu.sumdisabled"));
+		 * item.setIcon("ui-icon-note");
+		 * item.setCommand("#{leftmenuBacking.linkMenuPanel('sumdisabled')}");
+		 * subMenu.addElement(item);
+		 * 
+		 * item = new
+		 * DefaultMenuItem(Settings.getMessageString("text.page.menu.detaildisabled"));
+		 * item.setIcon("ui-icon-note");
+		 * item.setCommand("#{leftmenuBacking.linkMenuPanel('detaildisabled')}");
+		 * subMenu.addElement(item);
+		 * 
+		 * item = new
+		 * DefaultMenuItem(Settings.getMessageString("text.page.menu.sumprov"));
+		 * item.setIcon("ui-icon-person");
+		 * item.setCommand("#{leftmenuBacking.linkMenuPanel('sumprov')}");
+		 * subMenu.addElement(item);
+		 * 
+		 * item = new
+		 * DefaultMenuItem(Settings.getMessageString("text.page.menu.detailprov"));
+		 * item.setIcon("ui-icon-person");
+		 * item.setCommand("#{leftmenuBacking.linkMenuPanel('detailprov')}");
+		 * subMenu.addElement(item);
+		 * 
+		 * item = new
+		 * DefaultMenuItem(Settings.getMessageString("text.page.menu.detaildeprov"));
+		 * item.setIcon("ui-icon-person");
+		 * item.setCommand("#{leftmenuBacking.linkMenuPanel('detaildeprov')}");
+		 * subMenu.addElement(item);
+		 */
         
         item = new DefaultMenuItem(Settings.getMessageString("text.page.menu.logout"));
         item.setIcon("ui-icon-close");
         item.setCommand("#{leftmenuBacking.linkMenuPanel('logout')}");
         subMenu.addElement(item);
+        
        
 
         model.addElement(subMenu);
         
     }
 	
+	public MenuModel getPanelModel() {
+		return panelModel;
+	}
+
+	public void setPanelModel(MenuModel panelModel) {
+		this.panelModel = panelModel;
+	}
+
 	public String linkMenuPanel(String str) throws SQLException{
 		String result = "";
 		result = leftmenuRules.setLinkMenuPanel(str);
@@ -170,7 +196,11 @@ public class LeftmenuBacking implements Serializable{
 	}
 	
 	public void submitApp() {
+		FacesContext context = FacesContext.getCurrentInstance();
+	
+		if(this.appsValue != null) {
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage( getAppsValue() + "is selected"));
+		}
 		System.out.println("submitApp : " + getAppsValue());
 		
 		

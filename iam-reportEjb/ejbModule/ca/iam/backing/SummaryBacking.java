@@ -103,7 +103,7 @@ public class SummaryBacking extends BasicSessionBacking {
 		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
 		String date = DATE_FORMAT.format(this.beginDate);
 		String end = DATE_FORMAT.format(this.endDate);
-		String path="D:/summary_" +date+ "_"+ end + ".pdf";
+		String path="C:/report_result/summary_" +date+ "_"+ end + ".pdf";
 		System.out.println(res);
 		try {
 			File file = new File(path);
@@ -117,7 +117,7 @@ public class SummaryBacking extends BasicSessionBacking {
 		
 			Image image;
 			try {
-				image = Image.getInstance("D:/report_iam/iam-reportWeb/WebContent/img/mandiri-logo.png");
+				image = Image.getInstance("C:/report_result/img/mandiri-logo.png");
 				image.setAlignment(Image.MIDDLE);
 				image.scaleToFit(200, 100);
 
@@ -133,7 +133,10 @@ public class SummaryBacking extends BasicSessionBacking {
 			font.setSize(24);
 			document.addTitle("IAM Summary " + this.application + " Report:" + date + " - " + end);
 			Paragraph paragraph1 = new Paragraph();
-			paragraph1.add("IAM Summary " + this.application + " Report: " + date + " - " + end);
+			paragraph1.add("IAM Summary Report: " + this.application);
+			paragraph1.add("\n");
+			paragraph1.add("Tanggal : "+ date + " - " + end +"\n");
+			paragraph1.add("\n");
 			paragraph1.setAlignment(Element.ALIGN_CENTER);
 			paragraph1.setFont(font);
 			document.add(paragraph1);
@@ -232,10 +235,6 @@ public class SummaryBacking extends BasicSessionBacking {
 			try {
 				if (this.application.equalsIgnoreCase("sap")) {
 					this.detailSumModel= userEao.getSummaryReport(this.beginDate, this.endDate);
-				} else if (this.application.equalsIgnoreCase("dtobm")) {
-					this.detailSumModel = dtobmEao.getSummaryReport(this.beginDate, this.endDate);
-				} else if (this.application.equalsIgnoreCase("dtkbm")) {
-					this.detailSumModel = dtkbmEao.getSummaryReport(this.beginDate, this.endDate);
 				}
 
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching is finished"));
@@ -277,7 +276,7 @@ public class SummaryBacking extends BasicSessionBacking {
 		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
 		String date = DATE_FORMAT.format(this.beginDate);
 		String end = DATE_FORMAT.format(this.endDate);
-		String path="D:/summaryprov_" +date+ "_"+ end + ".pdf";
+		String path="C:/report_result/summaryprov_" +date+ "_"+ end + ".pdf";
 		System.out.println(res);
 		try {
 			File file = new File(path);
@@ -291,7 +290,7 @@ public class SummaryBacking extends BasicSessionBacking {
 		
 			Image image;
 			try {
-				image = Image.getInstance("D:/report_iam/iam-reportWeb/WebContent/img/mandiri-logo.png");
+				image = Image.getInstance("C:/report_result/img/mandiri-logo.png");
 				image.setAlignment(Image.MIDDLE);
 				image.scaleToFit(200, 100);
 
@@ -307,7 +306,10 @@ public class SummaryBacking extends BasicSessionBacking {
 			font.setSize(24);
 			document.addTitle("IAM Prov & Deprov Report: " + date + " - " + end);
 			Paragraph paragraph1 = new Paragraph();
-			paragraph1.add("IAM Prov & Deprov Report: " + date + " - " + end);
+			paragraph1.add("IAM Prov & Deprov Report: "+ this.application);
+			paragraph1.add("\n");
+			paragraph1.add("Tanggal : "+ date + " - " + end);
+			paragraph1.add("\n");
 			paragraph1.setAlignment(Element.ALIGN_CENTER);
 			paragraph1.setFont(font);
 			document.add(paragraph1);

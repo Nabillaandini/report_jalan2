@@ -13,6 +13,8 @@
 /javax.inject.jar
 /javax.servlet-api.jar
 /jaxrpc.jar
+/jcommon-1.0.23.jar
+/jfreechart-1.0.19.jar
 /jstl-1.2.jar
 /layout-7.1.10.jar
 /log4j.jar

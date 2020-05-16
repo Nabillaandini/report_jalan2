@@ -20,10 +20,16 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
+import javax.faces.model.SelectItem;
 import javax.inject.Named;
 
 import org.jfree.util.LineBreakIterator;
+import org.primefaces.model.chart.Axis;
+import org.primefaces.model.chart.AxisType;
+import org.primefaces.model.chart.BarChartModel;
+import org.primefaces.model.chart.ChartSeries;
 
+import com.google.gson.Gson;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -82,6 +88,96 @@ public class OnboardBacking extends BasicSessionBacking {
 	public List<UserModel> detailList = new ArrayList<UserModel>();
 	public List<CountList> countList = new ArrayList<CountList>();
 	public String application;
+	
+	private String visibilityMonth = "block";
+	private String visibilityWeek = "none";
+
+	private List<SelectItem> periodList;
+	private String period;
+	
+	private BarChartModel barModel = new BarChartModel();
+	
+	private Date month1;
+	private Date month2;
+
+	
+public String detailListJson = "";
+	
+	public String getDetailListJson() {
+		return detailList != null? new Gson().toJson(detailList) : "";
+	}
+	
+	public void setDetailListJson(String detailList) {
+		this.detailListJson = detailList;
+	}	
+	public String countListJson = "";
+	
+	public String getcountListJson() {
+		System.out.println(countList !=null ? countList.get(0).getDate():"IS NULL ");
+		return countList != null? new Gson().toJson(countList) : "";
+	}
+	
+	public void setcountListJson(String countList) {
+		this.countListJson = countList;
+	}	
+	
+	
+
+	public BarChartModel getBarModel() {
+		return barModel;
+	}
+
+	public void setBarModel(BarChartModel barModel) {
+		this.barModel = barModel;
+	}
+
+	public Date getMonth1() {
+		return month1;
+	}
+
+	public void setMonth1(Date month1) {
+		this.month1 = month1;
+	}
+
+	public Date getMonth2() {
+		return month2;
+	}
+
+	public void setMonth2(Date month2) {
+		this.month2 = month2;
+	}
+
+	public String getVisibilityMonth() {
+		return visibilityMonth;
+	}
+
+	public void setVisibilityMonth(String visibilityMonth) {
+		this.visibilityMonth = visibilityMonth;
+	}
+
+	public String getVisibilityWeek() {
+		return visibilityWeek;
+	}
+
+	public void setVisibilityWeek(String visibilityWeek) {
+		this.visibilityWeek = visibilityWeek;
+	}
+
+	public List<SelectItem> getPeriodList() {
+		return periodList;
+	}
+
+	public void setPeriodList(List<SelectItem> periodList) {
+		this.periodList = periodList;
+	}
+
+	public String getPeriod() {
+		return period;
+	}
+
+	public void setPeriod(String period) {
+		this.period = period;
+	}
 
 	public String getHeadSum() {
 		return headSum;
@@ -150,8 +246,8 @@ public class OnboardBacking extends BasicSessionBacking {
 			paragraph1.add("IAM ONBOARD REPORT");
 			paragraph1.add("\n");
 			paragraph1.add("Tanggal :" + date + " - " + end +"\n");
-			paragraph1.add("Total User Onboard : " + detailList.size());
-			paragraph1.add(Chunk.NEWLINE);
+			paragraph1.add("Total User Onboard : " + detailList.size() +"\n");
+			paragraph1.add("\n");
 			paragraph1.setAlignment(Element.ALIGN_CENTER);
 			paragraph1.setFont(font);
 			document.add(paragraph1);
@@ -219,6 +315,8 @@ public class OnboardBacking extends BasicSessionBacking {
 	public List<UserModel> getDetailList() {
 		return detailList;
 	}
+	
+
 
 	public void setDetailList(List<UserModel> detailList) {
 		this.detailList = detailList;
@@ -234,6 +332,10 @@ public class OnboardBacking extends BasicSessionBacking {
 
 	public void load(ComponentSystemEvent event) {
 		FacesContext context = FacesContext.getCurrentInstance();
+		periodList = new ArrayList<SelectItem>();
+		periodList.add(new SelectItem("monthly", "monthly"));
+		periodList.add(new SelectItem("weekly", "weekly"));
+		periodList.add(new SelectItem("daily", "daily"));
 		if (!context.isPostback()) {
 				if(leftmenuBacking.getAppsValue()==null) {
 					leftmenuBacking.setAppsValue("SAP");
@@ -241,21 +343,37 @@ public class OnboardBacking extends BasicSessionBacking {
 				this.application = leftmenuBacking.getAppsValue();
 				setHeadSum("Summary Onboard ");
 				setHeadDetail("Detail Onboard ");
+				this.beginDate = null;
+				this.endDate = null;
+				this.detailList = null;
+				this.countList = null;
+				this.visibilityMonth = "block";
+				this.visibilityWeek = "none";
+				this.month1 = null;
+				this.month2 = null;
+				this.barModel = new BarChartModel();
 
 			
 		}
 	}
 
 	public void sumSearch() {
-		System.out.println("value of apps: " + leftmenuBacking.getAppsValue());
-		this.application = leftmenuBacking.getAppsValue();
-		if (this.beginDate == null || this.endDate == null) {
+		this.countList = null;
+		this.barModel = new BarChartModel();
+		if ((this.beginDate == null || this.endDate == null) && (this.month1 == null || this.month2 == null)) {
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Please fill in the required fields", "Error"));
-		} else {
+		}else {
 			try {
-				this.countList = userEao.countData(this.beginDate, this.endDate, "onboard");
-
+				if(this.period.equalsIgnoreCase("daily")) {
+					this.countList = userEao.countOnboardDaily(beginDate, endDate);
+				}else if(this.period.equalsIgnoreCase("monthly")) {
+					this.countList = userEao.countOnboardMonthly(month1, month2);
+					createBarModels();
+				}else {
+					this.countList = userEao.countOnboardWeekly(beginDate, endDate);
+				}
+				getcountListJson();
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching is finished"));
 
 			} catch (SQLException e) {
@@ -271,13 +389,20 @@ public class OnboardBacking extends BasicSessionBacking {
 	}
 
 	public void detailSearch() {
-		this.application = leftmenuBacking.getAppsValue();
-		if (this.beginDate == null || this.endDate == null) {
+		this.detailList = null;
+		if ((this.beginDate == null || this.endDate == null) && (this.month1 == null || this.month2 == null)) {
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Please fill in the required fields", "Error"));
-		} else {
+		}else {
 			try {
+				if(this.period.equalsIgnoreCase("daily")) {
 					this.detailList = userEao.getUserOnboard(this.beginDate, this.endDate);
+					
+				}else if(this.period.equalsIgnoreCase("monthly")) {
+					this.detailList = userEao.getUserOnboardMonthly(month1, month2);
+				}else {
+					this.detailList = userEao.getUserOnboardWeekly(beginDate, endDate);
+				}
 				
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching is finished"));
 
@@ -292,5 +417,56 @@ public class OnboardBacking extends BasicSessionBacking {
 			}
 		}
 	}
+	
+	public void updateSelected() {
 
+		switch (period) {
+		case "weekly":
+			setVisibilityWeek("block");
+			setVisibilityMonth("none");
+			break;
+		case "monthly":
+			setVisibilityWeek("none");
+			setVisibilityMonth("block");
+			break;
+		case "daily":
+			setVisibilityWeek("block");
+			setVisibilityMonth("none");
+			break;
+		}
+	}
+	private BarChartModel initBarModel() {
+		BarChartModel model = new BarChartModel();
+        ChartSeries onboard = new ChartSeries();
+        onboard.setLabel("Onboard");
+        for(int i =0;i<countList.size();i++) {
+        	onboard.set(countList.get(i).getDate(), countList.get(i).getCount());
+        	
+        }
+        
+        model.addSeries(onboard);
+ 
+        return model;
+    }
+ 
+    private void createBarModels() {
+        createBarModel();
+    }
+ 
+    private void createBarModel() {
+        barModel = initBarModel();
+ 
+        barModel.setTitle("Onboard Karyawan Permanent");
+        barModel.setLegendPosition("ne");
+ 
+        Axis xAxis = barModel.getAxis(AxisType.X);
+        xAxis.setLabel("Period");
+ 
+        Axis yAxis = barModel.getAxis(AxisType.Y);
+        yAxis.setLabel("Total");
+        yAxis.setMin(0);
+        yAxis.setMax(200);
+    }
+    
+    
 }

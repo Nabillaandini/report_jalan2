@@ -56,11 +56,21 @@ public class LeftmenuBacking implements Serializable{
     private String headName;
     private String appsValue;
     private List<SelectItem> appsList;
+    private String isLogin;
     
 //    private SelectOneMenuView selectOneMenu;
     
+    
 	public MenuModel getModel() {
 		return model;
+	}
+
+	public String getIsLogin() {
+		return isLogin;
+	}
+
+	public void setIsLogin(String isLogin) {
+		this.isLogin = isLogin;
 	}
 
 	public void setModel(MenuModel model) {
@@ -106,16 +116,15 @@ public class LeftmenuBacking implements Serializable{
 		appsList.add(new SelectItem("DTKBM","dtkbm"));
   
         
-        subMenu = new DefaultSubMenu("");
+        subMenu = new DefaultSubMenu("Summary");
           
-		/*
-		 * item = new
-		 * DefaultMenuItem(Settings.getMessageString("text.page.menu.summary"));
-		 * item.setIcon("ui-icon-clipboard");
-		 * item.setCommand("#{leftmenuBacking.linkMenuPanel('summary')}");
-		 * subMenu.addElement(item);
-		 * 
-		 * item = new
+		
+		  item = new DefaultMenuItem(Settings.getMessageString("text.page.menu.summary"));
+		  item.setIcon("ui-icon-clipboard");
+		  item.setCommand("#{leftmenuBacking.linkMenuPanel('summary')}");
+		  subMenu.addElement(item);
+		  
+		 /* item = new
 		 * DefaultMenuItem(Settings.getMessageString("text.page.menu.sumonboard"));
 		 * item.setIcon("ui-icon-note");
 		 * item.setCommand("#{leftmenuBacking.linkMenuPanel('sumonboard')}");

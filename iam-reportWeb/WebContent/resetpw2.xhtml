@@ -1,0 +1,95 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="templates/layout.xhtml">
+
+	<ui:define name="metadata">
+		<f:event type="preRenderView" listener="#{changeBacking.load}" />
+	</ui:define>
+
+	<ui:define name="content">
+		<h:form id="mainform" autocomplete="off">
+			<p:growl id="msgs" sticky="true" />
+
+			<p:panel header="Reset Password Aplikasi">
+
+				<h:panelGrid columns="3" cellpadding="10" border="0">
+								<h:outputLabel value="Period" style="margin-right:20px;" />
+					<p:selectOneMenu id="period" value="#{provisionBacking.period}">
+						<f:selectItems value="#{provisionBacking.periodList}"
+							onclick="myFunction()" />
+					</p:selectOneMenu>
+					<p:spacer />
+					<h:outputLabel
+						value="#{msgbundle['text.page.detailchanges.begindate']}"
+						style="margin-right:20px;" />
+					<p:datePicker pattern="dd/MM/yyyy" id="beginDate" value="#{changeBacking.beginDate}"
+						showIcon="true" />
+					<p:spacer />
+
+					<h:outputLabel
+						value="#{msgbundle['text.page.detailchanges.enddate']}"
+						style="margin-right:20px;" />
+					<p:datePicker pattern="dd/MM/yyyy" id="endDate" value="#{changeBacking.endDate}"
+						showIcon="true" />
+					<p:spacer />
+
+					<h:outputLabel value="Apps Name" style="margin-right:20px;" />
+					<p:selectOneMenu id="application"
+						value="#{changeBacking.appsName}">
+						<f:selectItems value="#{changeBacking.appsList}" />
+					</p:selectOneMenu>
+					
+						<p:spacer />
+					<p:commandButton
+						value="#{msgbundle['text.page.detailchanges.search']}"
+						action="#{changeBacking.detailSearch}" process="@all"
+						update="msgs,table" />
+				</h:panelGrid>
+
+				<p:dataTable id="table" var="user" value="#{changeBacking.detailList}"
+					style="margin-top:20px;margin-bottom:20px" rows="10"
+                 paginator="true" rowsPerPageTemplate="5,10,15">
+					<p:columnGroup type="header">
+						<p:row>
+							<p:column
+								headerText="#{msgbundle['text.page.detailchanges.colomn_1']}" />
+							<p:column
+								headerText="1x" />
+								<p:column
+								headerText="2x" />
+								<p:column
+								headerText="3x" />
+								<p:column
+								headerText=">3x" />
+
+						</p:row>
+					</p:columnGroup>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Tanggal" />
+						</f:facet>
+						<h:outputText value="#{user.date}" />
+					</p:column>
+
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="User Id" />
+						</f:facet>
+						<h:outputText value="#{user.type}" />
+					</p:column>
+
+				</p:dataTable>
+
+				<p:spacer />
+
+				<p:commandButton value="#{msgbundle['text.page.detailonboard.tofile']}"
+						action="#{changeBacking.userDomainPW}" process="@all"
+						update="msgs,table" />
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

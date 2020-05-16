@@ -22,13 +22,13 @@
 					<h:outputLabel for="beginDate"
 						value="#{msgbundle['text.page.sumreq.begindate']}"
 						style="margin-right:20px;" />
-					<p:datePicker id="beginDate" value="#{requestBacking.beginDate}"
+					<p:datePicker pattern="dd/MM/yyyy" id="beginDate" value="#{requestBacking.beginDate}"
 						showIcon="true" />
 					<p:spacer />
 
 					<h:outputLabel value="#{msgbundle['text.page.sumreq.enddate']}"
 						style="margin-right:20px;" />
-					<p:datePicker id="endDate" value="#{requestBacking.endDate}"
+					<p:datePicker pattern="dd/MM/yyyy" id="endDate" value="#{requestBacking.endDate}"
 						showIcon="true" />
 					<p:spacer />
 					<h:outputLabel value="Apps Name" style="margin-right:20px;" />

@@ -5,104 +5,98 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:pe="http://primefaces.org/ui/extensions"
 	template="templates/layout.xhtml">
-
 	<ui:define name="metadata">
-		<f:event type="preRenderView" listener="#{onboardBacking.load}" />
+		<f:event type="preRenderView" listener="#{changeBacking.load}" />
+		
 	</ui:define>
 
 	<ui:define name="content">
 		<h:form id="mainform" autocomplete="off">
 			<p:growl id="msgs" sticky="true" />
 
-			<p:panel header="#{onboardBacking.headDetail}">
+			<p:panel header="Summary Reset Password Domain - IDM Portal">
 
 				<h:panelGrid columns="3" cellpadding="10" border="0">
 					<h:outputLabel value="Period" style="margin-right:20px;" />
-					<p:selectOneMenu id="period" value="#{onboardBacking.period}">
-						<f:selectItems value="#{onboardBacking.periodList}" />
-						<p:ajax
-							update="datelbl1,datelbl2,beginDate,endDate,monthlabel1,month1,monthlabel2,month2,spacer1,spacer2"
-							listener="#{onboardBacking.updateSelected}" />
+					<p:selectOneMenu id="period" value="#{changeBacking.period}">
+						<f:selectItems value="#{changeBacking.periodList}"/>
+						<p:ajax update="datelbl1,datelbl2,beginDate,endDate,monthlabel1,month1,monthlabel2,month2,spacer1,spacer2,downloadTable,downloadChart" listener="#{changeBacking.updateSelected}" />
 					</p:selectOneMenu>
 					<p:spacer />
 
 					<h:outputLabel id="datelbl1"
 						value="#{msgbundle['text.page.detaildeprov.begindate']}"
-						style="margin-right:20px;display:#{onboardBacking.visibilityWeek}" />
-					<p:datePicker pattern="dd/MM/yyyy" id="beginDate"
-						styleClass="someClassName" value="#{onboardBacking.beginDate}"
-						showIcon="true" style="display:#{onboardBacking.visibilityWeek}" />
-					<p:spacer id="spacer1"
-						style="display:#{onboardBacking.visibilityWeek}" />
+						style="margin-right:20px;display:#{changeBacking.visibilityWeek}" />
+					<p:datePicker pattern="dd/MM/yyyy" id="beginDate" styleClass="someClassName"
+						value="#{changeBacking.beginDate}" showIcon="true" style="display:#{changeBacking.visibilityWeek}"/>
+					<p:spacer id="spacer1" style="display:#{changeBacking.visibilityWeek}"/>
 
 					<h:outputLabel id="datelbl2"
 						value="#{msgbundle['text.page.detaildeprov.enddate']}"
-						style="margin-right:20px;display:#{onboardBacking.visibilityWeek}" />
-					<p:datePicker pattern="dd/MM/yyyy" id="endDate"
-						value="#{onboardBacking.endDate}"
-						style="display:#{onboardBacking.visibilityWeek}" showIcon="true" />
-					<p:spacer id="spacer2"
-						style="display:#{onboardBacking.visibilityWeek}" />
-
-					<p:outputLabel id="monthlabel1" value="Select Month Begin:"
-						style="display:#{onboardBacking.visibilityMonth}" />
+						style="margin-right:20px;display:#{changeBacking.visibilityWeek}" />
+					<p:datePicker pattern="dd/MM/yyyy" id="endDate" value="#{changeBacking.endDate}"  style="display:#{changeBacking.visibilityWeek}"
+						showIcon="true" />
+					<p:spacer id="spacer2" style="display:#{changeBacking.visibilityWeek}" />
+					
+					<p:outputLabel id="monthlabel1" value="Select Month Begin:" style="display:#{changeBacking.visibilityMonth}"/>
 					<p:datePicker id="month1" view="month" pattern="MM/yyyy"
-						value="#{onboardBacking.month1}" yearNavigator="true"
-						yearRange="2000:2030"
-						style="display:#{onboardBacking.visibilityMonth}" />
-					<p:spacer id="spacer3"
-						style="display:#{onboardBacking.visibilityMonth}" />
-
-					<p:outputLabel id="monthlabel2" value="Select Month End:"
-						style="display:#{onboardBacking.visibilityMonth}" />
+								value="#{changeBacking.month1}" yearNavigator="true" yearRange="2000:2030" style="display:#{changeBacking.visibilityMonth}"/>
+					<p:spacer id="spacer3" style="display:#{changeBacking.visibilityMonth}"/>
+					
+					<p:outputLabel id="monthlabel2"  value="Select Month End:" style="display:#{changeBacking.visibilityMonth}"/>
 					<p:datePicker id="month2" view="month" pattern="MM/yyyy"
-						value="#{onboardBacking.month2}" yearNavigator="true"
-						yearRange="2000:2030"
-						style="display:#{onboardBacking.visibilityMonth}" />
-					<p:spacer id="spacer4"
-						style="display:#{onboardBacking.visibilityMonth}" />
+								value="#{changeBacking.month2}" yearNavigator="true" yearRange="2000:2030" style="display:#{changeBacking.visibilityMonth}"/>
+					<p:spacer id="spacer4" style="display:#{changeBacking.visibilityMonth}"/>
+					
+					<h:outputLabel value="Type" style="margin-right:20px;" />
+					<p:selectOneMenu id="type" value="#{changeBacking.type}">
+						<f:selectItems value="#{changeBacking.typeList}"/>
+					</p:selectOneMenu>
+						<p:spacer />
 					<p:commandButton
-						value="#{msgbundle['text.page.detailonboard.search']}"
-						action="#{onboardBacking.detailSearch}" process="@all"
-						update="msgs,table,countListJson,beginDate,endDate,month1,month2" />
+						value="#{msgbundle['text.page.detaildeprov.search']}"
+						action="#{changeBacking.sumSearch}" process="@all"
+						update="msgs,table,chartFromTable,countListJson" />
 				</h:panelGrid>
 
 				<p:dataTable id="table" var="user"
-					value="#{onboardBacking.detailList}"
+					value="#{changeBacking.countList}"
 					style="margin-top:20px;margin-bottom:20px" rows="10"
-					paginator="true" rowsPerPageTemplate="5,10,15">
+                 paginator="true" rowsPerPageTemplate="5,10,15">
 					<p:columnGroup type="header">
 						<p:row>
 							<p:column
-								headerText="#{msgbundle['text.page.detailonboard.colomn_1']}" />
+								headerText="Periode" />
 							<p:column
-								headerText="#{msgbundle['text.page.detailonboard.colomn_2']}" />
-
+								headerText="#{msgbundle['text.page.sumdeprov.colomn_2']}" />
+								
 						</p:row>
 					</p:columnGroup>
-					<p:column>
-						<f:facet name="header">
-							<h:outputText value="Period" />
-						</f:facet>
-						<h:outputText value="#{user.date}" />
-					</p:column>
 
 					<p:column>
-						<f:facet name="header">
-							<h:outputText value="User Id" />
-						</f:facet>
-						<h:outputText value="#{user.name}" />
+						<h:outputText value="#{user.date}" />
+					</p:column>
+					<p:column>
+
+						<h:outputText value="#{user.count}" />
+
 					</p:column>
 
 				</p:dataTable>
-<p:commandButton onclick="exportTableInPDF()" value="Download PDF"  id="downloadTable" />
+				<p:commandButton onclick="exportChartInPDF()" value="Download PDF" id="downloadChart" style="display:#{changeBacking.visibilityMonth}"/>
 				
-			
-				<p:inputText type="hidden"  id="countListJson" value="#{onboardBacking.detailListJson}" />
+				   
+				<p:commandButton onclick="exportTableInPDF()" value="Download PDF"  id="downloadTable" style="display:#{changeBacking.visibilityWeek}"/>
+				
+				<p:chart id="chartFromTable" type="bar" model="#{changeBacking.barModel}" style="height:400px;"  responsive="true"  widgetVar="lineWV"/>
+				
+				<p:inputText type="hidden"  id="countListJson" value="#{changeBacking.countListJson}" />
+				
+<br /><br />
+
 			</p:panel>
 		</h:form>
-
-		<script>
+	<script>
 	
 	var countList;
 	  var array = [];
@@ -112,7 +106,7 @@
 	  var appLabel = "";
 	  var elements = "";
 	  var docDefinition = "";
-	  
+	  var type = ""
 	  var date1="";
 	  var date2="";
 	
@@ -126,6 +120,7 @@
 		element2 = $("#mainform\\:month2_input").val();
 		periodLabel = $("#mainform\\:period_label").text();
 		appLabel = $("#mainform\\:application_label").text();
+		type = $("#mainform\\:type_label").text();
 		elements = $(".someClassName").val();
 		
 		var date1=$("#mainform\\:beginDate_input").val();
@@ -188,7 +183,7 @@
         	var arry = [];
         	arry.push(i+1);
         	arry.push(countList[i].date);
-        	arry.push(countList[i].name);
+        	arry.push(countList[i].count);
         	ary.push(arry);
         }
         console.log(ary);
@@ -206,7 +201,7 @@
     	 }	  
 	  );
 	  docDefinition.content.unshift(
-	    	 {text: periodLabel+ ' Success Onboard Report \n ' + element1 + " - " + element2, style:'header'},
+	    	 {text: periodLabel+ ' Domain Password Reset Report \n ' + element1 + " - " + element2, style:'header'},
 		  );
 	  docDefinition.content.unshift(
 			  {
@@ -216,22 +211,22 @@
 	           },
 		  );
 	  
-	 array.unshift([{text: 'No', style: 'tableHeader'},{text: 'Period', style: 'tableHeader'}, {text: 'ID', style: 'tableHeader'}]);
+	 array.unshift([{text: 'No', style: 'tableHeader'},{text: 'Period', style: 'tableHeader'}, {text: 'Total', style: 'tableHeader'}]);
       
       console.log(docDefinition);
-     pdfMake.createPdf(docDefinition).download("userOnboardReport"+periodLabel+"_"+appLabel+element1+"-"+element2+".pdf"); 
+     pdfMake.createPdf(docDefinition).download("domainResetPass_"+type+"_"+periodLabel+"_"+appLabel+element1+"-"+element2+".pdf"); 
    }
    
    function exportTableInPDF() {
 		  initData();
 		  docDefinition.content.unshift(
-			    	 {text: periodLabel+ ' Success Onboard Report \n'+" " + date1 +element1+ " - " + date2+element2, style:'header'},
+			    	 {text: periodLabel+ ' Domain Password Reset Report \n'+" " + date1 + " - " + date2, style:'header'},
 				  );
-		  array.unshift([{text: 'No', style: 'tableHeader'},{text: 'Period', style: 'tableHeader'}, {text: 'ID', style: 'tableHeader'}]);
+		  array.unshift([{text: 'No', style: 'tableHeader'},{text: 'Period', style: 'tableHeader'}, {text: 'Total', style: 'tableHeader'}]);
 	      
 	      console.log(docDefinition);
-	     pdfMake.createPdf(docDefinition).download("userOnboardReport"+periodLabel+"_"+date1+"-"+date2+".pdf"); 
+	     pdfMake.createPdf(docDefinition).download("domainResetPass_"+type+"_"+periodLabel+"_"+date1+"-"+date2+".pdf"); 
 	   }
 </script>
-	</ui:define>
+		</ui:define>
 </ui:composition>

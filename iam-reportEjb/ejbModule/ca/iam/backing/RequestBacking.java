@@ -263,58 +263,68 @@ public class RequestBacking extends BasicSessionBacking {
 		appsList.add(new SelectItem("RAOS","RAOS"));
 		appsList.add(new SelectItem("LOS-IPS","LOS-IPS"));
 		appsList.add(new SelectItem("DTKBM","dtkbm"));
+		appsList.add(new SelectItem("SAP eBudgeting","SAP eBudgeting"));
+		appsList.add(new SelectItem("SAP eHCMS","SAP eHCMS"));
+		appsList.add(new SelectItem("SAP FICO","SAP FICO"));
+		appsList.add(new SelectItem("SAP MM","SAP MM"));
+		appsList.add(new SelectItem("SKD KPEI","SKD KPEI"));
+		
 		if (!context.isPostback()) {
 				if(leftmenuBacking.getAppsValue()==null) {
 					leftmenuBacking.setAppsValue("SAP");
 				}
 				this.application = leftmenuBacking.getAppsValue();
-				setHeadSum("Summary Onboard " + this.application);
-				setHeadDetail("Detail Onboard " + this.application);
+				setHeadSum("Summary User Request " + this.application);
+				setHeadDetail("Detail User Request " + this.application);
+
+				this.beginDate = null;
+				this.endDate = null;
+				this.detailList = null;
 		}
 	}
 
-	public void sumSearch() {
-		System.out.println("ini appsName " + this.appsName);
-		if (this.beginDate == null || this.endDate == null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Please fill in the required fields", "Error"));
-		} else {
-			try {
-				this.countList = userEao.countUserRequest(beginDate, endDate,this.appsName);
-
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching is finished"));
-
-			} catch (SQLException e) {
-
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Database connection error"));
-
-				e.printStackTrace();
-			} catch (ParseException e) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Reading input failed"));
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void detailSearch() {
-		if (this.beginDate == null || this.endDate == null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Please fill in the required fields", "Error"));
-		}else {
-			try {
-				this.detailList = userEao.getUserRequest(this.beginDate, this.endDate,this.appsName);
-
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching is finished"));
-
-			} catch (SQLException e) {
-
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Database connection error"));
-
-				e.printStackTrace();
-			} catch (ParseException e) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Reading input failed"));
-				e.printStackTrace();
-			}
-		}
-	}
+//	public void sumSearch() {
+//		System.out.println("ini appsName " + this.appsName);
+//		if (this.beginDate == null || this.endDate == null) {
+//			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Please fill in the required fields", "Error"));
+//		} else {
+//			try {
+//				this.countList = userEao.countUserRequest(beginDate, endDate,this.appsName);
+//
+//				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching is finished"));
+//
+//			} catch (SQLException e) {
+//
+//				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Database connection error"));
+//
+//				e.printStackTrace();
+//			} catch (ParseException e) {
+//				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Reading input failed"));
+//				e.printStackTrace();
+//			}
+//		}
+//	}
+//
+//	public void detailSearch() {
+//		if (this.beginDate == null || this.endDate == null) {
+//			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Please fill in the required fields", "Error"));
+//		}else {
+//			try {
+//				this.detailList = userEao.getUserRequest(this.beginDate, this.endDate,this.appsName);
+//
+//				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching is finished"));
+//
+//			} catch (SQLException e) {
+//
+//				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Database connection error"));
+//
+//				e.printStackTrace();
+//			} catch (ParseException e) {
+//				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Reading input failed"));
+//				e.printStackTrace();
+//			}
+//		}
+//	}
 	
 
 }

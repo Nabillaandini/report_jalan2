@@ -20,17 +20,15 @@
 
 					<h:outputLabel value="#{msgbundle['text.page.summary.begindate']}"
 						style="margin-right:20px;" />
-					<p:datePicker id="beginDate" value="#{summaryBacking.beginDate}"
-						showIcon="true" />
+					<p:datePicker view="month" pattern="MM/yyyy" id="beginDate"
+						value="#{summaryBacking.beginDate}"  yearRange="2000:2030" showIcon="true" />
 					<p:spacer />
 
 					<h:outputLabel value="#{msgbundle['text.page.summary.enddate']}"
 						style="margin-right:20px;" />
-					<p:datePicker id="endDate" value="#{summaryBacking.endDate}"
-						showIcon="true" />
+					<p:datePicker view="month" pattern="MM/yyyy" yearRange="2000:2030" id="endDate"
+						value="#{summaryBacking.endDate}" showIcon="true" />
 					<p:spacer />
-
-
 					<p:commandButton value="#{msgbundle['text.page.summary.search']}"
 						action="#{summaryBacking.getSummaryReport}" process="@all"
 						update="msgs,table" />
@@ -39,24 +37,24 @@
 				<p:dataTable id="table" var="user"
 					value="#{summaryBacking.detailSumModel}"
 					style="margin-top:20px;margin-bottom:20px" rows="10"
-                 paginator="true" rowsPerPageTemplate="5,10,15">
+					paginator="true" rowsPerPageTemplate="5,10,15">
 					<p:columnGroup type="header">
 						<p:row>
-							<p:column
-								headerText="#{msgbundle['text.page.summary.date']}" />
+							<p:column headerText="Period" />
 							<p:column
 								headerText="#{msgbundle['text.page.summary.total_onboard']}" />
-							<p:column
-								headerText="#{msgbundle['text.page.summary.total_update']}" />
-							
-							<p:column
-								headerText="#{msgbundle['text.page.summary.total_disable']}" />
-						
+							<p:column headerText="SAP" />
+							<p:column headerText="DTOBM" />
+							<p:column headerText="DTKBM" />
+							<p:column headerText="Terminate" />
+							<p:column headerText="Reset PW Domain" />
+							<p:column headerText="Reset PW Aplikasi" />
+
+
 						</p:row>
 					</p:columnGroup>
 					<p:column>
-						<h:outputText style="text-align:center"
-							value="#{user.date}" />
+						<h:outputText style="text-align:center" value="#{user.date}" />
 					</p:column>
 					<p:column>
 						<h:outputText style="text-align:center"
@@ -64,21 +62,145 @@
 
 					</p:column>
 					<p:column>
-						<h:outputText style="text-align:center"
-							value="#{user.countUpdate}" />
+						<h:outputText style="text-align:center" value="#{user.sap}" />
+
 					</p:column>
-					
+					<p:column>
+						<h:outputText style="text-align:center" value="#{user.dtobm}" />
+
+					</p:column>
+					<p:column>
+						<h:outputText style="text-align:center" value="#{user.dtkbm}" />
+
+					</p:column>
 					<p:column>
 						<h:outputText style="text-align:center"
-							value="#{user.countDisabled}" />
+							value="#{user.countDeprov}" />
 					</p:column>
-					
-				</p:dataTable>
-				<p:commandButton value="#{msgbundle['text.page.summary.tofile']}"
-					action="#{summaryBacking.toFile}" process="@all"
-					update="msgs,table" />
+					<p:column>
+						<h:outputText style="text-align:center"
+							value="#{user.resetDomain}" />
+					</p:column>
+					<p:column>
+						<h:outputText style="text-align:center" value="#{user.resetApps}" />
+					</p:column>
 
+				</p:dataTable>
+	<p:commandButton onclick="exportTableInPDF()" value="Download PDF"  id="downloadTable" />
+				
 			</p:panel>
 		</h:form>
+		<script>
+		
+			var summaries = #{summaryBacking.detailSumModel};
+
+			function getAlert(){
+				alert(summaries);
+			}
+			function generateTableObject(summary)
+			{
+				var table = {
+						style: 'tableExample',
+		     			headerRows: 1,
+		     			alignment: 'justify',
+		     			pageBreak: 'after',
+		     			table: {
+		     				widths: [100, '*', 200, '*'],
+		     				body: [
+		     					['Domain','Subdomain', 'Total', 'Summary'],
+		     					[{colSpan: 2, text:'Jumlah Karyawan Migrasi dari flatfile'},'','0','' ],
+		     					[{colSpan: 2, text:'Jumlah Karyawan Migrasi dari AD'},'','0','' ],
+		     					
+		     					[{rowSpan: 3, text: 'jumlah Karyawan Onboard Trusted Source'}, 'Permanent (SAP)', summary.countOnboard, {rowSpan: 3, text:'0' }],
+		     					['','Outsource (DTOBM)', '0' , ''],
+		     					['','Outsource (DTKBM)', '0' , ''],
+		     					[{rowSpan: 13, text: 'jumlah Karyawan Success Request Aplikasi'}, 'SAP eIICMS', summary.sap, {rowSpan: 13, text:'0' }],
+		     					['','SAP eBudgeting', summary.ebudgeting , ''],
+		     					['','SAP FICO', summary.fico , ''],
+		     					['','SAP MM', summary.mm , ''],
+		     					['','SAP SRM', summary.srm , ''],
+		     					['','SKD KPEI', summary.skd , ''],
+		     					['','DTOBM', summary.dtobm , ''],
+		     					['','DTKBM', summary.dtkbm , ''],
+		     					['','MMS', summary.mms , ''],
+		     					['','RAOS', summary.raos , ''],
+		     					['','AAP', summary.aap , ''],
+		     					['','Web Bill Gateway', summary.wbg , ''],
+		     					['','Web Corporate Payable', summary.wcp , ''],
+		     					[{colSpan: 2, text:'Jumlah Karyawan Reset Password Doamin di IDM Portal'},'',summary.resetDomain,'' ],
+		     					[{rowSpan: 13, text: 'Jumlah Karyawan Reset Password Aplikasi'}, 'SAP eHCMS', summary.ehcmspw, {rowSpan: 13, text:'0' }],
+		     					['','SAP eBudgeting', summary.ebupw , ''],
+		     					['','SAP FICO', summary.ficopw , ''],
+		     					['','SAP MM', summary.mmpw , ''],
+		     					['','SAP SRM', summary.srmpw , ''],
+		     					['','SKD KPEI', summary.skdpw , ''],
+		     					['','DTOBM', summary.dtobmpw , ''],
+		     					['','DTKBM', summary.dtkbmpw , ''],
+		     					['','MMS', summary.mmspw , ''],
+		     					['','RAOS', summary.raospw , ''],
+		     					['','AAP', summary.aappw] , ''],
+		     					['','Web Bill Gateway', summary.webgpw , ''],
+		     					['','Web Corporate Payable', summary.wcppw , ''],
+		     					[{rowSpan: 3, text: 'Jumlah Karyawan Offboard dari trusted source'}, 'Permanent (SAP)', summary.deprovSAP, {rowSpan: 3, text:'0' }],
+		     					['','Outsource (DTOBM)', summary.deprovDTOBM , ''],
+		     					['','Outsource (DTKBM)', summary.deprovDTKBM , '']
+		     					
+		     				]
+						}
+					}
+				return table;
+			}
+			
+			function exportTableInPDF()
+			{
+				console.log('this is summary list');
+				console.log(summaries);
+				
+				var docDefinition = {
+				         content: [
+				        	 
+			        	 ],
+			 		 	styles: {
+			 				header: {
+			 					fontSize: 18,
+			 					bold: true,
+			 					margin: [0, 0, 0, 10],
+			 					alignment :'center'
+			 				},
+			 				subheader: {
+			 					fontSize: 16,
+			 					bold: true,
+			 					margin: [0, 10, 0, 5]
+			 				},
+			 				tableExample: {
+			 					margin: [0, 5, 0, 15]
+			 				},
+			 				tableHeader: {
+			 					bold: true,
+			 					fontSize: 13,
+			 					height : 20,
+			 					fillColor :'#0d006e',
+			 					color: 'white'
+			 				}
+			 			},
+			 			defaultStyle: {
+			 				// alignment: 'justify'
+			 			}
+			       }
+				
+				for(let i = 0; i &lt; summaries.length; i++){
+					var period = {
+			        		 text: 'Period : ' + summaries[i].date
+		        	 }
+					docDefinition.content.push(period);
+					docDefinition.content.push(generateTableObject(summaries[i]));
+				}
+					console.log(docDefinition);
+					 var element1 = $("#mainform\\:beginDate_input").val();
+					  var element2 = $("#mainform\\:endDate_input").val();
+			   	pdfMake.createPdf(docDefinition).open();
+			    pdfMake.createPdf(docDefinition).download("summaryReport_"+element1+".pdf"); 
+			}
+		</script>
 	</ui:define>
 </ui:composition>

@@ -138,6 +138,10 @@ public class UpdateBacking extends BasicSessionBacking {
 			setHeadSum("Summary Update ");
 			setHeadDetail("Detail Update ");
 
+			this.beginDate = null;
+			this.endDate = null;
+			this.detailList = null;
+
 		}
 	}
 
@@ -226,6 +230,7 @@ public class UpdateBacking extends BasicSessionBacking {
 			paragraph1.add("\n");
 			paragraph1.add("Tanggal :" + date + " - " + end +"\n");
 			paragraph1.add("Total User Update : " + detailList.size() + "\n");
+			paragraph1.add("\n");
 			paragraph1.add(Chunk.NEWLINE);
 			paragraph1.setAlignment(Element.ALIGN_CENTER);
 			paragraph1.setFont(font);

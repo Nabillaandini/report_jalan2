@@ -1,6 +1,7 @@
 package ca.iam.backing;
 
 import java.io.Serializable;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -84,7 +85,7 @@ public class LoginBacking implements Serializable{
 		}
 	}
 	
-	public String submitLogin() throws SQLException{	
+	public String submitLogin() throws SQLException, NoSuchAlgorithmException{	
 		FacesContext context = FacesContext.getCurrentInstance();
 		this.setCloseSession(false);
 		String result = "";

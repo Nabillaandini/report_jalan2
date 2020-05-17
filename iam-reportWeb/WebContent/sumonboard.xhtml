@@ -64,7 +64,7 @@
 					<p:commandButton
 						value="#{msgbundle['text.page.sumonboard.search']}"
 						action="#{onboardBacking.sumSearch}" process="@all"
-						update="msgs,table,chartFromTable,countListJson" />
+						update="msgs,table,chartFromTable,countListJson,tgl1,tgl2,bln1,bln2" />
 				</h:panelGrid>
 
 
@@ -104,6 +104,20 @@
 				
 				<p:chart id="chartFromTable" type="bar" model="#{onboardBacking.barModel}" style="height:400px;"  responsive="true"  widgetVar="lineWV"/>
 				<p:inputText type="hidden"  id="countListJson" value="#{onboardBacking.countListJson}" />
+				
+				<h:outputText id="tgl1" value="#{onboardBacking.beginDate}" style="display:none">
+					<f:convertDateTime pattern="dd-MM-yyyy" />
+				</h:outputText>
+				<h:outputText value="#{onboardBacking.beginDate}" />
+				<h:outputText id="tgl2" value="#{onboardBacking.endDate}" style="display:none">
+					<f:convertDateTime pattern="dd-MM-yyyy" />
+				</h:outputText>
+				<h:outputText id="bln1" value="#{onboardBacking.month1}" style="display:none">
+					<f:convertDateTime pattern="MM-yyyy" />
+				</h:outputText>
+				<h:outputText id="bln2" value="#{onboardBacking.month2}" style="display:none">
+					<f:convertDateTime pattern="MM-yyyy" />
+				</h:outputText>
 
 			</p:panel>
 		</h:form>
@@ -117,15 +131,19 @@
 	  var appLabel = "";
 	  var elements = "";
 	  var docDefinition = "";
-	  
-	  var date1="";
-	  var date2="";
+	  var tgl1="";
+	  var tgl2="";
+	  var bln1="";
+	  var bln2="";
 	
 	function initData(){
 		countList ="";
 		countList = JSON.parse($("#mainform\\:countListJson").val());
 		console.log(countList);
-		
+		tgl1= $("#mainform\\:tgl1").text();
+		tgl2= $("#mainform\\:tgl2").text();
+		bln1= $("#mainform\\:bln1").text();
+		bln2= $("#mainform\\:bln2").text();
 		array = getData();
 		element1 = $("#mainform\\:month1_input").val();
 		element2 = $("#mainform\\:month2_input").val();
@@ -211,7 +229,7 @@
     	 }	  
 	  );
 	  docDefinition.content.unshift(
-	    	 {text: periodLabel+ ' Success Onboard Report \n ' + element1 + " - " + element2, style:'header'},
+	    	 {text: periodLabel+ ' Success Onboard Report \n ' + bln1 + " - " + bln2, style:'header'},
 		  );
 	  docDefinition.content.unshift(
 			  {
@@ -224,18 +242,22 @@
 	 array.unshift([{text: 'No', style: 'tableHeader'},{text: 'Period', style: 'tableHeader'}, {text: 'Total', style: 'tableHeader'}]);
       
       console.log(docDefinition);
-     pdfMake.createPdf(docDefinition).download("userOnboardReport"+periodLabel+"_"+appLabel+element1+"-"+element2+".pdf"); 
+     pdfMake.createPdf(docDefinition).download("userOnboardReport"+periodLabel+"_"+appLabel+bln1+"-"+bln2+".pdf"); 
    }
    
    function exportTableInPDF() {
+	   
 		  initData();
+		  var datefrom = periodLabel=="monthly"? bln1:tgl1;
+	      var dateto = periodLabel=="monthly"? bln2:tgl2;
 		  docDefinition.content.unshift(
-			    	 {text: periodLabel+ ' Success Onboard Report \n'+" " + date1 + " - " + date2, style:'header'},
+			    	 {text: periodLabel+ ' Success Onboard Report \n'+" " + dateto + " - " + datefrom, style:'header'},
 				  );
 		  array.unshift([{text: 'No', style: 'tableHeader'},{text: 'Period', style: 'tableHeader'}, {text: 'Total', style: 'tableHeader'}]);
 	      
 	      console.log(docDefinition);
-	     pdfMake.createPdf(docDefinition).download("userOnboardReport"+periodLabel+"_"+date1+"-"+date2+".pdf"); 
+    	 
+	     pdfMake.createPdf(docDefinition).download("userOnboardReport"+periodLabel+"_"+datefrom+"-"+dateto+".pdf"); 
 	   }
 </script>
 		</ui:define>

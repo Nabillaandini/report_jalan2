@@ -7,7 +7,7 @@
 	template="templates/layout.xhtml">
 	<ui:define name="metadata">
 		<f:event type="preRenderView" listener="#{deprovisionBacking.load}" />
-		
+
 	</ui:define>
 
 	<ui:define name="content">
@@ -19,35 +19,51 @@
 				<h:panelGrid columns="3" cellpadding="10" border="0">
 					<h:outputLabel value="Period" style="margin-right:20px;" />
 					<p:selectOneMenu id="period" value="#{deprovisionBacking.period}">
-						<f:selectItems value="#{deprovisionBacking.periodList}"/>
-						<p:ajax update="datelbl1,datelbl2,beginDate,endDate,monthlabel1,month1,monthlabel2,month2,spacer1,spacer2,downloadTable,downloadChart" listener="#{deprovisionBacking.updateSelected}" />
+						<f:selectItems value="#{deprovisionBacking.periodList}" />
+						<p:ajax
+							update="datelbl1,datelbl2,beginDate,endDate,monthlabel1,month1,monthlabel2,month2,spacer1,spacer2,downloadTable,downloadChart"
+							listener="#{deprovisionBacking.updateSelected}" />
 					</p:selectOneMenu>
 					<p:spacer />
 
 					<h:outputLabel id="datelbl1"
 						value="#{msgbundle['text.page.detaildeprov.begindate']}"
 						style="margin-right:20px;display:#{deprovisionBacking.visibilityWeek}" />
-					<p:datePicker pattern="dd/MM/yyyy" id="beginDate" styleClass="someClassName"
-						value="#{deprovisionBacking.beginDate}" showIcon="true" style="display:#{deprovisionBacking.visibilityWeek}"/>
-					<p:spacer id="spacer1" style="display:#{deprovisionBacking.visibilityWeek}"/>
+					<p:datePicker pattern="dd/MM/yyyy" id="beginDate"
+						styleClass="someClassName" value="#{deprovisionBacking.beginDate}"
+						showIcon="true"
+						style="display:#{deprovisionBacking.visibilityWeek}" />
+					<p:spacer id="spacer1"
+						style="display:#{deprovisionBacking.visibilityWeek}" />
 
 					<h:outputLabel id="datelbl2"
 						value="#{msgbundle['text.page.detaildeprov.enddate']}"
 						style="margin-right:20px;display:#{deprovisionBacking.visibilityWeek}" />
-					<p:datePicker pattern="dd/MM/yyyy" id="endDate" value="#{deprovisionBacking.endDate}"  style="display:#{deprovisionBacking.visibilityWeek}"
+					<p:datePicker pattern="dd/MM/yyyy" id="endDate"
+						value="#{deprovisionBacking.endDate}"
+						style="display:#{deprovisionBacking.visibilityWeek}"
 						showIcon="true" />
-					<p:spacer id="spacer2" style="display:#{deprovisionBacking.visibilityWeek}" />
-					
-					<p:outputLabel id="monthlabel1" value="Select Month:" style="display:#{deprovisionBacking.visibilityMonth}"/>
+					<p:spacer id="spacer2"
+						style="display:#{deprovisionBacking.visibilityWeek}" />
+
+					<p:outputLabel id="monthlabel1" value="Select Month:"
+						style="display:#{deprovisionBacking.visibilityMonth}" />
 					<p:datePicker id="month1" view="month" pattern="MM/yyyy"
-								value="#{deprovisionBacking.month1}" yearNavigator="true" yearRange="2000:2030" style="display:#{deprovisionBacking.visibilityMonth}"/>
-					<p:spacer id="spacer3" style="display:#{deprovisionBacking.visibilityMonth}"/>
-					
-					<p:outputLabel id="monthlabel2"  value="Select Month:" style="display:#{deprovisionBacking.visibilityMonth}"/>
+						value="#{deprovisionBacking.month1}" yearNavigator="true"
+						yearRange="2000:2030"
+						style="display:#{deprovisionBacking.visibilityMonth}" />
+					<p:spacer id="spacer3"
+						style="display:#{deprovisionBacking.visibilityMonth}" />
+
+					<p:outputLabel id="monthlabel2" value="Select Month:"
+						style="display:#{deprovisionBacking.visibilityMonth}" />
 					<p:datePicker id="month2" view="month" pattern="MM/yyyy"
-								value="#{deprovisionBacking.month2}" yearNavigator="true" yearRange="2000:2030" style="display:#{deprovisionBacking.visibilityMonth}"/>
-					<p:spacer id="spacer4" style="display:#{deprovisionBacking.visibilityMonth}"/>
-					
+						value="#{deprovisionBacking.month2}" yearNavigator="true"
+						yearRange="2000:2030"
+						style="display:#{deprovisionBacking.visibilityMonth}" />
+					<p:spacer id="spacer4"
+						style="display:#{deprovisionBacking.visibilityMonth}" />
+
 					<h:outputLabel value="Apps Name" style="margin-right:20px;" />
 					<p:selectOneMenu id="application"
 						value="#{deprovisionBacking.appsName}">
@@ -59,22 +75,20 @@
 					<p:commandButton
 						value="#{msgbundle['text.page.detaildeprov.search']}"
 						action="#{deprovisionBacking.sumSearch}" process="@all"
-						update="msgs,table,chartFromTable,countListJson" />
+						update="msgs,table,chartFromTable,countListJson,tgl1,tgl2,bln1,bln2" />
 				</h:panelGrid>
 
 				<p:dataTable id="table" var="user"
 					value="#{deprovisionBacking.countList}"
 					style="margin-top:20px;margin-bottom:20px" rows="10"
-                 paginator="true" rowsPerPageTemplate="5,10,15">
+					paginator="true" rowsPerPageTemplate="5,10,15">
 					<p:columnGroup type="header">
 						<p:row>
-							<p:column
-								headerText="Periode" />
+							<p:column headerText="Periode" />
 							<p:column
 								headerText="#{msgbundle['text.page.sumdeprov.colomn_2']}" />
-								<p:column
-								headerText="Trusted Source" />
-								
+							<p:column headerText="Trusted Source" />
+
 						</p:row>
 					</p:columnGroup>
 
@@ -93,39 +107,69 @@
 					</p:column>
 
 				</p:dataTable>
-				
-				<p:commandButton onclick="exportChartInPDF()" value="Download PDF" id="downloadChart" style="display:#{deprovisionBacking.visibilityMonth}">
-				
-				   
-				</p:commandButton>
-				<p:commandButton onclick="exportTableInPDF()" value="Download PDF"  id="downloadTable" style="display:#{deprovisionBacking.visibilityWeek}">
-				
-				   
-				</p:commandButton>
-				
-					<p:chart id="chartFromTable" type="bar" model="#{deprovisionBacking.barModel}" style="height:400px;"  responsive="true"  widgetVar="lineWV"/>
 
-<br /><br />
+				<p:commandButton onclick="exportChartInPDF()" value="Download PDF"
+					id="downloadChart"
+					style="display:#{deprovisionBacking.visibilityMonth}">
 
-				<p:inputText type="hidden"  id="countListJson" value="#{deprovisionBacking.countListJson}" />
+
+				</p:commandButton>
+				<p:commandButton onclick="exportTableInPDF()" value="Download PDF"
+					id="downloadTable"
+					style="display:#{deprovisionBacking.visibilityWeek}">
+
+
+				</p:commandButton>
+
+				<p:chart id="chartFromTable" type="bar"
+					model="#{deprovisionBacking.barModel}" style="height:400px;"
+					responsive="true" widgetVar="lineWV" />
+
+				<br />
+				<br />
+
+				<p:inputText type="hidden" id="countListJson"
+					value="#{deprovisionBacking.countListJson}" />
+				<h:outputText id="tgl1" value="#{deprovisionBacking.beginDate}" style="display:none">
+					<f:convertDateTime pattern="dd-MM-yyyy" />
+				</h:outputText>
+				<h:outputText value="#{deprovisionBacking.beginDate}" />
+				<h:outputText id="tgl2" value="#{deprovisionBacking.endDate}" style="display:none">
+					<f:convertDateTime pattern="dd-MM-yyyy" />
+				</h:outputText>
+				<h:outputText id="bln1" value="#{deprovisionBacking.month1}" style="display:none">
+					<f:convertDateTime pattern="MM-yyyy" />
+				</h:outputText>
+				<h:outputText id="bln2" value="#{deprovisionBacking.month2}" style="display:none">
+					<f:convertDateTime pattern="MM-yyyy" />
+				</h:outputText>
+
 			</p:panel>
 		</h:form>
-	<script>
+		<script>
 	
-	var countList;
+	  var countList;
 	  var array = [];
 	  var element1 = "";
 	  var element2 = "";
-	var periodLabel = "";
+	  var periodLabel = "";
 	  var appLabel = "";
 	  var elements = "";
 	  var docDefinition = "";
 	
+	  
+	  var tgl1="";
+	  var tgl2="";
+	  var bln1="";
+	  var bln2="";
 	function initData(){
 		countList ="";
 		countList = JSON.parse($("#mainform\\:countListJson").val());
 		console.log(countList);
-		
+		tgl1= $("#mainform\\:tgl1").text();
+		tgl2= $("#mainform\\:tgl2").text();
+		bln1= $("#mainform\\:bln1").text();
+		bln2= $("#mainform\\:bln2").text();
 		array = getData();
 		element1 = $("#mainform\\:month1_input").val();
 		element2 = $("#mainform\\:month2_input").val();
@@ -209,7 +253,7 @@
     	 }	  
 	  );
 	  docDefinition.content.unshift(
-	    	 {text: periodLabel+ ' Offboard Report Trusted Source \n '+appLabel+" " + element1 + " - " + element2, style:'header'},
+	    	 {text: periodLabel+ ' Offboard Report Trusted Source \n '+appLabel+" " + bln1 + " - " + bln2, style:'header'},
 		  );
 	  docDefinition.content.unshift(
 			  {
@@ -222,18 +266,18 @@
 	 array.unshift([{text: 'No', style: 'tableHeader'},{text: 'Period', style: 'tableHeader'}, {text: 'Total', style: 'tableHeader'}, {text: 'Trusted Source', style: 'tableHeader'}]);
       
       console.log(docDefinition);
-     pdfMake.createPdf(docDefinition).download("offboardReport"+periodLabel+"_"+appLabel+element1+"-"+element2+".pdf"); 
+   //pdfMake.createPdf(docDefinition).download("offboardReport"+periodLabel+"_"+appLabel+bln1+"-"+bln2+".pdf"); 
    }
    
    function exportTableInPDF() {
 		  initData();
 		  docDefinition.content.unshift(
-			    	 {text: periodLabel+ ' Offboard Report Trusted Source  \n'+appLabel+" " + element1 + " - " + element2, style:'header'},
+			    	 {text: periodLabel+ ' Offboard Report Trusted Source  \n'+appLabel+" " + tgl1 + " - " + tgl2, style:'header'},
 				  );
 		  array.unshift([{text: 'No', style: 'tableHeader'},{text: 'Period', style: 'tableHeader'}, {text: 'Total', style: 'tableHeader'}, {text: 'Trusted Source', style: 'tableHeader'}]);
 	      
 	      console.log(docDefinition);
-	     pdfMake.createPdf(docDefinition).download("offboardReport"+periodLabel+"_"+appLabel+element1+"-"+element2+".pdf"); 
+	     //pdfMake.createPdf(docDefinition).download("offboardReport"+periodLabel+"_"+appLabel+tgl1+"-"+tgl2+".pdf"); 
 	   }
 </script>
 	</ui:define>

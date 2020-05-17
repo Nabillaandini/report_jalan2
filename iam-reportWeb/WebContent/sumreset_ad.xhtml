@@ -56,7 +56,7 @@
 					<p:commandButton
 						value="#{msgbundle['text.page.detaildeprov.search']}"
 						action="#{changeBacking.sumSearch}" process="@all"
-						update="msgs,table,chartFromTable,countListJson" />
+						update="msgs,table,chartFromTable,countListJson,tgl1,tgl2,bln1,bln2" />
 				</h:panelGrid>
 
 				<p:dataTable id="table" var="user"
@@ -91,6 +91,20 @@
 				<p:chart id="chartFromTable" type="bar" model="#{changeBacking.barModel}" style="height:400px;"  responsive="true"  widgetVar="lineWV"/>
 				
 				<p:inputText type="hidden"  id="countListJson" value="#{changeBacking.countListJson}" />
+				<h:outputText id="tgl1" value="#{changeBacking.beginDate}" style="display:none">
+					<f:convertDateTime pattern="dd-MM-yyyy" />
+				</h:outputText>
+				<h:outputText value="#{changeBacking.beginDate}" />
+				<h:outputText id="tgl2" value="#{changeBacking.endDate}" style="display:none">
+					<f:convertDateTime pattern="dd-MM-yyyy" />
+				</h:outputText>
+				<h:outputText id="bln1" value="#{changeBacking.month1}" style="display:none">
+					<f:convertDateTime pattern="MM-yyyy" />
+				</h:outputText>
+				<h:outputText id="bln2" value="#{changeBacking.month2}" style="display:none">
+					<f:convertDateTime pattern="MM-yyyy" />
+				</h:outputText>
+				
 				
 <br /><br />
 
@@ -107,8 +121,11 @@
 	  var elements = "";
 	  var docDefinition = "";
 	  var type = ""
-	  var date1="";
-	  var date2="";
+
+		  var tgl1="";
+		  var tgl2="";
+		  var bln1="";
+		  var bln2="";
 	
 	function initData(){
 		countList ="";
@@ -122,7 +139,10 @@
 		appLabel = $("#mainform\\:application_label").text();
 		type = $("#mainform\\:type_label").text();
 		elements = $(".someClassName").val();
-		
+		tgl1= $("#mainform\\:tgl1").text();
+		tgl2= $("#mainform\\:tgl2").text();
+		bln1= $("#mainform\\:bln1").text();
+		bln2= $("#mainform\\:bln2").text();
 		var date1=$("#mainform\\:beginDate_input").val();
 		  var date2=$("#mainform\\:beginDate_input").val();
 		docDefinition = {
@@ -201,7 +221,7 @@
     	 }	  
 	  );
 	  docDefinition.content.unshift(
-	    	 {text: periodLabel+ ' Domain Password Reset Report \n ' + element1 + " - " + element2, style:'header'},
+	    	 {text: periodLabel+ ' Domain Password Reset Report \n ' + bln1 + " - " + bln2, style:'header'},
 		  );
 	  docDefinition.content.unshift(
 			  {
@@ -214,7 +234,7 @@
 	 array.unshift([{text: 'No', style: 'tableHeader'},{text: 'Period', style: 'tableHeader'}, {text: 'Total', style: 'tableHeader'}]);
       
       console.log(docDefinition);
-     pdfMake.createPdf(docDefinition).download("domainResetPass_"+type+"_"+periodLabel+"_"+appLabel+element1+"-"+element2+".pdf"); 
+     pdfMake.createPdf(docDefinition).download("domainResetPass_"+type+"_"+periodLabel+"_"+appLabel+bln1+"-"+bln2+".pdf"); 
    }
    
    function exportTableInPDF() {
@@ -225,7 +245,7 @@
 		  array.unshift([{text: 'No', style: 'tableHeader'},{text: 'Period', style: 'tableHeader'}, {text: 'Total', style: 'tableHeader'}]);
 	      
 	      console.log(docDefinition);
-	     pdfMake.createPdf(docDefinition).download("domainResetPass_"+type+"_"+periodLabel+"_"+date1+"-"+date2+".pdf"); 
+	     pdfMake.createPdf(docDefinition).download("domainResetPass_"+type+"_"+periodLabel+"_"+tgl1+"-"+tgl2+".pdf"); 
 	   }
 </script>
 		</ui:define>

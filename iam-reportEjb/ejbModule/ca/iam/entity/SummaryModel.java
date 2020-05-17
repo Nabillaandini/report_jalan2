@@ -44,6 +44,18 @@ public class SummaryModel {
 	private int mmpw;
 	private int wcppw;
 	
+	private int sumMigrasiSAP;
+	private int sumMigrasiDTOBM;
+	private int sumMigrasiDTKBM;
+	private int sumOnboardSAP;
+	private int sumOnboardDTOBM;
+	private int sumOnboardDTKBM;
+	
+	private int sumApps;
+	private int sumResetApps;
+	
+	private int sumOffboard;
+	
 	
 	public SummaryModel(int countOnboard,int countUpdate,int sap, int dtobm, int dtkbm,int mms, int raos, int wbg,int countDeprov, int resetDomain, int resetApps, int ebudgeting,
 			int fico, int mm, int srm, int skd, int deprovSAP, int deprovDTKBM, int deprovDTOBM, int wcp,int aap,int month, int year) {
@@ -69,6 +81,7 @@ public class SummaryModel {
 		this.deprovDTKBM = deprovDTKBM;
 		this.wcp  = wcp;
 		this.aap = aap;
+		this.sumApps = dtobm+dtkbm+mms+raos+wbg+ebudgeting+fico+mm+srm+skd+wcp+aap;
 	}
 	
 	

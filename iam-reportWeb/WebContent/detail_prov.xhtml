@@ -74,7 +74,7 @@
 					<p:commandButton
 						value="#{msgbundle['text.page.detailprovision.search']}"
 						action="#{provisionBacking.detailSearch}" process="@all"
-						update="msgs,table,countListJson,tgl1,tgl2,bln1,bln2" />
+						update="msgs,table,countListJson,tgl1,tgl2,bln1,bln2,size" />
 				</h:panelGrid>
 
 				<p:dataTable id="table" var="user"
@@ -111,18 +111,21 @@
 					id="downloadTable" />
 				
 				<p:inputText type="hidden"  id="countListJson" value="#{provisionBacking.detailListJson}" />
-				<h:outputText id="tgl1" value="#{deprovisionBacking.beginDate}" style="display:none">
-					<f:convertDateTime pattern="dd-MM-yyyy" />
+				<h:outputText id="tgl1" value="#{provisionBacking.beginDate}" style="display:none">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
 				</h:outputText>
-				<h:outputText value="#{deprovisionBacking.beginDate}" />
-				<h:outputText id="tgl2" value="#{deprovisionBacking.endDate}" style="display:none">
-					<f:convertDateTime pattern="dd-MM-yyyy" />
+				<h:outputText value="#{provisionBacking.beginDate}" />
+				<h:outputText id="tgl2" value="#{provisionBacking.endDate}" style="display:none">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
 				</h:outputText>
-				<h:outputText id="bln1" value="#{deprovisionBacking.month1}" style="display:none">
-					<f:convertDateTime pattern="MM-yyyy" />
+				<h:outputText id="bln1" value="#{provisionBacking.month1}" style="display:none">
+					<f:convertDateTime pattern="MM/yyyy" />
 				</h:outputText>
-				<h:outputText id="bln2" value="#{deprovisionBacking.month2}" style="display:none">
-					<f:convertDateTime pattern="MM-yyyy" />
+				<h:outputText id="bln2" value="#{provisionBacking.month2}" style="display:none">
+					<f:convertDateTime pattern="MM/yyyy" />
+				</h:outputText>
+					<h:outputText id="size" value="#{provisionBacking.detailSize}"
+					style="display:none">
 				</h:outputText>
 				
 				
@@ -140,21 +143,22 @@
 		  var title = "";
 		  var filename = "";
 		  var tableHeader = "";
-		  
+		  var size = "";
 		function initData(){
 			//get detail list from db
 			countList = JSON.parse($("#mainform\\:countListJson").val());
 
 			//get label
 			periodLabel = $("#mainform\\:period_label").text();
-			appLabel = $("#mainform\\:application_label").text();
 			
+			appLabel = $("#mainform\\:application_label").text();
+			size=  $("#mainform\\:size").text();
 			//get and set from and to
 	  	    var datefrom = periodLabel == "monthly"? $("#mainform\\:bln1").text(): $("#mainform\\:tgl1").text();
 	        var dateto = periodLabel == "monthly"? $("#mainform\\:bln2").text(): $("#mainform\\:tgl2").text();
-			
+	        periodLabel = periodLabel.charAt(0).toUpperCase() + periodLabel.slice(1);
 			//set pdf setting
-			title = periodLabel + ' Success User Request Report \n'+ appLabel+" " + datefrom + " - " + dateto;
+			title = periodLabel + ' Success User Application Request Report \n'+ appLabel+" " + datefrom + " - " + dateto+"\nTotal : " + size;
 			filename = appLabel+"UserRequest"+periodLabel+"_"+datefrom+"-"+dateto+".pdf";
 			tableHeader = [{text: 'No', style: 'tableHeader'},{text: 'Period', style: 'tableHeader'}, {text: 'User', style: 'tableHeader'}];
 			var tableWidth = [30, 200, '*'];
@@ -224,11 +228,11 @@
 	   
 		function getData(){
 			var ary = [];
-	        for(let i = 0; i &lt; countList;.length; i++){
+	        for(let i = 0; i &lt; countList.length; i++){
 	        	var arry = [];
-	        	arry.push(i);
-	        	arry.push(countList;[i].date);
-	        	arry.push(countList;[i].name);
+	        	arry.push(i+1);
+	        	arry.push(countList[i].date);
+	        	arry.push(countList[i].type);
 	        	ary.push(arry);
 	        }
 	        return ary;

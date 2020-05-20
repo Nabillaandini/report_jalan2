@@ -9,11 +9,6 @@
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
 	<managed-bean>
-		<managed-bean-name>sellBacking</managed-bean-name>
-		<managed-bean-class>ca.iam.backing.SellBacking</managed-bean-class>
-		<managed-bean-scope>session</managed-bean-scope>
-	</managed-bean>
-	<managed-bean>
 		<managed-bean-name>leftmenuBacking</managed-bean-name>
 		<managed-bean-class>ca.iam.backing.LeftmenuBacking</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
@@ -42,18 +37,6 @@
 		<managed-bean-class>ca.iam.backing.OnboardBacking</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
-
-	<managed-bean>
-		<managed-bean-name>updateBacking</managed-bean-name>
-		<managed-bean-class>ca.iam.backing.UpdateBacking</managed-bean-class>
-		<managed-bean-scope>session</managed-bean-scope>
-	</managed-bean>
-
-	<managed-bean>
-		<managed-bean-name>disabledBacking</managed-bean-name>
-		<managed-bean-class>ca.iam.backing.DisabledBacking</managed-bean-class>
-		<managed-bean-scope>session</managed-bean-scope>
-	</managed-bean>
 	<managed-bean>
 		<managed-bean-name>summaryBacking</managed-bean-name>
 		<managed-bean-class>ca.iam.backing.SummaryBacking</managed-bean-class>
@@ -74,15 +57,4 @@
 		<managed-bean-class>ca.iam.backing.ChangeBacking</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
-		<managed-bean>
-		<managed-bean-name>requestBacking</managed-bean-name>
-		<managed-bean-class>ca.iam.backing.RequestBacking</managed-bean-class>
-		<managed-bean-scope>session</managed-bean-scope>
-	</managed-bean>
-	<managed-bean>
-		<managed-bean-name>chartView</managed-bean-name>
-		<managed-bean-class>ca.iam.backing.ChartView</managed-bean-class>
-		<managed-bean-scope>session</managed-bean-scope>
-	</managed-bean>
-
 </faces-config>

@@ -28,28 +28,14 @@ import org.primefaces.model.chart.BarChartModel;
 import org.primefaces.model.chart.ChartSeries;
 
 import com.google.gson.Gson;
-import com.itextpdf.text.Chunk;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 
 import ca.iam.core.BasicSessionBacking;
 import ca.iam.eao.ChangeEao;
 import ca.iam.eao.UserEao;
 import ca.iam.entity.CountList;
 import ca.iam.entity.Provision;
-import ca.iam.entity.ResetModel;
-import ca.iam.entity.UserModel;
-import ca.iam.entity.UserRequest;
-import ca.iam.entity.UserUpdates;
 import ca.iam.rules.UserRules;
+import ca.iam.util.Helper;
 
 @ManagedBean
 @SessionScoped
@@ -90,14 +76,28 @@ public class ChangeBacking extends BasicSessionBacking {
 
 	private List<SelectItem> typeList;
 	private String type;
-
+	private int maxBar;
 	private String visibilityMonth = "block";
 	private String visibilityWeek = "none";
 	private BarChartModel barModel = new BarChartModel();
+	
+private int detailSize=0;
+	
+
+	
+	public int getDetailSize() {
+		return detailSize;
+	}
+
+	public void setDetailSize(int detailSize) {
+		this.detailSize = detailSize;
+	}
+
 public String detailListAppsJson = "";
+
 	
 	public String getDetailListAppsJson() {
-		return detailListApps != null? new Gson().toJson(detailListApps) : "";
+		return detailListApps!= null  && !detailListApps.isEmpty() ? new Gson().toJson(detailListApps) : "";
 	}
 	
 	public void setDetailListAppsJson(String detailList) {
@@ -106,7 +106,7 @@ public String detailListAppsJson = "";
 public String detailListJson = "";
 	
 	public String getDetailListJson() {
-		return detailList != null? new Gson().toJson(detailList) : "";
+		return detailList != null && !detailList.isEmpty() ? new Gson().toJson(detailList) : "";
 	}
 	
 	public void setDetailListJson(String detailList) {
@@ -114,12 +114,11 @@ public String detailListJson = "";
 	}	
 	public String countListJson = "";
 	
-	public String getcountListJson() {
-		System.out.println(countList !=null ? countList.get(0).getDate():"IS NULL ");
-		return countList != null? new Gson().toJson(countList) : "";
+	public String getCountListJson() {
+		return countList != null && !countList.isEmpty()? new Gson().toJson(countList) : "";
 	}
 	
-	public void setcountListJson(String countList) {
+	public void setCountListJson(String countList) {
 		this.countListJson = countList;
 	}	
 	
@@ -289,11 +288,14 @@ public String detailListJson = "";
 			this.month2 = null;
 			this.barModel = new BarChartModel();
 			this.period = "monthly";
+			setVisibilityMonth("block");
+			setVisibilityWeek("none");
 			
 		}
 	}
 
 	public void sumSearch() {
+		this.countList = null;
 		this.barModel = new BarChartModel();
 		if ((this.beginDate == null || this.endDate == null) && (this.month1 == null || this.month2 == null)) {
 			FacesContext.getCurrentInstance().addMessage(null,
@@ -317,7 +319,6 @@ public String detailListJson = "";
 					this.countList = changeEao.multiResetPassADWeekly(beginDate,endDate);
 				}
 				
-				getcountListJson();
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching is finished"));
 
 			} catch (SQLException e) {
@@ -355,6 +356,7 @@ public String detailListJson = "";
 				}else if (this.period.equalsIgnoreCase("daily") && this.type.equalsIgnoreCase("multiple reset")) {
 					this.countList = changeEao.multiResetPassAppsDaily(beginDate, endDate, appsName);
 				}
+				
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching is finished"));
 
 			} catch (SQLException e) {
@@ -388,7 +390,8 @@ public String detailListJson = "";
 				}else if (this.period.equalsIgnoreCase("daily") && this.type.equalsIgnoreCase("multiple reset")) {
 					this.detailList = changeEao.getmultiResetPassADDaily(beginDate, endDate);
 				}
-
+				this.detailSize = 0;
+				this.detailSize = detailList.size();
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching is finished"));
 
 			} catch (SQLException e) {
@@ -422,7 +425,8 @@ public String detailListJson = "";
 				}else if(this.period.equalsIgnoreCase("daily") && this.type.equalsIgnoreCase("multiple reset")) {
 					this.detailListApps  = changeEao.getmultiResetPassAppsDaily(beginDate, endDate, appsName);
 				}
-				
+				this.detailSize = 0;
+				this.detailSize = detailListApps.size();
 				
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching is finished"));
 
@@ -438,169 +442,7 @@ public String detailListJson = "";
 		}
 	}
 
-	public void userDomainPW() {
-		toFile("C:/report_result/resetPW_domain_", "Password Reset User Domain ", "Approval Date", this.detailList);
-	}
-
-	public void userAppsPW() {
-		toFile("C:/report_result/resetPW_apps_", "Password Reset User Aplikasi ", "Approval Date", this.detailListApps);
-
-	}
-
-	public void toFile(String filename, String title, String col1, List<Provision> userList) {
-		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-		String date = DATE_FORMAT.format(this.beginDate);
-		String end = DATE_FORMAT.format(this.endDate);
-		String path = filename + date + "_" + end + ".pdf";
-
-		try {
-			File file = new File(path);
-			FileOutputStream fileout = new FileOutputStream(file);
-			Document document = new Document();
-			PdfWriter.getInstance(document, fileout);
-			document.open();
-
-			Image image;
-			try {
-				image = Image.getInstance("C:/report_result/img/mandiri-logo.png");
-				image.setAlignment(Image.MIDDLE);
-				image.scaleToFit(200, 100);
-
-				document.add(image);
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			Font font = new Font();
-			font.setStyle(Font.BOLD);
-			font.setStyle(Font.ITALIC);
-			font.setSize(24);
-			Paragraph paragraph1 = new Paragraph();
-			paragraph1.add(title + "\n");
-			paragraph1.add("Tanggal :" + date + "- " + end + "\n");
-			paragraph1.add("Total : " + userList.size() + "\n");
-			paragraph1.add("\n");
-
-			paragraph1.setAlignment(Element.ALIGN_CENTER);
-			paragraph1.setFont(font);
-			paragraph1.add(Chunk.NEWLINE);
-			document.add(paragraph1);
-			Paragraph paragraph = new Paragraph();
-			paragraph.setAlignment(Element.ALIGN_LEFT);
-			float[] columnWidths = { 2.5f, 2.5f };
-			// create PDF table with the given widths
-			PdfPTable table = new PdfPTable(columnWidths);
-			// set table width a percentage of the page width
-			table.setWidthPercentage(90f);
-			insertCell(table, col1, Element.ALIGN_CENTER, 1);
-			insertCell(table, "User ID", Element.ALIGN_CENTER, 1);
-			table.setHeaderRows(1);
-			for (int i = 0; i < userList.size(); i++) {
-				insertCell(table, userList.get(i).getDate(), Element.ALIGN_CENTER, 1);
-				insertCell(table, userList.get(i).getType(), Element.ALIGN_CENTER, 1);
-			}
-			paragraph.add(table);
-
-			document.add(paragraph);
-
-			document.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (DocumentException e) {
-			e.printStackTrace();
-		}
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("File has been downloaded " + path));
-
-	}
-
-	private void insertCell(PdfPTable table, String text, int align, int colspan) {
-
-		// create a new cell with the specified Text and Font
-		PdfPCell cell = new PdfPCell(new Phrase(text.trim()));
-		// set the cell alignment
-		cell.setHorizontalAlignment(align);
-		// set the cell column span in case you want to merge two or more cells
-		cell.setColspan(colspan);
-		// in case there is no text and you want to create an empty row
-		if (text.trim().equalsIgnoreCase("")) {
-			cell.setMinimumHeight(10f);
-		}
-		// add the call to the table
-		table.addCell(cell);
-
-	}
-
-	public void sumToFile() {
-		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-		String date = DATE_FORMAT.format(this.beginDate);
-		String end = DATE_FORMAT.format(this.endDate);
-		String path = "C:/report_result/resetPW_sum_" + date + "_" + end + ".pdf";
-
-		try {
-			File file = new File(path);
-			FileOutputStream fileout = new FileOutputStream(file);
-			Document document = new Document();
-			PdfWriter.getInstance(document, fileout);
-			document.open();
-
-			Image image;
-			try {
-				image = Image.getInstance("C:/report_result/img/mandiri-logo.png");
-				image.setAlignment(Image.MIDDLE);
-				image.scaleToFit(200, 100);
-
-				document.add(image);
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			Font font = new Font();
-			font.setStyle(Font.BOLD);
-			font.setStyle(Font.ITALIC);
-			font.setSize(24);
-			Paragraph paragraph1 = new Paragraph();
-			paragraph1.add("Password Reset Summary " + date + "- " + end + "\n");
-
-			paragraph1.setAlignment(Element.ALIGN_CENTER);
-			paragraph1.setFont(font);
-			paragraph1.add(Chunk.NEWLINE);
-			document.add(paragraph1);
-			Paragraph paragraph = new Paragraph();
-			paragraph.setAlignment(Element.ALIGN_LEFT);
-			float[] columnWidths = { 2.5f, 2.5f, 2.5f };
-			// create PDF table with the given widths
-			PdfPTable table = new PdfPTable(columnWidths);
-			// set table width a percentage of the page width
-			table.setWidthPercentage(90f);
-			insertCell(table, "Date", Element.ALIGN_CENTER, 1);
-			insertCell(table, "Total User Domain", Element.ALIGN_CENTER, 1);
-			insertCell(table, "Total User Apps", Element.ALIGN_CENTER, 1);
-			table.setHeaderRows(1);
-			for (int i = 0; i < countList.size(); i++) {
-				insertCell(table, countList.get(i).getDate(), Element.ALIGN_CENTER, 1);
-				// insertCell(table, String.format("%d", countList.get(i).getDomain()),
-				// Element.ALIGN_CENTER, 1);
-				// insertCell(table, String.format("%d", countList.get(i).getApps()),
-				// Element.ALIGN_CENTER, 1);
-
-			}
-			paragraph.add(table);
-
-			document.add(paragraph);
-
-			document.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (DocumentException e) {
-			e.printStackTrace();
-		}
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("File has been downloaded " + path));
-	}
-
+	
 	public void updateSelected() {
 
 		switch (period) {
@@ -623,8 +465,11 @@ public String detailListJson = "";
 		BarChartModel model = new BarChartModel();
         ChartSeries onboard = new ChartSeries();
         onboard.setLabel("Reset Password Domain");
+        maxBar = 0;
         for(int i =0;i<countList.size();i++) {
         	onboard.set(countList.get(i).getDate(), countList.get(i).getCount());
+        	int count = countList.get(i).getCount();
+			maxBar = maxBar < count? count : maxBar;
         	
         }
         
@@ -649,7 +494,7 @@ public String detailListJson = "";
         Axis yAxis = barModel.getAxis(AxisType.Y);
         yAxis.setLabel("Total");
         yAxis.setMin(0);
-        yAxis.setMax(200);
+        yAxis.setMax(Helper.roundUpToNearestMultipleOfSix(maxBar));
     }
     
 
@@ -665,16 +510,18 @@ public String detailListJson = "";
         Axis yAxis = barModel.getAxis(AxisType.Y);
         yAxis.setLabel("Total");
         yAxis.setMin(0);
-        yAxis.setMax(200);
+    	yAxis.setMax(Helper.roundUpToNearestMultipleOfSix(maxBar));
     }
     
 	private BarChartModel initBarModel(String apps) {
 		BarChartModel model = new BarChartModel();
         ChartSeries onboard = new ChartSeries();
         onboard.setLabel("Reset Password " + apps);
+        maxBar= 0;
         for(int i =0;i<countList.size();i++) {
         	onboard.set(countList.get(i).getDate(), countList.get(i).getCount());
-        	
+        	int count = countList.get(i).getCount();
+			maxBar = maxBar < count? count : maxBar;
         }
         
         model.addSeries(onboard);

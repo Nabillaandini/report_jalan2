@@ -20,34 +20,24 @@ public CountList(String date, int count, String appsName) {
 	this.appsName = appsName;
 }
 public CountList(String begin, String end, int count, String appsName) {
-	String [] arr = begin.split("-");
-	int month_temp = Integer.parseInt(arr[1]);
-	String temp_begin = arr[2] + " " + new DateFormatSymbols().getMonths()[month_temp-1] + " " + arr[0];
-	arr = end.split("-");
-	String temp_end = arr[2] + " " + new DateFormatSymbols().getMonths()[month_temp-1] + " " + arr[0];
-	month_temp = Integer.parseInt(arr[1]);
-	this.appsName = appsName;
-	this.count = count;
-	this.date = temp_begin + " - " + temp_end;
-	
-	
-	
-	
+	setCountList(begin,end,count);
+	this.appsName = appsName;	
 }
 
+
 public CountList(String begin, String end, int count) {
-	String [] arr = begin.split("-");
-	int month_temp = Integer.parseInt(arr[1]);
-	String temp_begin = arr[2] + " " + new DateFormatSymbols().getMonths()[month_temp-1] + " " + arr[0];
-	arr = end.split("-");
-	String temp_end = arr[2] + " " + new DateFormatSymbols().getMonths()[month_temp-1] + " " + arr[0];
-	month_temp = Integer.parseInt(arr[1]);
+	setCountList(begin, end, count);
+}
+
+private void setCountList(String begin, String end, int count) {
 	this.count = count;
-	this.date = temp_begin + " - " + temp_end;
-	
-	
-	
-	
+	this.date = formatDate(begin) + " - " + formatDate(end);	
+}
+
+private String formatDate(String date) {
+	String [] arr = date.split("-");
+	int month_temp = Integer.parseInt(arr[1]);
+	return arr[2] + " " + new DateFormatSymbols().getMonths()[month_temp-1] + " " + arr[0];
 }
 
 public CountList(int sum, int month, int year,String appsName) {

@@ -10,7 +10,6 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
 import ca.iam.backing.LoginBacking;
-import ca.iam.backing.SellBacking;
 import ca.iam.backing.UserBacking;
 import ca.iam.eao.LogoutEao;
 
@@ -20,9 +19,6 @@ public class LeftmenuRules implements Serializable{
 	@Inject
 	private LoginBacking loginBacking;
 	
-	@SuppressWarnings("unused")
-	@Inject
-	private SellBacking sellBacking;
 	
 	@SuppressWarnings("unused")
 	@Inject

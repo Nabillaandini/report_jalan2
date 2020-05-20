@@ -47,6 +47,7 @@ public class SummaryModel {
 	private int sumMigrasiSAP;
 	private int sumMigrasiDTOBM;
 	private int sumMigrasiDTKBM;
+	private int sumMigrasi;
 	private int sumOnboardSAP;
 	private int sumOnboardDTOBM;
 	private int sumOnboardDTKBM;
@@ -58,7 +59,7 @@ public class SummaryModel {
 	
 	
 	public SummaryModel(int countOnboard,int countUpdate,int sap, int dtobm, int dtkbm,int mms, int raos, int wbg,int countDeprov, int resetDomain, int resetApps, int ebudgeting,
-			int fico, int mm, int srm, int skd, int deprovSAP, int deprovDTKBM, int deprovDTOBM, int wcp,int aap,int month, int year) {
+			int fico, int mm, int srm, int skd, int deprovSAP, int deprovDTKBM, int deprovDTOBM, int wcp,int aap, int sumOnboardDTOBM, int sumOnboardDTKBM,int month, int year) {
 		this.countOnboard=countOnboard;
 		this.countUpdate=countUpdate;
 		this.countDeprov = countDeprov;
@@ -81,12 +82,173 @@ public class SummaryModel {
 		this.deprovDTKBM = deprovDTKBM;
 		this.wcp  = wcp;
 		this.aap = aap;
-		this.sumApps = dtobm+dtkbm+mms+raos+wbg+ebudgeting+fico+mm+srm+skd+wcp+aap;
+		this.sumApps = dtobm+dtkbm+mms+raos+wbg+ebudgeting+fico+mm+srm+skd+wcp+aap+skd;
+		this.sumOffboard = deprovSAP+deprovDTOBM+deprovDTKBM;
+		this.sumOnboardSAP= this.countOnboard;
+		this.sumOnboardDTOBM = sumOnboardDTOBM;
+		this.sumOnboardDTKBM = sumOnboardDTKBM;
+		if(month==1 && year ==2020) {
+			sumMigrasiSAP=39001;
+		sumMigrasiDTOBM=19555;
+		sumMigrasiDTKBM=2833;
+		sumOnboardSAP = 0;
+		this.sumOnboardDTOBM = 0;
+		this.sumOnboardDTKBM =0;
+			
+		}else {
+			sumMigrasiSAP=0;
+			sumMigrasiDTOBM=0;
+			sumMigrasiDTKBM=0;
+		}
+		this.sumMigrasi = sumMigrasiSAP + sumMigrasiDTOBM + sumMigrasiDTKBM;
+		if(month==2 && year==2020) {
+			sumOnboardSAP = 3345;
+		}
 	}
 	
 	
 	
 	
+	public int getSumMigrasiSAP() {
+		return sumMigrasiSAP;
+	}
+
+
+	
+
+	public void setSumMigrasiSAP(int sumMigrasiSAP) {
+		this.sumMigrasiSAP = sumMigrasiSAP;
+	}
+
+
+
+
+	public int getSumMigrasiDTOBM() {
+		return sumMigrasiDTOBM;
+	}
+
+
+
+
+	public void setSumMigrasiDTOBM(int sumMigrasiDTOBM) {
+		this.sumMigrasiDTOBM = sumMigrasiDTOBM;
+	}
+
+
+
+
+	public int getSumMigrasiDTKBM() {
+		return sumMigrasiDTKBM;
+	}
+
+
+
+
+	public void setSumMigrasiDTKBM(int sumMigrasiDTKBM) {
+		this.sumMigrasiDTKBM = sumMigrasiDTKBM;
+	}
+
+
+
+
+	public int getSumMigrasi() {
+		return sumMigrasi;
+	}
+
+
+
+
+	public void setSumMigrasi(int sumMigrasi) {
+		this.sumMigrasi = sumMigrasi;
+	}
+
+
+
+
+	public int getSumOnboardSAP() {
+		return sumOnboardSAP;
+	}
+
+
+
+
+	public void setSumOnboardSAP(int sumOnboardSAP) {
+		this.sumOnboardSAP = sumOnboardSAP;
+	}
+
+
+
+
+	public int getSumOnboardDTOBM() {
+		return sumOnboardDTOBM;
+	}
+
+
+
+
+	public void setSumOnboardDTOBM(int sumOnboardDTOBM) {
+		this.sumOnboardDTOBM = sumOnboardDTOBM;
+	}
+
+
+
+
+	public int getSumOnboardDTKBM() {
+		return sumOnboardDTKBM;
+	}
+
+
+
+
+	public void setSumOnboardDTKBM(int sumOnboardDTKBM) {
+		this.sumOnboardDTKBM = sumOnboardDTKBM;
+	}
+
+
+
+
+	public int getSumApps() {
+		return sumApps;
+	}
+
+
+
+
+	public void setSumApps(int sumApps) {
+		this.sumApps = sumApps;
+	}
+
+
+
+
+	public int getSumResetApps() {
+		return sumResetApps;
+	}
+
+
+
+
+	public void setSumResetApps(int sumResetApps) {
+		this.sumResetApps = sumResetApps;
+	}
+
+
+
+
+	public int getSumOffboard() {
+		return sumOffboard;
+	}
+
+
+
+
+	public void setSumOffboard(int sumOffboard) {
+		this.sumOffboard = sumOffboard;
+	}
+
+
+
+
 	public int getAap() {
 		return aap;
 	}

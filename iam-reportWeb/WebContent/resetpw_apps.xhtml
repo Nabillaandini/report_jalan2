@@ -63,7 +63,7 @@
 					<p:commandButton
 						value="#{msgbundle['text.page.resetapps.search']}"
 						action="#{changeBacking.detailSearchApps}" process="@all"
-						update="msgs,table,countListJson,tgl1,tgl2,bln1,bln2" />
+						update="msgs,table,countListJson,tgl1,tgl2,bln1,bln2,size" />
 				</h:panelGrid>
 
 				<p:dataTable id="table" var="user" value="#{changeBacking.detailListApps}"
@@ -97,17 +97,20 @@
 				
 				<p:inputText type="hidden"  id="countListJson" value="#{changeBacking.detailListAppsJson}" />
 				<h:outputText id="tgl1" value="#{changeBacking.beginDate}" style="display:none">
-					<f:convertDateTime pattern="dd-MM-yyyy" />
+					<f:convertDateTime pattern="dd/MM/yyyy" />
 				</h:outputText>
 				<h:outputText value="#{changeBacking.beginDate}" />
 				<h:outputText id="tgl2" value="#{changeBacking.endDate}" style="display:none">
-					<f:convertDateTime pattern="dd-MM-yyyy" />
+					<f:convertDateTime pattern="dd/MM/yyyy" />
 				</h:outputText>
 				<h:outputText id="bln1" value="#{changeBacking.month1}" style="display:none">
-					<f:convertDateTime pattern="MM-yyyy" />
+					<f:convertDateTime pattern="MM/yyyy" />
 				</h:outputText>
 				<h:outputText id="bln2" value="#{changeBacking.month2}" style="display:none">
-					<f:convertDateTime pattern="MM-yyyy" />
+					<f:convertDateTime pattern="MM/yyyy" />
+				</h:outputText>
+				<h:outputText id="size" value="#{changeBacking.detailSize}"
+					style="display:none">
 				</h:outputText>
 			</p:panel>
 		</h:form>
@@ -125,22 +128,23 @@
 	  var filename = "";
 	  var tableHeader = "";
 	  var type="";
-	  
+	  var size = "";
 	function initData(){
 		//get detail list from db
 		countList = JSON.parse($("#mainform\\:countListJson").val());
 
 		//get label
 		periodLabel = $("#mainform\\:period_label").text();
+		
 		appLabel = $("#mainform\\:application_label").text();
-
+		size=  $("#mainform\\:size").text();
 		type =  $("#mainform\\:type_label").text();
 		//get and set from and to
 	    var datefrom = periodLabel == "monthly"? $("#mainform\\:bln1").text(): $("#mainform\\:tgl1").text();
       var dateto = periodLabel == "monthly"? $("#mainform\\:bln2").text(): $("#mainform\\:tgl2").text();
-		
+      periodLabel = periodLabel.charAt(0).toUpperCase() + periodLabel.slice(1);
 		//set pdf setting
-		title = periodLabel+ " " +appLabel+' Password Reset Report \n'+ type+ " " + datefrom + " - " + dateto;
+		title = periodLabel+ " " +appLabel+' Password Reset Report \n'+ type+ " " + datefrom + " - " + dateto+"\nTotal : " + size;
 		filename = appLabel+"ResetPass_"+type+"_"+periodLabel+"_"+datefrom+"-"+dateto+".pdf";
 		tableHeader = [{text: 'No', style: 'tableHeader'},{text: 'Period', style: 'tableHeader'}, {text: 'Total', style: 'tableHeader'}];
 		var tableWidth = [30, 200, '*'];

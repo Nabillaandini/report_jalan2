@@ -16,4 +16,17 @@ public class Helper {
           String strDate = dateFormat.format(date);  
           return strDate;
 	}
+	public static int roundUpToNearestMultipleOfSix(int i) {
+		if(i%6 != 0) {
+			int multiple = i / 6;
+			i = 6 * (multiple + 1);
+		}
+		return i;
+	}
+	
+	public static String dateToStringWeek(Date date) {
+		  DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  
+        String strDate = dateFormat.format(date);  
+        return strDate;
+	}
 }

@@ -14,15 +14,15 @@
   </style>
 </h:head>
 <h:body>
-	<h:form style="padding-left:10px">
-    <p:slideMenu style="width:220px">
-       <p:submenu label="Onboard" icon="ui-icon-note" collapsed="false">
+	<h:form style="padding-left:5px">
+    <p:slideMenu style="width:235px">
+       <p:submenu label="Onboard Trusted Source" icon="ui-icon-note" collapsed="false">
 				<p:menuitem value="Summary" url="/report/f/sumonboard.xhtml"
 					icon="ui-icon-clipboard" />
 				<p:menuitem value="Detail" url="/report/f/detailonboard.xhtml"
 					icon="ui-icon-document-b" />
 			</p:submenu>
-			<p:submenu label="User Request" icon="ui-icon-person"
+			<p:submenu label="User App Request" icon="ui-icon-person"
 				collapsed="false">
 				<p:menuitem value="Summary" url="/report/f/sumprovision.xhtml"
 					icon="ui-icon-bookmark" />
@@ -54,7 +54,7 @@
 <!--         </p:submenu> -->
 <!--         <p:menuitem value="Logout" url="/report/f/login.xhtml" update="messages" icon="ui-icon-power" /> -->
 <!--     </p:menu> -->
-    <p:menu model="#{leftmenuBacking.model}" />
+    <p:menu model="#{leftmenuBacking.model}" style="width:235px" />
 
 	</h:form>
 

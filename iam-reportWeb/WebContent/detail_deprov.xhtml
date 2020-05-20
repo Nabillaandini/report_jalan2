@@ -38,17 +38,17 @@
 						showIcon="true" />
 					<p:spacer id="spacer2" style="display:#{deprovisionBacking.visibilityWeek}" />
 					
-					<p:outputLabel id="monthlabel1" value="Select Month:" style="display:#{deprovisionBacking.visibilityMonth}"/>
+					<p:outputLabel id="monthlabel1" value="Select Month Begin:" style="display:#{deprovisionBacking.visibilityMonth}"/>
 					<p:datePicker id="month1" view="month" pattern="MM/yyyy"
 								value="#{deprovisionBacking.month1}" yearNavigator="true" yearRange="2000:2030" style="display:#{deprovisionBacking.visibilityMonth}"/>
 					<p:spacer id="spacer3" style="display:#{deprovisionBacking.visibilityMonth}"/>
 					
-					<p:outputLabel id="monthlabel2"  value="Select Month:" style="display:#{deprovisionBacking.visibilityMonth}"/>
+					<p:outputLabel id="monthlabel2"  value="Select Month End:" style="display:#{deprovisionBacking.visibilityMonth}"/>
 					<p:datePicker id="month2" view="month" pattern="MM/yyyy"
 								value="#{deprovisionBacking.month2}" yearNavigator="true" yearRange="2000:2030" style="display:#{deprovisionBacking.visibilityMonth}"/>
 					<p:spacer id="spacer4" style="display:#{deprovisionBacking.visibilityMonth}"/>
 					
-					<h:outputLabel value="Apps Name" style="margin-right:20px;" />
+					<h:outputLabel value="Trusted Source" style="margin-right:20px;" />
 					<p:selectOneMenu id="application"
 						value="#{deprovisionBacking.appsName}">
 						<f:selectItems value="#{deprovisionBacking.appsList}" />
@@ -59,7 +59,7 @@
 					<p:commandButton
 						value="#{msgbundle['text.page.detaildeprov.search']}"
 						action="#{deprovisionBacking.detailSearch}" process="@all"
-						update="msgs,table,countListJson,tgl1,tgl2,bln1,bln2" />
+						update="msgs,table,countListJson,tgl1,tgl2,bln1,bln2,size" />
 				</h:panelGrid>
 
 				<p:dataTable id="table" var="user"
@@ -105,17 +105,20 @@
 				
 				<p:inputText type="hidden"  id="countListJson" value="#{deprovisionBacking.detailListJson}" />
 				<h:outputText id="tgl1" value="#{deprovisionBacking.beginDate}" style="display:none">
-					<f:convertDateTime pattern="dd-MM-yyyy" />
+					<f:convertDateTime pattern="dd/MM/yyyy" />
 				</h:outputText>
 				<h:outputText value="#{deprovisionBacking.beginDate}" />
 				<h:outputText id="tgl2" value="#{deprovisionBacking.endDate}" style="display:none">
-					<f:convertDateTime pattern="dd-MM-yyyy" />
+					<f:convertDateTime pattern="dd/MM/yyyy" />
 				</h:outputText>
 				<h:outputText id="bln1" value="#{deprovisionBacking.month1}" style="display:none">
-					<f:convertDateTime pattern="MM-yyyy" />
+					<f:convertDateTime pattern="MM/yyyy" />
 				</h:outputText>
 				<h:outputText id="bln2" value="#{deprovisionBacking.month2}" style="display:none">
-					<f:convertDateTime pattern="MM-yyyy" />
+					<f:convertDateTime pattern="MM/yyyy" />
+				</h:outputText>
+				<h:outputText id="size" value="#{deprovisionBacking.detailSize}"
+					style="display:none">
 				</h:outputText>
 				
 			</p:panel>
@@ -133,6 +136,7 @@
 	  var title = "";
 	  var filename = "";
 	  var tableHeader = "";
+	  var size="";
 	  
 	function initData(){
 		//get detail list from db
@@ -141,13 +145,15 @@
 		//get label
 		periodLabel = $("#mainform\\:period_label").text();
 		appLabel = $("#mainform\\:application_label").text();
-		
+		size=  $("#mainform\\:size").text();
 		//get and set from and to
  	    var datefrom = periodLabel == "monthly"? $("#mainform\\:bln1").text(): $("#mainform\\:tgl1").text();
        var dateto = periodLabel == "monthly"? $("#mainform\\:bln2").text(): $("#mainform\\:tgl2").text();
+
+		periodLabel = periodLabel.charAt(0).toUpperCase() + periodLabel.slice(1);
 		
 		//set pdf setting
-		title = periodLabel+ ' Offboard Report Trusted Source  \n'+appLabel+" " + datefrom + " - " + dateto;
+		title = periodLabel+ ' Offboard Report Trusted Source  \n'+appLabel+" " + datefrom + " - " + dateto+"\nTotal : "+size;
 		filename = "offboardReport"+periodLabel+"_"+appLabel+datefrom+"-"+dateto+".pdf";
 		tableHeader = [{text: 'No', style: 'tableHeader'},{text: 'Period', style: 'tableHeader'}, {text: 'ID', style: 'tableHeader'}, {text: 'Trusted Source', style: 'tableHeader'}];
 		var tableWidth = [30, 200, '*','*'];

@@ -25,36 +25,12 @@ import javax.faces.event.ComponentSystemEvent;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
 
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.general.DefaultPieDataset;
-import org.jfree.data.time.Month;
 import org.primefaces.model.chart.Axis;
 import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.chart.BarChartModel;
 import org.primefaces.model.chart.ChartSeries;
 
 import com.google.gson.Gson;
-import com.itextpdf.awt.DefaultFontMapper;
-import com.itextpdf.layout.element.Cell;
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.html.WebColors;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfTemplate;
-import com.itextpdf.text.pdf.PdfWriter; 
-import com.itextpdf.layout.element.Table; 
-import com.itextpdf.layout.property.TextAlignment;  
 
 
 import ca.iam.core.BasicSessionBacking;
@@ -67,6 +43,7 @@ import ca.iam.entity.Provision;
 import ca.iam.entity.UserModel;
 import ca.iam.entity.UserUpdates;
 import ca.iam.rules.UserRules;
+import ca.iam.util.Helper;
 
 @ManagedBean
 @SessionScoped
@@ -111,8 +88,6 @@ public class DeprovisionBacking extends BasicSessionBacking {
 	private String headSum;
 	private String headDetail;
 
-	private boolean flagSearch = false;
-
 	private List<SelectItem> appsList;
 	private String appsName;
 
@@ -126,10 +101,25 @@ public class DeprovisionBacking extends BasicSessionBacking {
 	
 	private int userActive = 0;
 	
+	private int maxBar;
+	
 	public String detailListJson = "";
 	
+	private int detailSize=0;
+	
+
+	
+	public int getDetailSize() {
+		return detailSize;
+	}
+
+	public void setDetailSize(int detailSize) {
+		this.detailSize = detailSize;
+	}
+
+	
 	public String getDetailListJson() {
-		return detailList != null? new Gson().toJson(detailList) : "";
+		return detailList != null && !detailList.isEmpty() ? new Gson().toJson(detailList) : "";
 	}
 	
 	public void setDetailListJson(String detailList) {
@@ -138,8 +128,7 @@ public class DeprovisionBacking extends BasicSessionBacking {
 	public String countListJson = "";
 	
 	public String getcountListJson() {
-		System.out.println(countList !=null ? countList.get(0).getDate():"IS NULL ");
-		return countList != null? new Gson().toJson(countList) : "";
+		return countList != null && !countList.isEmpty()? new Gson().toJson(countList) : "";
 	}
 	
 	public void setcountListJson(String countList) {
@@ -315,6 +304,9 @@ public class DeprovisionBacking extends BasicSessionBacking {
 			this.countListJson = null;
 			this.detailListJson = null;
 			getcountListJson();
+			this.period = "monthly";
+			setVisibilityMonth("block");
+			setVisibilityWeek("none");
 		}
 	}
 
@@ -373,20 +365,6 @@ public class DeprovisionBacking extends BasicSessionBacking {
 				e.printStackTrace();
 			}
 			
-//			try {
-//				System.out.println("masuk try ke 2");
-//				userActive = sumEao.getUserActive(this.appsName);
-//				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching is finished"));
-//
-//			} catch (SQLException e) {
-//
-//				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Database connection error"));
-//
-//				e.printStackTrace();
-//			} catch (ParseException e) {
-//				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Reading input failed"));
-//				e.printStackTrace();
-//			}
 		}
 	}
 
@@ -418,6 +396,9 @@ public class DeprovisionBacking extends BasicSessionBacking {
 				}else if(this.appsName.equalsIgnoreCase("DTKBM") && this.period.equalsIgnoreCase("weekly")) {
 					this.detailList = dtkbmEao.getDeprovWeekly(beginDate, endDate);
 				}
+				
+				this.detailSize = 0;
+				this.detailSize = detailList.size();
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching is finished"));
 
 			} catch (SQLException e) {
@@ -430,192 +411,6 @@ public class DeprovisionBacking extends BasicSessionBacking {
 				e.printStackTrace();
 			}
 		}
-	}
-
-	public void toFile() {
-		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-		String date = DATE_FORMAT.format(this.beginDate);
-		String end = DATE_FORMAT.format(this.endDate);
-		String path = "C:/report_result/deprov_" + date + "_" + end + ".pdf";
-		try {
-			File file = new File(path);
-			FileOutputStream fileout = new FileOutputStream(file);
-			Document document = new Document();
-			PdfWriter.getInstance(document, fileout);
-			document.addAuthor("Me");
-
-			document.open();
-
-			Image image;
-			try {
-				image = Image.getInstance("C:/report_result/img/mandiri-logo.png");
-				image.setAlignment(Image.MIDDLE);
-				image.scaleToFit(200, 100);
-
-				document.add(image);
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			Font font = new Font();
-			font.setStyle(Font.BOLD);
-			font.setStyle(Font.ITALIC);
-			font.setSize(24);
-			document.addTitle("IAM User Deprovisioning Report : " + date);
-			Paragraph paragraph1 = new Paragraph();
-			paragraph1.add("IAM User Deprovisioning Report : ");
-			paragraph1.add("\n");
-			paragraph1.add("Tanggal :" + date + " - " + end + "\n");
-			paragraph1.add("Total User Deprov : " + detailList.size() + "\n");
-			paragraph1.add("\n");
-			paragraph1.setAlignment(Element.ALIGN_CENTER);
-			paragraph1.setFont(font);
-			document.add(paragraph1);
-			Paragraph paragraph = new Paragraph();
-			paragraph.setAlignment(Element.ALIGN_LEFT);
-			float[] columnWidths = { 2.5f, 2.5f };
-			// create PDF table with the given widths
-			PdfPTable table = new PdfPTable(columnWidths);
-			// set table width a percentage of the page width
-			table.setWidthPercentage(90f);
-			insertCell(table, "User Deprovisioning Approval Date", Element.ALIGN_CENTER, 1);
-			insertCell(table, "User ID", Element.ALIGN_CENTER, 1);
-			table.setHeaderRows(1);
-			for (int i = 0; i < detailList.size(); i++) {
-				insertCell(table, detailList.get(i).getDate(), Element.ALIGN_CENTER, 1);
-				insertCell(table, detailList.get(i).getType(), Element.ALIGN_CENTER, 1);
-			}
-			paragraph.add(table);
-
-			document.add(paragraph);
-
-			document.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (DocumentException e) {
-			e.printStackTrace();
-		}
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("File has been downloaded " + path));
-
-	}
-	public void sumtoFile() {
-		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-		String path="";
-		String date="";
-		String end="";
-		if(this.period.equalsIgnoreCase("monthly")) {
-			System.out.println("masuk monthly");
-			date = DATE_FORMAT.format(this.month1);
-			String[] arr = date.split("-");
-			String month_a = arr[1];
-			String year_a = arr[2];
-			end = DATE_FORMAT.format(this.month2);
-			arr= end.split("-");
-			String month_b = arr[1];
-			String year_b = arr[2];
-			 path="C:/report_result/summarydeprov_" +month_a+year_a+ "_"+ month_b+year_b + ".pdf";
-			
-		}
-		
-		else if(this.period.equalsIgnoreCase("daily")) {
-			System.out.println("masuk masuk daily");
-		date = DATE_FORMAT.format(this.beginDate);
-		 end = DATE_FORMAT.format(this.endDate);
-		path = "C:/report_result/sumdeprov_" + date + "_" + end + ".pdf";
-		}
-		
-		try {
-			File file = new File(path);
-			FileOutputStream fileout = new FileOutputStream(file);
-			Document document = new Document();
-			PdfWriter.getInstance(document, fileout);
-			document.addAuthor("Me");
-
-			document.open();
-
-			Image image;
-			try {
-				image = Image.getInstance("C:/report_result/img/mandiri-logo.png");
-				image.setAlignment(Image.MIDDLE);
-				image.scaleToFit(200, 100);
-
-				document.add(image);
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			Font font = new Font();
-			font.setStyle(Font.BOLD);
-			font.setStyle(Font.ITALIC);
-			font.setSize(24);
-			document.addTitle("IAM Offboard Report : " + date);
-			Paragraph paragraph1 = new Paragraph();
-			paragraph1.add("IAM Offboard Report : ");
-			paragraph1.add("\n");
-			paragraph1.add("periode :" + date + " - " + end + "\n");
-			paragraph1.add("\n");
-			paragraph1.setAlignment(Element.ALIGN_CENTER);
-			paragraph1.setFont(font);
-			document.add(paragraph1);
-			Paragraph paragraph = new Paragraph();
-			paragraph.setAlignment(Element.ALIGN_LEFT);
-			float[] columnWidths = { 2.5f, 2.5f , 2.5f};
-			// create PDF table with the given widths
-			PdfPTable table = new PdfPTable(columnWidths);
-			// set table width a percentage of the page width
-			table.setWidthPercentage(90f);
-			table.getDefaultCell().setBackgroundColor(new BaseColor(189, 255, 243));
-			 PdfPCell cell1 = new PdfPCell(new Paragraph(
-                     "Cell 1 - GREEN Background"));
-
-        /* Set Background colour */
-        cell1.setBackgroundColor(BaseColor.GREEN);
-			insertCell(table, "Period", Element.ALIGN_CENTER, 1);
-			insertCell(table, "Total", Element.ALIGN_CENTER, 1);
-			insertCell(table, "Aplikasi", Element.ALIGN_CENTER, 1);
-			table.setHeaderRows(1);
-		
-			for (int i = 0; i < countList.size(); i++) {
-				System.out.println("masuk countlist");
-				table.getDefaultCell().setBackgroundColor(new BaseColor(255, 255, 255));
-				insertCell(table, countList.get(i).getDate(), Element.ALIGN_CENTER, 1);
-				insertCell(table, Integer.toString(countList.get(i).getCount()), Element.ALIGN_CENTER, 1);
-				insertCell(table, countList.get(i).getAppsName(), Element.ALIGN_CENTER, 1);
-			}
-			System.out.println("after loop");
-			paragraph.add(table);
-
-			document.add(paragraph);
-
-			document.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (DocumentException e) {
-			e.printStackTrace();
-		}
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("File has been downloaded " + path));
-
-	}
-
-	private void insertCell(PdfPTable table, String text, int align, int colspan) {
-
-		// create a new cell with the specified Text and Font
-		PdfPCell cell = new PdfPCell(new Phrase(text.trim()));
-		// set the cell alignment
-		cell.setHorizontalAlignment(align);
-		// set the cell column span in case you want to merge two or more cells
-		cell.setColspan(colspan);
-		// in case there is no text and you wan to create an empty row
-		if (text.trim().equalsIgnoreCase("")) {
-			cell.setMinimumHeight(10f);
-		}
-		// add the call to the table
-		table.addCell(cell);
-
 	}
 
 	public void updateSelected() {
@@ -636,52 +431,6 @@ public class DeprovisionBacking extends BasicSessionBacking {
 		}
 	}
 
-	public JFreeChart generateBarChart() {
-		DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
-		for(int i=0;i<this.countList.size();i++) {
-			dataSet.setValue(this.countList.get(i).getCount(),"Period",this.countList.get(i).getAppsName() + " " +this.countList.get(i).getDate());
-		}
-
-		JFreeChart chart = ChartFactory.createBarChart(
-				"Offboard User", "Period", "Total",
-				dataSet, PlotOrientation.VERTICAL, false, true, false);
-
-		return chart;
-	}
-	public void exportChart() throws FileNotFoundException, DocumentException {
-		System.out.println("masuk export chart");
-		writeChartToPDF(generateBarChart(), "C://barchart.pdf");
-		
-	}
-	public void writeChartToPDF(JFreeChart chart, String fileName) throws FileNotFoundException, DocumentException {
-		String pdfFilePath = fileName;
-        OutputStream fos = new FileOutputStream(new File(pdfFilePath));
-        Document document = new Document();
-        PdfWriter writer = PdfWriter.getInstance(document, fos);
-
-        document.open();
-        
-        PdfContentByte pdfContentByte = writer.getDirectContent();
-        int width = 400; //width of BarChart
-        int height = 500; //height of BarChart
-        PdfTemplate pdfTemplate = pdfContentByte.createTemplate(width, height);
-        
-        //create graphics
-        Graphics2D graphics2d = pdfTemplate.createGraphics(width, height,
-                     new DefaultFontMapper());
-        
-        //create rectangle
-        java.awt.geom.Rectangle2D rectangle2d = new java.awt.geom.Rectangle2D.Double(
-                     0, 0, width, height);
-
-        chart.draw(graphics2d, rectangle2d);
-
-        graphics2d.dispose();
-        pdfContentByte.addTemplate(pdfTemplate, 40, 500); //0, 0 will draw BAR chart on bottom left of page
-
-        document.close();
-        System.out.println("PDF created in >> " + pdfFilePath);
-	}
 	
 	private BarChartModel initBarModel() {
 		BarChartModel model = new BarChartModel();
@@ -735,9 +484,12 @@ public class DeprovisionBacking extends BasicSessionBacking {
 		BarChartModel model = new BarChartModel();
         ChartSeries apps = new ChartSeries();
         apps.setLabel(appsName);
+        maxBar = 0;
         for(int i =0;i<countList.size();i++) {
         	if(countList.get(i).getAppsName().equalsIgnoreCase(appsName)) {
         	apps.set(countList.get(i).getDate(), countList.get(i).getCount());
+        	int count = countList.get(i).getCount();
+			maxBar = maxBar < count? count : maxBar;
         	}
         }
         
@@ -759,6 +511,6 @@ public class DeprovisionBacking extends BasicSessionBacking {
         Axis yAxis = barModel.getAxis(AxisType.Y);
         yAxis.setLabel("Total");
         yAxis.setMin(0);
-        yAxis.setMax(200);
+        yAxis.setMax(Helper.roundUpToNearestMultipleOfSix(maxBar));
     }
 }

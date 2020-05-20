@@ -6,15 +6,15 @@
 	  xmlns:f="http://java.sun.com/jsf/core"
 	  xmlns:p="http://primefaces.org/ui"  
 	  xmlns:pe="http://primefaces.org/ui/extensions"> 
-	<h:head>
+	<h:head >
   		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
         <link href="css/style-login.css" rel="stylesheet" type="text/css" />
-  		<title>#{msgbundle['text.page.title']}</title> 
+  		<title >#{msgbundle['text.page.title']}</title> 
 	  	<f:event type="preRenderView" listener="#{loginBacking.load}" />
   	</h:head> 
   	<h:body >
-  		<h:form id="mainform" autocomplete="off">
-		    <p:growl id="msgs" sticky="true"/>
+  		<h:form id="mainform" autocomplete="off" >
+		    <p:growl id="msgs" sticky="true"  />
 		    
     		<p:panel id="basic" header="#{msgbundle['text.page.login']}" styleClass="panelGridCenter">	
 		        <h:panelGrid columns="2" cellpadding="10" styleClass="content">

@@ -18,20 +18,20 @@
 
 				<h:panelGrid columns="3" cellpadding="10" border="0">
 
-					<h:outputLabel value="#{msgbundle['text.page.summary.begindate']}"
+					<h:outputLabel value="Select Month Begin:"
 						style="margin-right:20px;" />
 					<p:datePicker view="month" pattern="MM/yyyy" id="beginDate"
 						value="#{summaryBacking.beginDate}"  yearRange="2000:2030" showIcon="true" />
 					<p:spacer />
 
-					<h:outputLabel value="#{msgbundle['text.page.summary.enddate']}"
+					<h:outputLabel value="Select Month End:"
 						style="margin-right:20px;" />
 					<p:datePicker view="month" pattern="MM/yyyy" yearRange="2000:2030" id="endDate"
 						value="#{summaryBacking.endDate}" showIcon="true" />
 					<p:spacer />
 					<p:commandButton value="#{msgbundle['text.page.summary.search']}"
 						action="#{summaryBacking.getSummaryReport}" process="@all"
-						update="msgs,table, detailListJson,bln1,bln2" />
+						update="msgs,table, detailListJson,bln1,bln2,chartOnboard,chartOffboard" />
 				</h:panelGrid>
 
 				<p:dataTable id="table" var="user"
@@ -43,12 +43,10 @@
 							<p:column headerText="Period" />
 							<p:column
 								headerText="#{msgbundle['text.page.summary.total_onboard']}" />
-							<p:column headerText="SAP" />
-							<p:column headerText="DTOBM" />
-							<p:column headerText="DTKBM" />
-							<p:column headerText="Terminate" />
+							<p:column headerText="Offboard SAP" />
+							<p:column headerText="Offboard DTOBM" />
+							<p:column headerText="Offboard DTKBM" />
 							<p:column headerText="Reset PW Domain" />
-							<p:column headerText="Reset PW Aplikasi" />
 
 
 						</p:row>
@@ -62,31 +60,27 @@
 
 					</p:column>
 					<p:column>
-						<h:outputText style="text-align:center" value="#{user.sap}" />
+						<h:outputText style="text-align:center" value="#{user.deprovSAP}" />
 
 					</p:column>
 					<p:column>
-						<h:outputText style="text-align:center" value="#{user.dtobm}" />
+						<h:outputText style="text-align:center" value="#{user.deprovDTOBM}" />
 
 					</p:column>
 					<p:column>
-						<h:outputText style="text-align:center" value="#{user.dtkbm}" />
+						<h:outputText style="text-align:center" value="#{user.deprovDTKBM}" />
 
-					</p:column>
-					<p:column>
-						<h:outputText style="text-align:center"
-							value="#{user.countDeprov}" />
 					</p:column>
 					<p:column>
 						<h:outputText style="text-align:center"
 							value="#{user.resetDomain}" />
 					</p:column>
-					<p:column>
-						<h:outputText style="text-align:center" value="#{user.resetApps}" />
-					</p:column>
 
 				</p:dataTable>
 				<p:commandButton onclick="exportTableInPDF()" value="Download PDF"  id="downloadTable" />
+				<p:chart id="chartOnboard" type="bar" model="#{summaryBacking.barOnboard}" style="height:400px;"  responsive="true"  widgetVar="lineOnboard"/>
+				<p:chart id="chartOffboard" type="bar" model="#{summaryBacking.barOffboard}" style="height:400px;"  responsive="true"  widgetVar="lineOffboard"/>
+				
 				
 				<p:inputText type="hidden"  id="detailListJson" value="#{summaryBacking.detailListJson}" />
 				
@@ -116,13 +110,11 @@
 		     			table: {
 		     				widths: [100, '*', 200, '*'],
 		     				body: [
-		     					['Domain','Subdomain', 'Total', 'Summary'],
-		     					[{colSpan: 2, text:'Jumlah Karyawan Migrasi dari flatfile'},'','0','' ],
-		     					[{colSpan: 2, text:'Jumlah Karyawan Migrasi dari AD'},'','0','' ],
-		     					[{rowSpan: 3, text: 'jumlah Karyawan Onboard Trusted Source'}, 'Permanent (SAP)', summary.countOnboard, {rowSpan: 3, text:'0' }],
-		     					['','Outsource (DTOBM)', '0' , ''],
-		     					['','Outsource (DTKBM)', '0' , ''],
-		     					[{rowSpan: 13, text: 'jumlah Karyawan Success Request Aplikasi'}, 'SAP eIICMS', summary.sap, {rowSpan: 13, text:'0' }],
+		     					[{text: 'Domain', style: 'tableHeader'},{text: 'SubDomain', style: 'tableHeader'},{text: 'Total', style: 'tableHeader'},{text: 'Summary', style: 'tableHeader'}],
+		     					[{rowSpan: 3, text: 'jumlah Karyawan Onboard Trusted Source'}, 'Permanent (SAP)', summary.countOnboard, {rowSpan: 3, text:(summary.sumOnboardSAP+summary.sumOnboardDTOBM+summary.sumOnboardDTKBM) }],
+		     					['','Outsource (DTOBM)', summary.sumOnboardDTOBM , ''],
+		     					['','Outsource (DTKBM)', summary.sumOnboardDTKBM , ''],
+		     					[{rowSpan: 13, text: 'jumlah Karyawan Success Request Aplikasi'}, 'SAP eHCMS', summary.sap, {rowSpan: 13, text:(summary.sap+summary.ebudgeting+summary.fico+summary.mm+summary.srm+summary.skd+summary.dtobm+summary.dtkbm+summary.mms+summary.raos+summary.aap+summary.wbg+summary.wcp)}],
 		     					['','SAP eBudgeting', summary.ebudgeting , ''],
 		     					['','SAP FICO', summary.fico , ''],
 		     					['','SAP MM', summary.mm , ''],
@@ -131,12 +123,12 @@
 		     					['','DTOBM', summary.dtobm , ''],
 		     					['','DTKBM', summary.dtkbm , ''],
 		     					['','MMS', summary.mms , ''],
-		     					['','RAOS', summary.raos , ''],
+		     					['','RAOS', summary.raos , ''], 
 		     					['','AAP', summary.aap , ''],
 		     					['','Web Bill Gateway', summary.wbg , ''],
 		     					['','Web Corporate Payable', summary.wcp , ''],
-		     					[{colSpan: 2, text:'Jumlah Karyawan Reset Password Doamin di IDM Portal'},'',summary.resetDomain,'' ],
-		     					[{rowSpan: 13, text: 'Jumlah Karyawan Reset Password Aplikasi'}, 'SAP eHCMS', summary.ehcmspw, {rowSpan: 13, text:'0' }],
+		     					[{colSpan: 2, text:'Jumlah Karyawan Reset Password Domain di IDM Portal'},'',summary.resetDomain,summary.resetDomain ],
+		     					[{rowSpan: 13, text: 'Jumlah Karyawan Reset Password Aplikasi'}, 'SAP eHCMS', summary.ehcmspw, {rowSpan: 13, text:(summary.ehcmspw+summary.ebudpw+ summary.ficopw + summary.mmpw+summary.srmpw+summary.skdpw+summary.dtobmpw+summary.dtkbmpw+summary.mmspw+summary.raospw+summary.webgpw+summary.wcppw)}],
 		     					['','SAP eBudgeting', summary.ebudpw , ''],
 		     					['','SAP FICO', summary.ficopw , ''],
 		     					['','SAP MM', summary.mmpw , ''],
@@ -149,10 +141,10 @@
 		     					['','AAP', summary.aappw , ''],
 		     					['','Web Bill Gateway', summary.webgpw , ''],
 		     					['','Web Corporate Payable', summary.wcppw , ''],
-		     					[{rowSpan: 3, text: 'Jumlah Karyawan Offboard dari trusted source'}, 'Permanent (SAP)', summary.deprovSAP, {rowSpan: 3, text:'0' }],
+		     					[{rowSpan: 3, text: 'Jumlah Karyawan Offboard dari trusted source'}, 'Permanent (SAP)', summary.deprovSAP, {rowSpan: 3, text: summary.sumOffboard}],
 		     					['','Outsource (DTOBM)', summary.deprovDTOBM , ''],
-		     					['','Outsource (DTKBM)', summary.deprovDTKBM , '']
-		     					
+		     					['','Outsource (DTKBM)', summary.deprovDTKBM , ''],
+		     					['Jumlah Karyawan Offboard dari Aplikasi',{colSpan: 3, text:'N/A'},'',''],
 		     				]
 						}
 					}
@@ -183,29 +175,29 @@
 				         content: [
 				        	 {text: title, style:'header'}
 			        	 ],
-			 		 	styles: {
-			 				header: {
-			 					fontSize: 18,
-			 					bold: true,
-			 					margin: [0, 0, 0, 10],
-			 					alignment :'center'
-			 				},
-			 				subheader: {
-			 					fontSize: 16,
-			 					bold: true,
-			 					margin: [0, 10, 0, 5]
-			 				},
-			 				tableExample: {
-			 					margin: [0, 5, 0, 15]
-			 				},
-			 				tableHeader: {
-			 					bold: true,
-			 					fontSize: 13,
-			 					height : 20,
-			 					fillColor :'#0d006e',
-			 					color: 'white'
-			 				}
-			 			},
+			        	 styles: {
+								header: {
+									fontSize: 18,
+									bold: true,
+									margin: [0, 0, 0, 10],
+									alignment :'center'
+								},
+								subheader: {
+									fontSize: 16,
+									bold: true,
+									margin: [0, 10, 0, 5]
+								},
+								tableExample: {
+									margin: [0, 5, 0, 15]
+								},
+								tableHeader: {
+									bold: true,
+									fontSize: 13,
+									height : 20,
+									fillColor :'#0d006e',
+									color: 'white'
+								}
+							},
 			 			defaultStyle: {
 			 				// alignment: 'justify'
 			 			}

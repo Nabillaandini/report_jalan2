@@ -28,16 +28,6 @@ import org.primefaces.model.chart.BarChartModel;
 import org.primefaces.model.chart.ChartSeries;
 
 import com.google.gson.Gson;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 
 import ca.iam.core.BasicSessionBacking;
 import ca.iam.eao.DtkbmEao;
@@ -46,9 +36,8 @@ import ca.iam.eao.ProvisionEao;
 import ca.iam.eao.UserEao;
 import ca.iam.entity.CountList;
 import ca.iam.entity.Provision;
-import ca.iam.entity.UserModel;
-import ca.iam.entity.UserUpdates;
 import ca.iam.rules.UserRules;
+import ca.iam.util.Helper;
 
 @ManagedBean
 @SessionScoped
@@ -105,13 +94,27 @@ public class ProvisionBacking extends BasicSessionBacking {
 
 	private boolean flagUsereao = false;
 	private boolean flagApps = false;
+	private int maxBar=0;
+	
 
 	private BarChartModel barModel = new BarChartModel();
 
 public String detailListJson = "";
+private int detailSize=0;
+
+
+
+public int getDetailSize() {
+	return detailSize;
+}
+
+public void setDetailSize(int detailSize) {
+	this.detailSize = detailSize;
+}
+
 	
 	public String getDetailListJson() {
-		return detailList != null? new Gson().toJson(detailList) : "";
+		return detailList != null && !detailList.isEmpty() ? new Gson().toJson(detailList) : "";
 	}
 	
 	public void setDetailListJson(String detailList) {
@@ -120,8 +123,8 @@ public String detailListJson = "";
 	public String countListJson = "";
 	
 	public String getcountListJson() {
-		System.out.println(countList !=null ? countList.get(0).getDate():"IS NULL ");
-		return countList != null? new Gson().toJson(countList) : "";
+	
+		return countList != null && !countList.isEmpty()? new Gson().toJson(countList) : "";
 	}
 	
 	public void setcountListJson(String countList) {
@@ -131,6 +134,7 @@ public String detailListJson = "";
 	public BarChartModel getBarModel() {
 		return barModel;
 	}
+	
 
 	public void setBarModel(BarChartModel barModel) {
 		this.barModel = barModel;
@@ -151,6 +155,7 @@ public String detailListJson = "";
 	public void setFlagApps(boolean flagApps) {
 		this.flagApps = flagApps;
 	}
+	
 
 	public Date getMonth1() {
 		return month1;
@@ -321,12 +326,16 @@ public String detailListJson = "";
 			this.month1 = null;
 			this.month2 = null;
 			this.barModel = new BarChartModel();
-
+			this.period = "monthly";
+			this.maxBar = 0;
+			setVisibilityMonth("block");
+			setVisibilityWeek("none");
 		}
 	}
 
 	public void sumSearch() {
 		this.countList = null;
+		this.barModel = new BarChartModel();
 		if (this.appsName.equalsIgnoreCase("SKD KPEI") || this.appsName.equalsIgnoreCase("AAP")
 				|| this.appsName.equalsIgnoreCase("SAP SRM") || this.appsName.equalsIgnoreCase("SAP FICO")
 				|| this.appsName.equalsIgnoreCase("SAP eBudgeting") || this.appsName.equalsIgnoreCase("SAP MM")) {
@@ -416,6 +425,8 @@ public String detailListJson = "";
 				}
 				this.flagUsereao = false;
 				this.flagApps = false;
+				this.detailSize = 0;
+				this.detailSize = detailList.size();
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching is finished"));
 
 			} catch (SQLException e) {
@@ -430,97 +441,6 @@ public String detailListJson = "";
 		}
 	}
 
-	public void toFile() {
-		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-		String date = DATE_FORMAT.format(this.beginDate);
-		String end = DATE_FORMAT.format(this.endDate);
-		String path = "C:/report_result/provision_" + this.appsName + "_" + date + "_" + end + ".pdf";
-		try {
-			File file = new File(path);
-			FileOutputStream fileout = new FileOutputStream(file);
-			Document document = new Document();
-			PdfWriter.getInstance(document, fileout);
-			document.addAuthor("Me");
-
-			document.open();
-
-			Image image;
-			try {
-				image = Image.getInstance("C:/report_result/img/mandiri-logo.png");
-				image.setAlignment(Image.MIDDLE);
-				image.scaleToFit(200, 100);
-
-				document.add(image);
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			Font font = new Font();
-			font.setStyle(Font.BOLD);
-			font.setStyle(Font.ITALIC);
-			font.setSize(24);
-			document.addTitle("IAM User Provisioning Report : " + date);
-			Paragraph paragraph1 = new Paragraph();
-			paragraph1.add("IAM User Provisioning Report : " + this.appsName);
-			paragraph1.add("\n");
-			paragraph1.add("Tanggal :" + date + " - " + end + "\n");
-			paragraph1.add("Total : " + this.detailList.size() + "\n");
-			paragraph1.add("\n");
-			paragraph1.setAlignment(Element.ALIGN_CENTER);
-			paragraph1.setFont(font);
-			document.add(paragraph1);
-			Paragraph paragraph = new Paragraph();
-			paragraph.setAlignment(Element.ALIGN_LEFT);
-			float[] columnWidths = { 2.5f, 2.5f };
-			// create PDF table with the given widths
-			PdfPTable table = new PdfPTable(columnWidths);
-			// set table width a percentage of the page width
-			table.setWidthPercentage(90f);
-			insertCell(table, "User Provisioning Approval Date", Element.ALIGN_CENTER, 1);
-			insertCell(table, "User ID", Element.ALIGN_CENTER, 1);
-			table.setHeaderRows(1);
-			for (int i = 0; i < detailList.size(); i++) {
-				insertCell(table, detailList.get(i).getDate(), Element.ALIGN_CENTER, 1);
-				insertCell(table, detailList.get(i).getType(), Element.ALIGN_CENTER, 1);
-			}
-			paragraph.add(table);
-
-			document.add(paragraph);
-
-			document.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (DocumentException e) {
-			e.printStackTrace();
-		}
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("File has been downloaded " + path));
-
-	}
-
-	private void insertCell(PdfPTable table, String text, int align, int colspan) {
-
-		// create a new cell with the specified Text and Font
-		PdfPCell cell = new PdfPCell(new Phrase(text.trim()));
-		// set the cell alignment
-		cell.setHorizontalAlignment(align);
-		// set the cell column span in case you want to merge two or more cells
-		cell.setColspan(colspan);
-		// in case there is no text and you wan to create an empty row
-		if (text.trim().equalsIgnoreCase("")) {
-			cell.setMinimumHeight(10f);
-		}
-		// add the call to the table
-		table.addCell(cell);
-
-	}
-
-	public void Search() {
-
-		this.application = leftmenuBacking.getAppsValue();
-		System.out.println(period);
-	}
 
 	public void updateSelected() {
 		System.out.println("----------------------");
@@ -549,9 +469,12 @@ public String detailListJson = "";
 		BarChartModel model = new BarChartModel();
 		ChartSeries apps = new ChartSeries();
 		apps.setLabel(appsName);
+		maxBar = 0;
 		for (int i = 0; i < countList.size(); i++) {
 			if (countList.get(i).getAppsName().equalsIgnoreCase(appsName)) {
-				apps.set(countList.get(i).getDate(), countList.get(i).getCount());
+				int count = countList.get(i).getCount();
+				apps.set(countList.get(i).getDate(), count);
+				maxBar = maxBar < count? count : maxBar;
 			}
 		}
 
@@ -571,7 +494,8 @@ public String detailListJson = "";
 		Axis yAxis = barModel.getAxis(AxisType.Y);
 		yAxis.setLabel("Total");
 		yAxis.setMin(0);
-		yAxis.setMax(200);
+		yAxis.setMax(Helper.roundUpToNearestMultipleOfSix(maxBar));
 	}
+	
 
 }

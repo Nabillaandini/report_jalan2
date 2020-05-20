@@ -10,6 +10,7 @@ import java.sql.SQLException;
 
 import javax.ejb.Stateless;
 
+import ca.iam.util.ReportConn;
 import ca.iam.util.Settings;
 
 @Stateless
@@ -26,7 +27,7 @@ public class LoginEao {
 		try{
 			result = "0";
 			
-			conn = Settings.getConnection();
+			conn = ReportConn.getConnection();
 			query = "{call getUserLogin(?,?)}";
 			cs = conn.prepareCall(query);
 			cs.setString(1,user);

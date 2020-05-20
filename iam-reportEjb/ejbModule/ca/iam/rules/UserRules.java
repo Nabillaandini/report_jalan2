@@ -7,7 +7,6 @@ import javax.ejb.Stateless;
 
 import ca.iam.backing.LoginBacking;
 import ca.iam.backing.UserBacking;
-import ca.iam.eao.SellEao;
 import ca.iam.eao.UserEao;
 
 @Stateless

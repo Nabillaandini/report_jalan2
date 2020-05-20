@@ -396,7 +396,7 @@ public class DtkbmEao {
 					type = arr[1].substring(6);
 					if (!(type.contains("failed") || type.contains(":"))) {
 						if(type.charAt(0)=='K') {
-						prov = new Provision(date_str, type);
+						prov = new Provision(date_str, type,"DTKBM");
 						userList.add(prov);
 						}
 					}
@@ -578,8 +578,8 @@ public class DtkbmEao {
 					Date a = rs.getDate(1);
 					Date b = rs.getDate(2);
 					int countDTKBM = rs.getInt(5);
-					String a_str = Helper.dateToString(a);
-					String b_str = Helper.dateToString(b);
+					String a_str = Helper.dateToStringWeek(a);
+					String b_str = Helper.dateToStringWeek(b);
 					CountList temp =   new CountList(a_str,b_str, countDTKBM,"DTKBM");
 					resultCount.add(temp);
 				}
@@ -666,8 +666,8 @@ public class DtkbmEao {
 				while (rs.next()) {
 					Date a = rs.getDate(1);
 					Date b = rs.getDate(2);
-					String a_str = Helper.dateToString(a);
-					String b_str = Helper.dateToString(b);
+					String a_str = Helper.dateToStringWeek(a);
+					String b_str = Helper.dateToStringWeek(b);
 					String type = rs.getString(3);
 					String[] arr = type.split(",");
 					type = arr[1].substring(6);

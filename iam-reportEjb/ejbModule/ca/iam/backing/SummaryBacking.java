@@ -24,32 +24,20 @@ import javax.faces.event.ComponentSystemEvent;
 import javax.inject.Named;
 
 import org.jfree.data.time.Month;
+import org.primefaces.model.chart.Axis;
+import org.primefaces.model.chart.AxisType;
+import org.primefaces.model.chart.BarChartModel;
+import org.primefaces.model.chart.ChartSeries;
 
 import ca.iam.core.BasicSessionBacking;
 import ca.iam.eao.DtkbmEao;
 import ca.iam.eao.DtobmEao;
 import ca.iam.eao.UserEao;
-import ca.iam.entity.CountList;
 import ca.iam.entity.SummaryModel;
-import ca.iam.entity.SummarySQL;
-import ca.iam.entity.UserUpdates;
 import ca.iam.rules.UserRules;
+import ca.iam.util.Helper;
 
 import com.google.gson.Gson;
-import com.itextpdf.text.Chunk;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.log.SysoCounter;
-import com.itextpdf.text.pdf.PdfDocument;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.text.pdf.draw.DottedLineSeparator;
 
 @ManagedBean
 @SessionScoped
@@ -77,17 +65,19 @@ public class SummaryBacking extends BasicSessionBacking {
 
 	@EJB
 	public DtkbmEao dtkbmEao;
-
+	private int maxBar;
 	private Date beginDate;
 	private Date endDate;
 	private String headName;
 	SummaryModel sumModel = new SummaryModel();
-	ArrayList <SummarySQL> detailListSQL = new ArrayList<SummarySQL>();
 	ArrayList <SummaryModel> detailSumModel = new ArrayList <SummaryModel>();
 	
 	String period1;
 	Month periodA=null;
 	String application;
+	private BarChartModel barOnboard = new BarChartModel();
+	private BarChartModel barResetDomain = new BarChartModel();
+	private BarChartModel barOffboard = new BarChartModel();
 	
 	public String detailListJson = "";
 	
@@ -123,114 +113,31 @@ public class SummaryBacking extends BasicSessionBacking {
 		this.detailSumModel = detailSumModel;
 	}
 
-	public ArrayList<SummarySQL> getDetailListSQL() {
-		return detailListSQL;
+	public BarChartModel getBarOnboard() {
+		return barOnboard;
 	}
 
-	public void setDetailListSQL(ArrayList<SummarySQL> detailListSQL) {
-		this.detailListSQL = detailListSQL;
+	public void setBarOnboard(BarChartModel barOnboard) {
+		this.barOnboard = barOnboard;
 	}
-	public void toFile() {
-		String res = "";
-		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-		String date = DATE_FORMAT.format(this.beginDate);
-		String[] arr = date.split("-");
-		String month_a = arr[1];
-		String year_a = arr[2];
-		String end = DATE_FORMAT.format(this.endDate);
-		arr= end.split("-");
-		String month_b = arr[1];
-		String year_b = arr[2];
-		String path="C:/report_result/summary_" +month_a+year_a+ "_"+ month_b+year_b + ".pdf";
+
+	public BarChartModel getBarResetDomain() {
+		return barResetDomain;
+	}
+
+	public void setBarResetDomain(BarChartModel barResetDomain) {
+		this.barResetDomain = barResetDomain;
+	}
+
+	public BarChartModel getBarOffboard() {
+		return barOffboard;
+	}
+
+	public void setBarOffboard(BarChartModel barOffboard) {
+		this.barOffboard = barOffboard;
+	}
+
 	
-		System.out.println(res);
-		try {
-			File file = new File(path);
-			FileOutputStream fileout = new FileOutputStream(file);
-			Document document = new Document();
-			PdfWriter.getInstance(document, fileout);
-			document.open();
-			
-		
-			Image image;
-			try {
-				image = Image.getInstance("C:/report_result/img/mandiri-logo.png");
-				image.setAlignment(Image.MIDDLE);
-				image.scaleToFit(200, 100);
-
-				document.add(image);
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			Font font = new Font();
-			font.setStyle(Font.BOLD);
-			font.setStyle(Font.ITALIC);
-			font.setSize(24);
-			document.addTitle("IAM Summary Report" + date + " - " + end);
-			Paragraph paragraph1 = new Paragraph();
-			paragraph1.add("IAM Summary Report ");
-			paragraph1.add("\n");
-			paragraph1.add("Period : "+ month_a+"/"+year_a + " - " +month_b+"/"+year_b +"\n");
-			Chunk linebreak = new Chunk(new DottedLineSeparator());
-			paragraph1.add(linebreak);
-			paragraph1.add("\n\n");
-			paragraph1.setAlignment(Element.ALIGN_CENTER);
-			paragraph1.setFont(font);
-			document.add(paragraph1);
-
-			Paragraph paragraph = new Paragraph();
-			for(int i=0;i<detailSumModel.size();i++) {
-				res = "Period : " + detailSumModel.get(i).getDate() + "\nJumlah Karyawan Onboard : " + detailSumModel.get(i).getCountOnboard() 
-						
-						+ "\nJumlah Karyawan Success Request Aplikasi SAP eHCMS: " + this.detailSumModel.get(i).getSap()
-						+ "\nJumlah Karyawan Success Request Aplikasi SAP eBudgeting: " + this.detailSumModel.get(i).getEbudgeting()
-						+ "\nJumlah Karyawan Success Request Aplikasi SAP FICO: " + this.detailSumModel.get(i).getFico()
-						+ "\nJumlah Karyawan Success Request Aplikasi SAP MM: " + this.detailSumModel.get(i).getMm()
-						+ "\nJumlah Karyawan Success Request Aplikasi SAP SRM: " + this.detailSumModel.get(i).getSrm()
-						+ "\nJumlah Karyawan Success Request Aplikasi SKD KPEI: " + this.detailSumModel.get(i).getSkd()
-						+"\nJumlah Karyawan Success Request Aplikasi DTOBM : "+ this.detailSumModel.get(i).getDtobm()
-						+"\nJumlah Karyawan Success Request Aplikasi DTKBM : "+ this.detailSumModel.get(i).getDtkbm()
-						+"\nJumlah Karyawan Success Request Aplikasi MMS : "+ this.detailSumModel.get(i).getMms()
-						+"\nJumlah Karyawan Success Request Aplikasi RAOS : "+ this.detailSumModel.get(i).getRaos()
-						+"\nJumlah Karyawan Success Request Aplikasi Web Bill Gateway : "+ this.detailSumModel.get(i).getWbg()
-						+"\nJumlah Karyawan Success Request Aplikasi Web Corporate Payable : "+ this.detailSumModel.get(i).getWcp()
-						+"\nJumlah Karyawan Offboard/Terminate SAP : " + detailSumModel.get(i).getDeprovSAP()
-						+"\nJumlah Karyawan Offboard/Terminate DTOBM : " + detailSumModel.get(i).getDeprovDTOBM()
-						+"\nJumlah Karyawan Offboard/Terminate DTKBM : " + detailSumModel.get(i).getDeprovDTKBM()
-						+"\nJumlah Karyawan Reset Password AD : "+ this.detailSumModel.get(i).getResetDomain()
-						+ "\nJumlah Karyawan Reset Password SAP eHCMS : " + this.detailSumModel.get(i).getEhcmspw()
-						+ "\nJumlah Karyawan Reset Password  SAP eBudgeting : " + this.detailSumModel.get(i).getEbudpw()
-						+ "\nJumlah Karyawan Reset Password  SAP FICO : " + this.detailSumModel.get(i).getFicopw()
-						+ "\nJumlah Karyawan Reset Password  SAP MM : " + this.detailSumModel.get(i).getMmpw()
-						+ "\nJumlah Karyawan Reset Password  SAP SRM: " + this.detailSumModel.get(i).getSrmpw()
-						+"\nJumlah Karyawan Reset Password DTOBM : " +this.detailSumModel.get(i).getDtobmpw()
-						+"\nJumlah Karyawan Reset Password DTKBM : " +this.detailSumModel.get(i).getDtkbmpw()
-						+"\nJumlah Karyawan Reset Password MMS : " +this.detailSumModel.get(i).getMmspw()
-						+"\nJumlah Karyawan Reset Password RAOS : " +this.detailSumModel.get(i).getRaospw()
-						+"\nJumlah Karyawan Reset Password Web Bill Gateway : " +this.detailSumModel.get(i).getWebgpw()
-						+"\nJumlah Karyawan Reset Password Web Corporate Payable : " +this.detailSumModel.get(i).getWcppw()
-						+"\nJumlah Karyawan Reset Password SKD KPEI : " +this.detailSumModel.get(i).getSkdpw()
-						+ "\n\n\n";
-				paragraph.add(res);
-			}
-			paragraph.setAlignment(Element.ALIGN_LEFT);
-			document.add(paragraph);
-
-			document.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (DocumentException e) {
-			e.printStackTrace();
-		}
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("File has been downloaded " + path));
-
-		System.out.println("Content added");
-
-		System.out.println("Pdf created");
-	}
-
 	public String getHeadName() {
 		return headName;
 	}
@@ -250,7 +157,6 @@ public class SummaryBacking extends BasicSessionBacking {
 
 			this.beginDate = null;
 			this.endDate = null;
-			this.detailListSQL = null;
 			this.detailSumModel =null;
 		}
 	}
@@ -311,7 +217,9 @@ public class SummaryBacking extends BasicSessionBacking {
 				
 					this.detailSumModel= userEao.getSummaryReport(this.beginDate, this.endDate);
 				
-
+					createBarModelOnboard();
+					createBarModelOffboard();
+					
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching is finished"));
 
 			} catch (SQLException e) {
@@ -326,183 +234,104 @@ public class SummaryBacking extends BasicSessionBacking {
 		}
 	}
 	
-	public void getSummarySQL() {
-		if (this.beginDate == null || this.endDate == null) {
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,"Please fill in the required fields", "Error"));
-		}else {
-			try {
-				this.detailListSQL = userEao.getSummaryProv(this.beginDate, this.endDate);
+	
+	private BarChartModel initBarModelOnboard() {
+		BarChartModel model = new BarChartModel();
+		 ChartSeries sap = new ChartSeries();
+	        sap.setLabel("SAP");
 
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching is finished"));
+	        ChartSeries dtobm = new ChartSeries();
+	        dtobm.setLabel("DTOBM");
+	        
+	        ChartSeries dtkbm = new ChartSeries();
+	        dtkbm.setLabel("DTKBM");
+	        
+        maxBar = 0;
+        for(int i =0;i<detailSumModel.size();i++) {
+        	int count = detailSumModel.get(i).getSumOnboardSAP();
+        	sap.set(detailSumModel.get(i).getDate(), count );
+        	maxBar = maxBar < count? count : maxBar;
+        	
+        	count = detailSumModel.get(i).getSumOnboardDTOBM();
+        	dtobm.set(detailSumModel.get(i).getDate(), count );
+        	maxBar = maxBar < count? count : maxBar;
+        	
+        	count = detailSumModel.get(i).getSumOnboardDTKBM() ;
+        	dtkbm.set(detailSumModel.get(i).getDate(), count);
+        	maxBar = maxBar < count? count : maxBar;
+        	
+        }
+        
+        model.addSeries(sap);
+        model.addSeries(dtobm);
+        model.addSeries(dtkbm);
+ 
+        return model;
+    }
+ 
+ 
+    private void createBarModelOnboard() {
+    	barOnboard = initBarModelOnboard();
+ 
+    	barOnboard.setTitle("Onboard Trusted Source");
+    	barOnboard.setLegendPosition("ne");
+ 
+        Axis xAxis = barOnboard.getAxis(AxisType.X);
+        xAxis.setLabel("Period");
+ 
+        Axis yAxis = barOnboard.getAxis(AxisType.Y);
+        yAxis.setLabel("Total");
+        yAxis.setMin(0);
+        yAxis.setMax(Helper.roundUpToNearestMultipleOfSix(maxBar));
+    }
+    
+    private BarChartModel initBarModelOffboard() {
+		BarChartModel model = new BarChartModel();
+		 ChartSeries sap = new ChartSeries();
+	        sap.setLabel("SAP");
 
-			} catch (SQLException e) {
-
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Database connection error"));
-
-				e.printStackTrace();
-			} catch (ParseException e) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Reading input failed"));
-				e.printStackTrace();
-			}
-		}
-	}
-	public void provToFile() {
-		String res = "";
-		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-		String date = DATE_FORMAT.format(this.beginDate);
-		String end = DATE_FORMAT.format(this.endDate);
-		String path="C:/report_result/summaryprov_" +date+ "_"+ end + ".pdf";
-		System.out.println(res);
-		try {
-			File file = new File(path);
-			FileOutputStream fileout = new FileOutputStream(file);
-			Document document = new Document();
-			PdfWriter.getInstance(document, fileout);
-			document.addAuthor("Me");
-
-			document.open();
-			
-		
-			Image image;
-			try {
-				image = Image.getInstance("C:/report_result/img/mandiri-logo.png");
-				image.setAlignment(Image.MIDDLE);
-				image.scaleToFit(200, 100);
-
-				document.add(image);
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			Font font = new Font();
-			font.setStyle(Font.BOLD);
-			font.setStyle(Font.ITALIC);
-			font.setSize(24);
-			document.addTitle("IAM Prov & Deprov Report: " + date + " - " + end);
-			Paragraph paragraph1 = new Paragraph();
-			paragraph1.add("IAM Prov & Deprov Report: "+ this.application);
-			paragraph1.add("\n");
-			paragraph1.add("Tanggal : "+ date + " - " + end);
-			paragraph1.add("\n");
-			paragraph1.setAlignment(Element.ALIGN_CENTER);
-			paragraph1.setFont(font);
-			document.add(paragraph1);
-
-			Paragraph paragraph = new Paragraph();
-			for(int i=0;i<detailListSQL.size();i++) {
-				res = "Date : " + detailListSQL.get(i).getDate() + "\nTotal Provision : " + detailListSQL.get(i).getProv() + "\nTotal Deprovision : " + detailListSQL.get(i).getDeprov() + "\n\n";
-				paragraph.add(res);
-			}
-			paragraph.setAlignment(Element.ALIGN_LEFT);
-			document.add(paragraph);
-
-			document.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (DocumentException e) {
-			e.printStackTrace();
-		}
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("File has been downloaded " + path));
-
-		System.out.println("Content added");
-
-		System.out.println("Pdf created");
-	}
-//	public void sumtoFile() {
-//		String res = "";
-//		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-//		String date = DATE_FORMAT.format(this.beginDate);
-//		String[] arr = date.split("-");
-//		String month_a = arr[1];
-//		String year_a = arr[2];
-//		String end = DATE_FORMAT.format(this.endDate);
-//		arr= end.split("-");
-//		String month_b = arr[1];
-//		String year_b = arr[2];
-//		String path="C:/report_result/summarytbl_" +month_a+year_a+ "_"+ month_b+year_b + ".pdf";
-//	
-//		
-//		try {
-//			File file = new File(path);
-//			FileOutputStream fileout = new FileOutputStream(file);
-//			Document document = new Document();
-//			PdfWriter.getInstance(document, fileout);
-//			document.addAuthor("Me");
-//
-//			document.open();
-//
-//			Image image;
-//			try {
-//				image = Image.getInstance("C:/report_result/img/mandiri-logo.png");
-//				image.setAlignment(Image.MIDDLE);
-//				image.scaleToFit(200, 100);
-//
-//				document.add(image);
-//			} catch (MalformedURLException e) {
-//				e.printStackTrace();
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//
-//			Font font = new Font();
-//			font.setStyle(Font.BOLD);
-//			font.setStyle(Font.ITALIC);
-//			font.setSize(24);
-//			document.addTitle("IAM Summary Report : " + date);
-//			Paragraph paragraph1 = new Paragraph();
-//			paragraph1.add("IAM Summary Report : ");
-//			paragraph1.add("\n");
-//			paragraph1.add("periode :" + date + " - " + end + "\n");
-//			paragraph1.add("\n");
-//			paragraph1.setAlignment(Element.ALIGN_CENTER);
-//			paragraph1.setFont(font);
-//			document.add(paragraph1);
-//			Paragraph paragraph = new Paragraph();
-//			paragraph.setAlignment(Element.ALIGN_LEFT);
-//			for(int i=0;i<detailSumModel.size();i++) {
-//				float[] columnWidths = { 2.5f, 2.5f};
-//				// create PDF table with the given widths
-//				PdfPTable table = new PdfPTable(columnWidths);
-//				// set table width a percentage of the page width
-//				table.setWidthPercentage(90f);
-//				insertCell(table, "Jumlah Karyawan Onboard", Element.ALIGN_LEFT, 1);
-//				
-//			}
-//			for (int i = 0; i < countList.size(); i++) {
-//				System.out.println("masuk countlist");
-//				insertCell(table, countList.get(i).getDate(), Element.ALIGN_CENTER, 1);
-//				insertCell(table, Integer.toString(countList.get(i).getCount()), Element.ALIGN_CENTER, 1);
-//				insertCell(table, countList.get(i).getAppsName(), Element.ALIGN_CENTER, 1);
-//			}
-//			System.out.println("after loop");
-//			paragraph.add(table);
-//
-//			document.add(paragraph);
-//
-//			document.close();
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//		} catch (DocumentException e) {
-//			e.printStackTrace();
-//		}
-//		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("File has been downloaded " + path));
-//
-//	}
-	private void insertCell(PdfPTable table, String text, int align, int colspan) {
-
-		// create a new cell with the specified Text and Font
-		PdfPCell cell = new PdfPCell(new Phrase(text.trim()));
-		// set the cell alignment
-		cell.setHorizontalAlignment(align);
-		// set the cell column span in case you want to merge two or more cells
-		cell.setColspan(colspan);
-		// in case there is no text and you wan to create an empty row
-		if (text.trim().equalsIgnoreCase("")) {
-			cell.setMinimumHeight(10f);
-		}
-		// add the call to the table
-		table.addCell(cell);
-
-	}
+	        ChartSeries dtobm = new ChartSeries();
+	        dtobm.setLabel("DTOBM");
+	        
+	        ChartSeries dtkbm = new ChartSeries();
+	        dtkbm.setLabel("DTKBM");
+	        
+        maxBar = 0;
+        for(int i =0;i<detailSumModel.size();i++) {
+        	int count = detailSumModel.get(i).getDeprovSAP();
+        	sap.set(detailSumModel.get(i).getDate(), count );
+        	maxBar = maxBar < count? count : maxBar;
+        	
+        	count = detailSumModel.get(i).getDeprovDTOBM();
+        	dtobm.set(detailSumModel.get(i).getDate(), count );
+        	maxBar = maxBar < count? count : maxBar;
+        	
+        	count = detailSumModel.get(i).getDeprovDTKBM();
+        	dtkbm.set(detailSumModel.get(i).getDate(), count);
+        	maxBar = maxBar < count? count : maxBar;
+        	
+        }
+        
+        model.addSeries(sap);
+        model.addSeries(dtobm);
+        model.addSeries(dtkbm);
+ 
+        return model;
+    }
+ 
+ 
+    private void createBarModelOffboard() {
+    	barOffboard = initBarModelOffboard();
+ 
+    	barOffboard.setTitle("Offboard Trusted Source");
+    	barOffboard.setLegendPosition("ne");
+ 
+        Axis xAxis = barOnboard.getAxis(AxisType.X);
+        xAxis.setLabel("Period");
+ 
+        Axis yAxis = barOnboard.getAxis(AxisType.Y);
+        yAxis.setLabel("Total");
+        yAxis.setMin(0);
+        yAxis.setMax(Helper.roundUpToNearestMultipleOfSix(maxBar));
+    }
 }

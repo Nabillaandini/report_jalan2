@@ -9,7 +9,6 @@ import ca.iam.backing.LoginBacking;
 import ca.iam.backing.UserBacking;
 import ca.iam.eao.DtkbmEao;
 import ca.iam.eao.DtobmEao;
-import ca.iam.eao.SellEao;
 import ca.iam.eao.UserEao;
 
 @Stateless

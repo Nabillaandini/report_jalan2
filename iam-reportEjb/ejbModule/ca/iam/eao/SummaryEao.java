@@ -110,8 +110,8 @@ public class SummaryEao {
 					int countSAP = rs.getInt(3);
 					int countDTOBM = rs.getInt(4);
 					int countDTKBM = rs.getInt(5);
-					String a_str = Helper.dateToString(a);
-					String b_str = Helper.dateToString(b);
+					String a_str = Helper.dateToStringWeek(a);
+					String b_str = Helper.dateToStringWeek(b);
 					CountList temp = new CountList(a_str,b_str, countSAP,"SAP");
 					resultCount.add(temp);
 					temp =   new CountList(a_str,b_str, countDTOBM,"DTOBM");

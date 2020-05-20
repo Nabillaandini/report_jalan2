@@ -226,8 +226,8 @@ public class ChangeEao {
 					Date a = rs.getDate(1);
 					Date b = rs.getDate(2);
 					int count = rs.getInt(3);
-					String a_str = Helper.dateToString(a);
-					String b_str = Helper.dateToString(b);
+					String a_str = Helper.dateToStringWeek(a);
+					String b_str = Helper.dateToStringWeek(b);
 					CountList temp = new CountList(a_str,b_str,count);
 					resultCount.add(temp);
 				}
@@ -371,8 +371,8 @@ public class ChangeEao {
 					Date a = rs.getDate(1);
 					Date b = rs.getDate(2);
 					int count = rs.getInt(3);
-					String a_str = Helper.dateToString(a);
-					String b_str = Helper.dateToString(b);
+					String a_str = Helper.dateToStringWeek(a);
+					String b_str = Helper.dateToStringWeek(b);
 					CountList temp = new CountList(a_str,b_str,count);
 					resultCount.add(temp);
 				}
@@ -418,8 +418,8 @@ public class ChangeEao {
 					Date a = rs.getDate(1);
 					Date b = rs.getDate(2);
 					int count = rs.getInt(3);
-					String a_str = Helper.dateToString(a);
-					String b_str = Helper.dateToString(b);
+					String a_str = Helper.dateToStringWeek(a);
+					String b_str = Helper.dateToStringWeek(b);
 					CountList temp = new CountList(a_str,b_str,count);
 					resultCount.add(temp);
 				}
@@ -459,8 +459,8 @@ public class ChangeEao {
 					Date a = rs.getDate(1);
 					Date b = rs.getDate(2);
 					int count = rs.getInt(3);
-					String a_str = Helper.dateToString(a);
-					String b_str = Helper.dateToString(b);
+					String a_str = Helper.dateToStringWeek(a);
+					String b_str = Helper.dateToStringWeek(b);
 					CountList temp = new CountList(a_str,b_str,count);
 					resultCount.add(temp);
 				}
@@ -499,8 +499,8 @@ public class ChangeEao {
 					Date a = rs.getDate(1);
 					Date b = rs.getDate(2);
 					String name = rs.getString(3);
-					String a_str = Helper.dateToString(a);
-					String b_str = Helper.dateToString(b);
+					String a_str = Helper.dateToStringWeek(a);
+					String b_str = Helper.dateToStringWeek(b);
 					String[] arr = name.split(",");
 					name = arr[1].substring(6);
 					if (!(name.contains("failed") || name.contains(":"))) {
@@ -543,8 +543,8 @@ public class ChangeEao {
 					Date a = rs.getDate(1);
 					Date b = rs.getDate(2);
 					String name = rs.getString(3);
-					String a_str = Helper.dateToString(a);
-					String b_str = Helper.dateToString(b);
+					String a_str = Helper.dateToStringWeek(a);
+					String b_str = Helper.dateToStringWeek(b);
 					String[] arr = name.split(",");
 					name = arr[1].substring(6);
 					if (!(name.contains("failed") || name.contains(":"))) {
@@ -841,8 +841,8 @@ public class ChangeEao {
 					Date a = rs.getDate(1);
 					Date b = rs.getDate(2);
 					String name = rs.getString(3);
-					String a_str = Helper.dateToString(a);
-					String b_str = Helper.dateToString(b);
+					String a_str = Helper.dateToStringWeek(a);
+					String b_str = Helper.dateToStringWeek(b);
 					name = name.substring(name.indexOf("Assign user") + 13, name.indexOf("provisioning role")-2);
 					if (!(name.contains("failed") || name.contains(":"))) {
 						Provision user = new Provision(a_str,b_str, name);
@@ -891,8 +891,8 @@ public class ChangeEao {
 					Date a = rs.getDate(1);
 					Date b = rs.getDate(2);
 					String name = rs.getString(3);
-					String a_str = Helper.dateToString(a);
-					String b_str = Helper.dateToString(b);
+					String a_str = Helper.dateToStringWeek(a);
+					String b_str = Helper.dateToStringWeek(b);
 					name = name.substring(name.indexOf("Assign user") + 13, name.indexOf("provisioning role")-2);
 					if (!(name.contains("failed") || name.contains(":"))) {
 						Provision user = new Provision(a_str,b_str, name);

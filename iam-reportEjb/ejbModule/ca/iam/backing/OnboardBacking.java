@@ -23,36 +23,21 @@ import javax.faces.event.ComponentSystemEvent;
 import javax.faces.model.SelectItem;
 import javax.inject.Named;
 
-import org.jfree.util.LineBreakIterator;
 import org.primefaces.model.chart.Axis;
 import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.chart.BarChartModel;
 import org.primefaces.model.chart.ChartSeries;
 
 import com.google.gson.Gson;
-import com.itextpdf.text.Chunk;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.log.SysoCounter;
-import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.text.pdf.draw.DottedLineSeparator;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
 
 import ca.iam.core.BasicSessionBacking;
 import ca.iam.eao.DtkbmEao;
 import ca.iam.eao.DtobmEao;
 import ca.iam.eao.UserEao;
 import ca.iam.entity.CountList;
-import ca.iam.entity.SelectOneMenuView;
 import ca.iam.entity.UserModel;
-import ca.iam.entity.UserUpdates;
 import ca.iam.rules.UserRules;
+import ca.iam.util.Helper;
 
 @ManagedBean
 @SessionScoped
@@ -91,6 +76,7 @@ public class OnboardBacking extends BasicSessionBacking {
 	
 	private String visibilityMonth = "block";
 	private String visibilityWeek = "none";
+	private int maxBar;
 
 	private List<SelectItem> periodList;
 	private String period;
@@ -99,12 +85,41 @@ public class OnboardBacking extends BasicSessionBacking {
 	
 	private Date month1;
 	private Date month2;
+	
+	private List<SelectItem> appsList;
+	private String appsName;
+	
+	private int detailSize=0;
+	
 
 	
+	public int getDetailSize() {
+		return detailSize;
+	}
+
+	public void setDetailSize(int detailSize) {
+		this.detailSize = detailSize;
+	}
+
+	public List<SelectItem> getAppsList() {
+		return appsList;
+	}
+
+	public void setAppsList(List<SelectItem> appsList) {
+		this.appsList = appsList;
+	}
+
+	public String getAppsName() {
+		return appsName;
+	}
+
+	public void setAppsName(String appsName) {
+		this.appsName = appsName;
+	}
 public String detailListJson = "";
 	
 	public String getDetailListJson() {
-		return detailList != null? new Gson().toJson(detailList) : "";
+		return detailList != null && !detailList.isEmpty() ? new Gson().toJson(detailList) : "";
 	}
 	
 	public void setDetailListJson(String detailList) {
@@ -113,8 +128,7 @@ public String detailListJson = "";
 	public String countListJson = "";
 	
 	public String getcountListJson() {
-		System.out.println(countList !=null ? countList.get(0).getDate():"IS NULL ");
-		return countList != null? new Gson().toJson(countList) : "";
+		return countList != null && !countList.isEmpty()? new Gson().toJson(countList) : "";
 	}
 	
 	public void setcountListJson(String countList) {
@@ -208,93 +222,6 @@ public String detailListJson = "";
 	
 
 
-	public void toFile() {
-		SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
-		String date = DATE_FORMAT.format(this.beginDate);
-		String end = DATE_FORMAT.format(this.endDate);
-		String path="C:/report_result/onboard_" +date+ "_"+ end + ".pdf";
-		try {
-			File file = new File(path);
-			FileOutputStream fileout = new FileOutputStream(file);
-			Document document = new Document();
-			PdfWriter.getInstance(document, fileout);
-			document.addAuthor("Me");
-
-			document.open();
-
-			Image image;
-			try {
-				image = Image.getInstance("C:/report_result/img/mandiri-logo.png");
-				image.setAlignment(Image.MIDDLE);
-				image.scaleToFit(200, 100);
-
-				document.add(image);
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-//			Chunk chunk = new Chunk("Summary report "+ date);
-			Font font = new Font();
-			font.setStyle(Font.BOLD);
-			font.setStyle(Font.ITALIC);
-			font.setSize(24);
-//			chunk.setFont(font);
-//			document.add(chunk);
-			document.addTitle("IAM Onboard Report: " + date);
-			Paragraph paragraph1 = new Paragraph();
-			paragraph1.add("IAM ONBOARD REPORT");
-			paragraph1.add("\n");
-			paragraph1.add("Tanggal :" + date + " - " + end +"\n");
-			paragraph1.add("Total User Onboard : " + detailList.size() +"\n");
-			paragraph1.add("\n");
-			paragraph1.setAlignment(Element.ALIGN_CENTER);
-			paragraph1.setFont(font);
-			document.add(paragraph1);
-			Paragraph paragraph = new Paragraph();
-			paragraph.setAlignment(Element.ALIGN_LEFT);
-			float[] columnWidths = { 2.5f, 2.5f};
-			// create PDF table with the given widths
-			PdfPTable table = new PdfPTable(columnWidths);
-			// set table width a percentage of the page width
-			table.setWidthPercentage(90f);
-			insertCell(table, "Date", Element.ALIGN_CENTER, 1);
-			insertCell(table, "Username", Element.ALIGN_CENTER, 1);
-			table.setHeaderRows(1);
-			for (int i = 0; i < detailList.size(); i++) {
-				insertCell(table, detailList.get(i).getDate(), Element.ALIGN_CENTER, 1);
-				insertCell(table, detailList.get(i).getName(), Element.ALIGN_CENTER, 1);
-			}
-			paragraph.add(table);
-
-			document.add(paragraph);
-
-			document.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (DocumentException e) {
-			e.printStackTrace();
-		}
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("File has been downloaded " + path));
-
-	}
-
-	private void insertCell(PdfPTable table, String text, int align, int colspan) {
-
-		// create a new cell with the specified Text and Font
-		PdfPCell cell = new PdfPCell(new Phrase(text.trim()));
-		// set the cell alignment
-		cell.setHorizontalAlignment(align);
-		// set the cell column span in case you want to merge two or more cells
-		cell.setColspan(colspan);
-		// in case there is no text and you wan to create an empty row
-		if (text.trim().equalsIgnoreCase("")) {
-			cell.setMinimumHeight(10f);
-		}
-		// add the call to the table
-		table.addCell(cell);
-
-	}
 
 	public Date getBeginDate() {
 		return beginDate;
@@ -332,6 +259,10 @@ public String detailListJson = "";
 
 	public void load(ComponentSystemEvent event) {
 		FacesContext context = FacesContext.getCurrentInstance();
+		appsList = new ArrayList<SelectItem>();
+		appsList.add(new SelectItem("SAP", "SAP"));
+		appsList.add(new SelectItem("DTOBM", "DTOBM"));
+		appsList.add(new SelectItem("DTKBM", "DTKBM"));
 		periodList = new ArrayList<SelectItem>();
 		periodList.add(new SelectItem("monthly", "monthly"));
 		periodList.add(new SelectItem("weekly", "weekly"));
@@ -341,8 +272,8 @@ public String detailListJson = "";
 					leftmenuBacking.setAppsValue("SAP");
 				}
 				this.application = leftmenuBacking.getAppsValue();
-				setHeadSum("Summary Onboard ");
-				setHeadDetail("Detail Onboard ");
+				setHeadSum("Summary Onboard Trusted Source");
+				setHeadDetail("Detail Onboard Trusted Source");
 				this.beginDate = null;
 				this.endDate = null;
 				this.detailList = null;
@@ -352,7 +283,9 @@ public String detailListJson = "";
 				this.month1 = null;
 				this.month2 = null;
 				this.barModel = new BarChartModel();
-
+				this.period = "monthly";
+				setVisibilityMonth("block");
+				setVisibilityWeek("none");
 			
 		}
 	}
@@ -360,18 +293,25 @@ public String detailListJson = "";
 	public void sumSearch() {
 		this.countList = null;
 		this.barModel = new BarChartModel();
+		this.maxBar= 0;
 		if ((this.beginDate == null || this.endDate == null) && (this.month1 == null || this.month2 == null)) {
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Please fill in the required fields", "Error"));
 		}else {
 			try {
-				if(this.period.equalsIgnoreCase("daily")) {
+				if(this.period.equalsIgnoreCase("daily") && this.appsName.equalsIgnoreCase("SAP")) {
 					this.countList = userEao.countOnboardDaily(beginDate, endDate);
-				}else if(this.period.equalsIgnoreCase("monthly")) {
+				}else if(this.period.equalsIgnoreCase("monthly") &&  this.appsName.equalsIgnoreCase("SAP")) {
 					this.countList = userEao.countOnboardMonthly(month1, month2);
 					createBarModels();
-				}else {
+				}else if(this.period.equalsIgnoreCase("weekly") && this.appsName.equalsIgnoreCase("SAP")){
 					this.countList = userEao.countOnboardWeekly(beginDate, endDate);
+				}else if(this.period.equalsIgnoreCase("DTOBM") || this.period.equalsIgnoreCase("DTKBM") && this.period.equalsIgnoreCase("daily")) {
+					this.countList = dtobmEao.countOnboardDailyNonSAP(beginDate, endDate, appsName);
+				}else if(this.period.equalsIgnoreCase("DTOBM") || this.period.equalsIgnoreCase("DTKBM") && this.period.equalsIgnoreCase("weekly")) {
+					this.countList = dtobmEao.countOnboardWeeklyNonSAP(beginDate, endDate, appsName);
+				}else if(this.period.equalsIgnoreCase("DTOBM") || this.period.equalsIgnoreCase("DTKBM") && this.period.equalsIgnoreCase("monthly")) {
+					this.countList = dtobmEao.countOnboardMonthlyNonSAP(beginDate, endDate, appsName);
 				}
 				getcountListJson();
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching is finished"));
@@ -390,20 +330,29 @@ public String detailListJson = "";
 
 	public void detailSearch() {
 		this.detailList = null;
+		
 		if ((this.beginDate == null || this.endDate == null) && (this.month1 == null || this.month2 == null)) {
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Please fill in the required fields", "Error"));
 		}else {
 			try {
-				if(this.period.equalsIgnoreCase("daily")) {
+				if(this.period.equalsIgnoreCase("daily") &&  this.appsName.equalsIgnoreCase("SAP")) {
 					this.detailList = userEao.getUserOnboard(this.beginDate, this.endDate);
 					
-				}else if(this.period.equalsIgnoreCase("monthly")) {
+				}else if(this.period.equalsIgnoreCase("monthly")&&  this.appsName.equalsIgnoreCase("SAP")) {
 					this.detailList = userEao.getUserOnboardMonthly(month1, month2);
-				}else {
+				}else if(this.period.equalsIgnoreCase("weekly")&&  this.appsName.equalsIgnoreCase("SAP")){
 					this.detailList = userEao.getUserOnboardWeekly(beginDate, endDate);
+				}else if(this.period.equalsIgnoreCase("daily") &&  this.period.equalsIgnoreCase("DTOBM") || this.period.equalsIgnoreCase("DTKBM")) {
+					this.detailList = dtobmEao.getUserOnboard(this.beginDate, this.endDate,this.appsName);
+					
+				}else if(this.period.equalsIgnoreCase("monthly")&&  this.period.equalsIgnoreCase("DTOBM") || this.period.equalsIgnoreCase("DTKBM")) {
+					this.detailList = dtobmEao.getUserOnboardMonthly(month1, month2,this.appsName);
+				}else if(this.period.equalsIgnoreCase("weekly")&&  this.period.equalsIgnoreCase("DTOBM") || this.period.equalsIgnoreCase("DTKBM")){
+					this.detailList = dtobmEao.getUserOnboardWeekly(beginDate, endDate,this.appsName);
 				}
-				
+				this.detailSize = 0;
+				this.detailSize = detailList.size();
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Searching is finished"));
 
 			} catch (SQLException e) {
@@ -439,7 +388,10 @@ public String detailListJson = "";
 		BarChartModel model = new BarChartModel();
         ChartSeries onboard = new ChartSeries();
         onboard.setLabel("Onboard");
+        maxBar = 0;
         for(int i =0;i<countList.size();i++) {
+        	int count = countList.get(i).getCount();
+			maxBar = maxBar < count? count : maxBar;
         	onboard.set(countList.get(i).getDate(), countList.get(i).getCount());
         	
         }
@@ -456,7 +408,7 @@ public String detailListJson = "";
     private void createBarModel() {
         barModel = initBarModel();
  
-        barModel.setTitle("Onboard Karyawan Permanent");
+        barModel.setTitle("Onboard Trusted Source " + this.appsName);
         barModel.setLegendPosition("ne");
  
         Axis xAxis = barModel.getAxis(AxisType.X);
@@ -465,7 +417,7 @@ public String detailListJson = "";
         Axis yAxis = barModel.getAxis(AxisType.Y);
         yAxis.setLabel("Total");
         yAxis.setMin(0);
-        yAxis.setMax(200);
+        yAxis.setMax(Helper.roundUpToNearestMultipleOfSix(maxBar));
     }
     
     

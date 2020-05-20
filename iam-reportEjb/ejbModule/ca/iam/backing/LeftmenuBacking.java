@@ -30,7 +30,6 @@ import org.primefaces.component.panelmenu.PanelMenu;
 import org.primefaces.component.selectonemenu.SelectOneMenu;
 import org.primefaces.component.selectonemenu.SelectOneMenuRenderer;
 
-import ca.iam.entity.SelectOneMenuView;
 import ca.iam.rules.LeftmenuRules;
 import ca.iam.rules.LoginRules;
 import ca.iam.util.Settings;
@@ -124,61 +123,7 @@ public class LeftmenuBacking implements Serializable{
 		  item.setCommand("#{leftmenuBacking.linkMenuPanel('summary')}");
 		  subMenu.addElement(item);
 		  
-		 /* item = new
-		 * DefaultMenuItem(Settings.getMessageString("text.page.menu.sumonboard"));
-		 * item.setIcon("ui-icon-note");
-		 * item.setCommand("#{leftmenuBacking.linkMenuPanel('sumonboard')}");
-		 * subMenu.addElement(item);
-		 * 
-		 * item = new
-		 * DefaultMenuItem(Settings.getMessageString("text.page.menu.detailonboard"));
-		 * item.setIcon("ui-icon-note");
-		 * item.setCommand("#{leftmenuBacking.linkMenuPanel('detailonboard')}");
-		 * subMenu.addElement(item);
-		 * 
-		 * item = new
-		 * DefaultMenuItem(Settings.getMessageString("text.page.menu.sumupdate"));
-		 * item.setIcon("ui-icon-note");
-		 * item.setCommand("#{leftmenuBacking.linkMenuPanel('sumupdate')}");
-		 * subMenu.addElement(item);
-		 * 
-		 * item = new
-		 * DefaultMenuItem(Settings.getMessageString("text.page.menu.detailupdate"));
-		 * item.setIcon("ui-icon-note");
-		 * item.setCommand("#{leftmenuBacking.linkMenuPanel('detailupdate')}");
-		 * subMenu.addElement(item);
-		 * 
-		 * item = new
-		 * DefaultMenuItem(Settings.getMessageString("text.page.menu.sumdisabled"));
-		 * item.setIcon("ui-icon-note");
-		 * item.setCommand("#{leftmenuBacking.linkMenuPanel('sumdisabled')}");
-		 * subMenu.addElement(item);
-		 * 
-		 * item = new
-		 * DefaultMenuItem(Settings.getMessageString("text.page.menu.detaildisabled"));
-		 * item.setIcon("ui-icon-note");
-		 * item.setCommand("#{leftmenuBacking.linkMenuPanel('detaildisabled')}");
-		 * subMenu.addElement(item);
-		 * 
-		 * item = new
-		 * DefaultMenuItem(Settings.getMessageString("text.page.menu.sumprov"));
-		 * item.setIcon("ui-icon-person");
-		 * item.setCommand("#{leftmenuBacking.linkMenuPanel('sumprov')}");
-		 * subMenu.addElement(item);
-		 * 
-		 * item = new
-		 * DefaultMenuItem(Settings.getMessageString("text.page.menu.detailprov"));
-		 * item.setIcon("ui-icon-person");
-		 * item.setCommand("#{leftmenuBacking.linkMenuPanel('detailprov')}");
-		 * subMenu.addElement(item);
-		 * 
-		 * item = new
-		 * DefaultMenuItem(Settings.getMessageString("text.page.menu.detaildeprov"));
-		 * item.setIcon("ui-icon-person");
-		 * item.setCommand("#{leftmenuBacking.linkMenuPanel('detaildeprov')}");
-		 * subMenu.addElement(item);
-		 */
-        
+		
         item = new DefaultMenuItem(Settings.getMessageString("text.page.menu.logout"));
         item.setIcon("ui-icon-close");
         item.setCommand("#{leftmenuBacking.linkMenuPanel('logout')}");

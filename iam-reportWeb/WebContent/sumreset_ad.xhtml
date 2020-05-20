@@ -92,17 +92,17 @@
 				
 				<p:inputText type="hidden"  id="countListJson" value="#{changeBacking.countListJson}" />
 				<h:outputText id="tgl1" value="#{changeBacking.beginDate}" style="display:none">
-					<f:convertDateTime pattern="dd-MM-yyyy" />
+					<f:convertDateTime pattern="dd/MM/yyyy" />
 				</h:outputText>
 				<h:outputText value="#{changeBacking.beginDate}" />
 				<h:outputText id="tgl2" value="#{changeBacking.endDate}" style="display:none">
-					<f:convertDateTime pattern="dd-MM-yyyy" />
+					<f:convertDateTime pattern="dd/MM/yyyy" />
 				</h:outputText>
 				<h:outputText id="bln1" value="#{changeBacking.month1}" style="display:none">
-					<f:convertDateTime pattern="MM-yyyy" />
+					<f:convertDateTime pattern="MM/yyyy" />
 				</h:outputText>
 				<h:outputText id="bln2" value="#{changeBacking.month2}" style="display:none">
-					<f:convertDateTime pattern="MM-yyyy" />
+					<f:convertDateTime pattern="MM/yyyy" />
 				</h:outputText>
 				
 				
@@ -136,6 +136,7 @@
 		element1 = $("#mainform\\:month1_input").val();
 		element2 = $("#mainform\\:month2_input").val();
 		periodLabel = $("#mainform\\:period_label").text();
+		periodLabel = periodLabel.charAt(0).toUpperCase() + periodLabel.slice(1);
 		appLabel = $("#mainform\\:application_label").text();
 		type = $("#mainform\\:type_label").text();
 		elements = $(".someClassName").val();
@@ -240,7 +241,7 @@
    function exportTableInPDF() {
 		  initData();
 		  docDefinition.content.unshift(
-			    	 {text: periodLabel+ ' Domain Password Reset Report \n'+" " + date1 + " - " + date2, style:'header'},
+			    	 {text: periodLabel+ ' Domain Password Reset Report \n'+" " + tgl1 + " - " + tgl2, style:'header'},
 				  );
 		  array.unshift([{text: 'No', style: 'tableHeader'},{text: 'Period', style: 'tableHeader'}, {text: 'Total', style: 'tableHeader'}]);
 	      

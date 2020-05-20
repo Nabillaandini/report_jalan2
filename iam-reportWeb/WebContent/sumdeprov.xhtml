@@ -46,7 +46,7 @@
 					<p:spacer id="spacer2"
 						style="display:#{deprovisionBacking.visibilityWeek}" />
 
-					<p:outputLabel id="monthlabel1" value="Select Month:"
+					<p:outputLabel id="monthlabel1" value="Select Month Begin:"
 						style="display:#{deprovisionBacking.visibilityMonth}" />
 					<p:datePicker id="month1" view="month" pattern="MM/yyyy"
 						value="#{deprovisionBacking.month1}" yearNavigator="true"
@@ -55,7 +55,7 @@
 					<p:spacer id="spacer3"
 						style="display:#{deprovisionBacking.visibilityMonth}" />
 
-					<p:outputLabel id="monthlabel2" value="Select Month:"
+					<p:outputLabel id="monthlabel2" value="Select Month End:"
 						style="display:#{deprovisionBacking.visibilityMonth}" />
 					<p:datePicker id="month2" view="month" pattern="MM/yyyy"
 						value="#{deprovisionBacking.month2}" yearNavigator="true"
@@ -64,7 +64,7 @@
 					<p:spacer id="spacer4"
 						style="display:#{deprovisionBacking.visibilityMonth}" />
 
-					<h:outputLabel value="Apps Name" style="margin-right:20px;" />
+					<h:outputLabel value="Trusted Source" style="margin-right:20px;" />
 					<p:selectOneMenu id="application"
 						value="#{deprovisionBacking.appsName}">
 						<f:selectItems value="#{deprovisionBacking.appsList}" />
@@ -131,17 +131,17 @@
 				<p:inputText type="hidden" id="countListJson"
 					value="#{deprovisionBacking.countListJson}" />
 				<h:outputText id="tgl1" value="#{deprovisionBacking.beginDate}" style="display:none">
-					<f:convertDateTime pattern="dd-MM-yyyy" />
+					<f:convertDateTime pattern="dd/MM/yyyy" />
 				</h:outputText>
 				<h:outputText value="#{deprovisionBacking.beginDate}" />
 				<h:outputText id="tgl2" value="#{deprovisionBacking.endDate}" style="display:none">
-					<f:convertDateTime pattern="dd-MM-yyyy" />
+					<f:convertDateTime pattern="dd/MM/yyyy" />
 				</h:outputText>
 				<h:outputText id="bln1" value="#{deprovisionBacking.month1}" style="display:none">
-					<f:convertDateTime pattern="MM-yyyy" />
+					<f:convertDateTime pattern="MM/yyyy" />
 				</h:outputText>
 				<h:outputText id="bln2" value="#{deprovisionBacking.month2}" style="display:none">
-					<f:convertDateTime pattern="MM-yyyy" />
+					<f:convertDateTime pattern="MM/yyyy" />
 				</h:outputText>
 
 			</p:panel>
@@ -174,6 +174,7 @@
 		element1 = $("#mainform\\:month1_input").val();
 		element2 = $("#mainform\\:month2_input").val();
 		periodLabel = $("#mainform\\:period_label").text();
+		periodLabel = periodLabel.charAt(0).toUpperCase() + periodLabel.slice(1);
 		appLabel = $("#mainform\\:application_label").text();
 		elements = $(".someClassName").val();
 		docDefinition = {
@@ -266,7 +267,7 @@
 	 array.unshift([{text: 'No', style: 'tableHeader'},{text: 'Period', style: 'tableHeader'}, {text: 'Total', style: 'tableHeader'}, {text: 'Trusted Source', style: 'tableHeader'}]);
       
       console.log(docDefinition);
-   //pdfMake.createPdf(docDefinition).download("offboardReport"+periodLabel+"_"+appLabel+bln1+"-"+bln2+".pdf"); 
+   pdfMake.createPdf(docDefinition).download("offboardReport"+periodLabel+"_"+appLabel+bln1+"-"+bln2+".pdf"); 
    }
    
    function exportTableInPDF() {
@@ -277,7 +278,7 @@
 		  array.unshift([{text: 'No', style: 'tableHeader'},{text: 'Period', style: 'tableHeader'}, {text: 'Total', style: 'tableHeader'}, {text: 'Trusted Source', style: 'tableHeader'}]);
 	      
 	      console.log(docDefinition);
-	     //pdfMake.createPdf(docDefinition).download("offboardReport"+periodLabel+"_"+appLabel+tgl1+"-"+tgl2+".pdf"); 
+	    pdfMake.createPdf(docDefinition).download("offboardReport"+periodLabel+"_"+appLabel+tgl1+"-"+tgl2+".pdf"); 
 	   }
 </script>
 	</ui:define>

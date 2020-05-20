@@ -98,19 +98,19 @@
 				   
 				<p:chart id="chartFromTable" type="bar" model="#{changeBacking.barModel}" style="height:400px;"  responsive="true"  widgetVar="lineWV"/>
 				
-				<p:inputText type="hidden"  id="countListJson" value="#{changeBacking.countListJson}" />
+				<p:inputText   type ="hidden" id="countListJson" value="#{changeBacking.countListJson}" />
 				<h:outputText id="tgl1" value="#{changeBacking.beginDate}" style="display:none">
-					<f:convertDateTime pattern="dd-MM-yyyy" />
+					<f:convertDateTime pattern="dd/MM/yyyy" />
 				</h:outputText>
 				<h:outputText value="#{changeBacking.beginDate}" />
 				<h:outputText id="tgl2" value="#{changeBacking.endDate}" style="display:none">
-					<f:convertDateTime pattern="dd-MM-yyyy" />
+					<f:convertDateTime pattern="dd/MM/yyyy" />
 				</h:outputText>
 				<h:outputText id="bln1" value="#{changeBacking.month1}" style="display:none">
-					<f:convertDateTime pattern="MM-yyyy" />
+					<f:convertDateTime pattern="MM/yyyy" />
 				</h:outputText>
 				<h:outputText id="bln2" value="#{changeBacking.month2}" style="display:none">
-					<f:convertDateTime pattern="MM-yyyy" />
+					<f:convertDateTime pattern="MM/yyyy" />
 				</h:outputText>
 				
 <br /><br />
@@ -137,12 +137,13 @@
 	function initData(){
 		countList ="";
 		countList = JSON.parse($("#mainform\\:countListJson").val());
-		console.log(countList);
+
 		
 		array = getData();
 		element1 = $("#mainform\\:month1_input").val();
 		element2 = $("#mainform\\:month2_input").val();
 		periodLabel = $("#mainform\\:period_label").text();
+		periodLabel = periodLabel.charAt(0).toUpperCase() + periodLabel.slice(1);
 		appLabel = $("#mainform\\:application_label").text();
 		type = $("#mainform\\:type_label").text();
 		elements = $(".someClassName").val();
@@ -226,7 +227,7 @@
     	 }	  
 	  );
 	  docDefinition.content.unshift(
-			  {text: periodLabel+ " " +appLabel+' Password Reset Report \n'+" " + bln1 + " - " + bln2, style:'header'},
+			  {text: periodLabel+ " " +appLabel+' Password Reset Report \n'+type+" " + bln1 + " - " + bln2, style:'header'},
 		  );
 	  docDefinition.content.unshift(
 			  {

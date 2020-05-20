@@ -31,35 +31,26 @@ public Provision(String type, int month, int year) {
 }
 
 public Provision(String begin, String end, String desc) {
-	String [] arr = begin.split("-");
-	int month_temp = Integer.parseInt(arr[1]);
-	String temp_begin = arr[2] + " " + new DateFormatSymbols().getMonths()[month_temp-1] + " " + arr[0];
-	arr = end.split("-");
-	String temp_end = arr[2] + " " + new DateFormatSymbols().getMonths()[month_temp-1] + " " + arr[0];
-	month_temp = Integer.parseInt(arr[1]);
-	this.type = desc;
-	this.date = temp_begin + " - " + temp_end;
-	
-	
-	
-	
+	setProvision(begin, end, desc);
 }
 
 public Provision(String begin, String end, String desc, String apps) {
-	String [] arr = begin.split("-");
-	int month_temp = Integer.parseInt(arr[1]);
-	String temp_begin = arr[2] + " " + new DateFormatSymbols().getMonths()[month_temp-1] + " " + arr[0];
-	arr = end.split("-");
-	String temp_end = arr[2] + " " + new DateFormatSymbols().getMonths()[month_temp-1] + " " + arr[0];
-	month_temp = Integer.parseInt(arr[1]);
-	this.type = desc;
-	this.date = temp_begin + " - " + temp_end;
+	setProvision(begin, end, desc);
 	this.appsName = apps;
-	
-	
-	
-	
 }
+
+
+private void setProvision(String begin, String end, String  desc) {
+	this.type = desc;
+	this.date = formatDate(begin) + " - " + formatDate(end);	
+}
+
+private String formatDate(String date) {
+	String [] arr = date.split("-");
+	int month_temp = Integer.parseInt(arr[1]);
+	return arr[2] + " " + new DateFormatSymbols().getMonths()[month_temp-1] + " " + arr[0];
+}
+
 public String getAppsName() {
 	return appsName;
 }

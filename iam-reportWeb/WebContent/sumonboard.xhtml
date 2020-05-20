@@ -61,6 +61,13 @@
 						style="display:#{onboardBacking.visibilityMonth}" />
 					<p:spacer id="spacer4"
 						style="display:#{onboardBacking.visibilityMonth}" />
+						
+						<h:outputLabel value="Trusted Source" style="margin-right:20px;" />
+					<p:selectOneMenu id="application"
+						value="#{onboardBacking.appsName}">
+						<f:selectItems value="#{onboardBacking.appsList}" />
+					</p:selectOneMenu>
+					<p:spacer />
 					<p:commandButton
 						value="#{msgbundle['text.page.sumonboard.search']}"
 						action="#{onboardBacking.sumSearch}" process="@all"
@@ -106,17 +113,17 @@
 				<p:inputText type="hidden"  id="countListJson" value="#{onboardBacking.countListJson}" />
 				
 				<h:outputText id="tgl1" value="#{onboardBacking.beginDate}" style="display:none">
-					<f:convertDateTime pattern="dd-MM-yyyy" />
+					<f:convertDateTime pattern="dd/MM/yyyy" />
 				</h:outputText>
 				<h:outputText value="#{onboardBacking.beginDate}" />
 				<h:outputText id="tgl2" value="#{onboardBacking.endDate}" style="display:none">
-					<f:convertDateTime pattern="dd-MM-yyyy" />
+					<f:convertDateTime pattern="dd/MM/yyyy" />
 				</h:outputText>
 				<h:outputText id="bln1" value="#{onboardBacking.month1}" style="display:none">
-					<f:convertDateTime pattern="MM-yyyy" />
+					<f:convertDateTime pattern="MM/yyyy" />
 				</h:outputText>
 				<h:outputText id="bln2" value="#{onboardBacking.month2}" style="display:none">
-					<f:convertDateTime pattern="MM-yyyy" />
+					<f:convertDateTime pattern="MM/yyyy" />
 				</h:outputText>
 
 			</p:panel>
@@ -148,6 +155,7 @@
 		element1 = $("#mainform\\:month1_input").val();
 		element2 = $("#mainform\\:month2_input").val();
 		periodLabel = $("#mainform\\:period_label").text();
+		periodLabel = periodLabel.charAt(0).toUpperCase() + periodLabel.slice(1);
 		appLabel = $("#mainform\\:application_label").text();
 		elements = $(".someClassName").val();
 		
@@ -206,7 +214,6 @@
 	}
 	function getData(){
 		var ary = [];
-		console.log("ary : " +countList);
         for(let i = 0; i &lt; countList.length; i++){
         	var arry = [];
         	arry.push(i+1);
@@ -229,7 +236,7 @@
     	 }	  
 	  );
 	  docDefinition.content.unshift(
-	    	 {text: periodLabel+ ' Success Onboard Report \n ' + bln1 + " - " + bln2, style:'header'},
+	    	 {text: periodLabel+ ' Success Onboard Report Trusted Source\n '+appLabel+ " "+bln1 + " - " + bln2, style:'header'},
 		  );
 	  docDefinition.content.unshift(
 			  {
@@ -251,7 +258,7 @@
 		  var datefrom = periodLabel=="monthly"? bln1:tgl1;
 	      var dateto = periodLabel=="monthly"? bln2:tgl2;
 		  docDefinition.content.unshift(
-			    	 {text: periodLabel+ ' Success Onboard Report \n'+" " + dateto + " - " + datefrom, style:'header'},
+			    	 {text: periodLabel+ ' Success Onboard Report Trusted Source \n'+appLabel+" " + datefrom + " - " + dateto, style:'header'},
 				  );
 		  array.unshift([{text: 'No', style: 'tableHeader'},{text: 'Period', style: 'tableHeader'}, {text: 'Total', style: 'tableHeader'}]);
 	      

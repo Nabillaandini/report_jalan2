@@ -10,7 +10,22 @@
 .cmdLogin{
 	float:right;
 }
+.ui-panel .ui-panel-titlebar {
+    background-color:#ffbc01;
+	 padding :12px;
+	 height:12px;
+	color:white;
+}
+.ui-panel-titlebar ui-widget-header ui-helper-clearfix ui-corner-all{
+	 background-color:#ffbc01;
+	 padding :12px;
+	 height:12px;
+	 color:white;
+}
 
+.ui-panel-title{
+	color:white;
+}
 ::-webkit-input-placeholder {
    color: gray !important;
    font-sytle: italic !important;
@@ -45,7 +60,11 @@
 }
 
 body{
-	background-image:url("../img/background.jpg");
+	background-image:url("../img/report_bg.jpg");
+	-webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }
 
 
